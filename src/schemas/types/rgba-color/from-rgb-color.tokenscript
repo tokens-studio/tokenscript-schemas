@@ -1,0 +1,10 @@
+# Converts RGBA to RGB (drops alpha)
+# Source: $self
+# Target: https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/schema/rgb-color/0/
+# Lossless: false
+
+variable output: Color.RGB;
+output.r = {input}.r;
+output.g = {input}.g;
+output.b = {input}.b;
+return output;

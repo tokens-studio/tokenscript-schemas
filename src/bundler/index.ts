@@ -1,0 +1,163 @@
+/**
+ * Schema bundler - bundles schemas for distribution
+ */
+
+import { mkdir, writeFile } from "node:fs/promises";
+import { join } from "node:path";
+import type { BundledRegistry, SchemaBundle } from "./types.js";
+import {
+  fileExists,
+  getSubdirectories,
+  readJsonFile,
+  readTokenScriptFiles,
+} from "./utils.js";
+
+interface SchemaMetadata {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  type: "type" | "function";
+  version: string;
+  originalVersion: string;
+  contentType: string | null;
+  metadata: Record<string, unknown>;
+}
+
+/**
+ * Bundle a single schema from its directory
+ */
+async function bundleSchema(
+  schemaDir: string,
+  schemaSlug: string,
+  schemaType: "type" | "function",
+): Promise<SchemaBundle> {
+  // Read schema metadata
+  const schemaJsonPath = join(schemaDir, "schema.json");
+  const metadata = await readJsonFile<SchemaMetadata>(schemaJsonPath);
+
+  // Read schema definition if it exists
+  const schemaDefPath = join(schemaDir, "schema-definition.json");
+  const hasSchemaDefinition = await fileExists(schemaDefPath);
+  const schemaDefinition = hasSchemaDefinition
+    ? await readJsonFile(schemaDefPath)
+    : undefined;
+
+  // Read all tokenscript files
+  const scripts = await readTokenScriptFiles(schemaDir);
+
+  return {
+    slug: schemaSlug,
+    name: metadata.name,
+    type: schemaType,
+    version: metadata.version,
+    schema: schemaDefinition,
+    scripts,
+    metadata: {
+      id: metadata.id,
+      description: metadata.description,
+      contentType: metadata.contentType,
+      originalVersion: metadata.originalVersion,
+    },
+  };
+}
+
+/**
+ * Bundle all schemas from a category (types or functions)
+ */
+async function bundleCategory(
+  categoryDir: string,
+  categoryType: "type" | "function",
+): Promise<SchemaBundle[]> {
+  const bundles: SchemaBundle[] = [];
+  const schemaSlugs = await getSubdirectories(categoryDir);
+
+  for (const slug of schemaSlugs) {
+    const schemaDir = join(categoryDir, slug);
+    console.log(`  Bundling ${slug}...`);
+
+    try {
+      const bundle = await bundleSchema(schemaDir, slug, categoryType);
+      bundles.push(bundle);
+    } catch (error) {
+      console.error(`  ✗ Failed to bundle ${slug}:`, error);
+    }
+  }
+
+  return bundles;
+}
+
+/**
+ * Bundle all schemas from the schemas directory
+ */
+export async function bundleAllSchemas(
+  schemasDir: string,
+  outputDir: string,
+): Promise<BundledRegistry> {
+  // Bundle types
+  console.log("\nBundling type schemas...");
+  const typesDir = join(schemasDir, "types");
+  const types = await bundleCategory(typesDir, "type");
+  console.log(`✓ Bundled ${types.length} type schemas`);
+
+  // Bundle functions
+  console.log("\nBundling function schemas...");
+  const functionsDir = join(schemasDir, "functions");
+  const functions = await bundleCategory(functionsDir, "function");
+  console.log(`✓ Bundled ${functions.length} function schemas`);
+
+  // Create bundled registry
+  const registry: BundledRegistry = {
+    version: "0.0.10",
+    types,
+    functions,
+    metadata: {
+      generatedAt: new Date().toISOString(),
+      totalSchemas: types.length + functions.length,
+    },
+  };
+
+  // Ensure output directory exists
+  await mkdir(outputDir, { recursive: true });
+
+  // Write complete registry
+  const registryPath = join(outputDir, "registry.json");
+  await writeFile(registryPath, JSON.stringify(registry, null, 2));
+  console.log(`\n✓ Written complete registry to ${registryPath}`);
+
+  // Write individual category bundles
+  const typesPath = join(outputDir, "types.json");
+  await writeFile(
+    typesPath,
+    JSON.stringify({ version: registry.version, types }, null, 2),
+  );
+  console.log(`✓ Written types bundle to ${typesPath}`);
+
+  const functionsPath = join(outputDir, "functions.json");
+  await writeFile(
+    functionsPath,
+    JSON.stringify({ version: registry.version, functions }, null, 2),
+  );
+  console.log(`✓ Written functions bundle to ${functionsPath}`);
+
+  // Write individual schema bundles
+  const typesOutputDir = join(outputDir, "types");
+  await mkdir(typesOutputDir, { recursive: true });
+  for (const type of types) {
+    const typePath = join(typesOutputDir, `${type.slug}.json`);
+    await writeFile(typePath, JSON.stringify(type, null, 2));
+  }
+  console.log(`✓ Written ${types.length} individual type schemas`);
+
+  const functionsOutputDir = join(outputDir, "functions");
+  await mkdir(functionsOutputDir, { recursive: true });
+  for (const func of functions) {
+    const funcPath = join(functionsOutputDir, `${func.slug}.json`);
+    await writeFile(funcPath, JSON.stringify(func, null, 2));
+  }
+  console.log(`✓ Written ${functions.length} individual function schemas`);
+
+  return registry;
+}
+
+export type * from "./types.js";

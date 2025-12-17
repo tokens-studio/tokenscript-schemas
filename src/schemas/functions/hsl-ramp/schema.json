@@ -1,0 +1,11 @@
+{
+  "id": "1fb81dae-c8c6-4144-85be-02080ab99278",
+  "slug": "hsl-ramp",
+  "name": "HSL Ramp",
+  "description": "",
+  "type": "function",
+  "version": "0.0.10",
+  "originalVersion": "0.0.1",
+  "contentType": "function",
+  "metadata": {}
+}

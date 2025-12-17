@@ -1,0 +1,35 @@
+# Converts HEX to RGBA
+# Source: https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/hex-color/0/
+# Target: $self
+# Lossless: true
+
+ variable color_parts: List = {input}.split('#'); 
+ variable color: List = color_parts.get(1).split(); 
+ variable length: Number = color.length(); 
+ variable rgba: List = 0, 0, 0, 1; 
+ if(length == 3) [ 
+ rgba.update(0, parseint(color.get(0).concat(color.get(0)), 16)); 
+ rgba.update(1, parseint(color.get(1).concat(color.get(1)), 16)); 
+ rgba.update(2, parseint(color.get(2).concat(color.get(2)), 16)); 
+ ] else [ 
+ if(length == 6) [ 
+ rgba.update(0, parseint(color.get(0).concat(color.get(1)), 16)); 
+ rgba.update(1, parseint(color.get(2).concat(color.get(3)), 16)); 
+ rgba.update(2, parseint(color.get(4).concat(color.get(5)), 16)); 
+ ] else [ 
+ if(length == 8) [ 
+ rgba.update(0, parseint(color.get(0).concat(color.get(1)), 16)); 
+ rgba.update(1, parseint(color.get(2).concat(color.get(3)), 16)); 
+ rgba.update(2, parseint(color.get(4).concat(color.get(5)), 16)); 
+ rgba.update(3, parseint(color.get(6).concat(color.get(7)), 16) / 255); 
+ ] 
+ ] 
+ ]; 
+ 
+ variable output: Color.RGBA; 
+ output.r = rgba.get(0); 
+ output.g = rgba.get(1); 
+ output.b = rgba.get(2); 
+ output.a = rgba.get(3); 
+ 
+ return output; 

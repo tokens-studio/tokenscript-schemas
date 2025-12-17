@@ -1,0 +1,11 @@
+{
+  "id": "9b56ac34-736f-412f-92e3-5695626d628d",
+  "slug": "invert",
+  "name": "Invert",
+  "description": "Invert a color",
+  "type": "function",
+  "version": "0.0.10",
+  "originalVersion": "0.0.1",
+  "contentType": "function",
+  "metadata": {}
+}

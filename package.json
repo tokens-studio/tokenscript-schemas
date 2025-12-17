@@ -1,0 +1,69 @@
+{
+  "name": "@tokenscript/schema-registry",
+  "version": "0.0.10",
+  "description": "Schema registry for TokenScript with bundled schemas and validation",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "bundled",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "clean": "rm -rf dist",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "check": "biome ci . --diagnostic-level=error",
+    "lint": "biome lint --max-diagnostics=none .",
+    "lint:fix": "biome lint --write .",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "fix": "biome check --write .",
+    "ts:typecheck": "tsc --noEmit",
+    "download": "tsx scripts/download-schemas.ts",
+    "update-versions": "tsx scripts/update-versions.ts",
+    "bundle": "tsx scripts/bundle-schemas.ts",
+    "push": "tsx scripts/push-to-registry.ts"
+  },
+  "keywords": [
+    "tokenscript",
+    "schema",
+    "registry",
+    "validation"
+  ],
+  "author": "Tokens Studio (https://tokens.studio)",
+  "license": "MPL-2.0",
+  "dependencies": {
+    "@tokens-studio/tokenscript-interpreter": "^0.14.0",
+    "arktype": "^2.1.25",
+    "commander": "^14.0.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.4",
+    "@types/node": "^22.18.6",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}

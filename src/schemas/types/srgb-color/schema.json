@@ -1,0 +1,11 @@
+{
+  "id": "5a470913-3547-4ab4-93c1-418dd60ff63d",
+  "slug": "srgb-color",
+  "name": "SRGB Color",
+  "description": "RGB Color Representation. (as `rgb(255, 255, 0)`)",
+  "type": "type",
+  "version": "0.0.10",
+  "originalVersion": "0.0.1",
+  "contentType": "color",
+  "metadata": {}
+}

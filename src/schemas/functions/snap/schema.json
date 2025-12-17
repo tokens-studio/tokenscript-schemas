@@ -1,0 +1,11 @@
+{
+  "id": "45021a3a-5add-48f1-857e-fa521168837d",
+  "slug": "snap",
+  "name": "Snap",
+  "description": "",
+  "type": "function",
+  "version": "0.0.10",
+  "originalVersion": "0.0.1",
+  "contentType": "function",
+  "metadata": {}
+}

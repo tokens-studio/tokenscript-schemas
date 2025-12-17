@@ -1,0 +1,25 @@
+# Converts HEX to RGB
+# Source: https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/hex-color/0/
+# Target: $self
+# Lossless: true
+
+ variable color_parts: List = {input}.tostring().split('#'); 
+ variable color: List = color_parts.get(1).split(); 
+ variable length: Number = color.length(); 
+ variable rgb: List = 0, 0, 0; 
+ if(length == 3) [ 
+ rgb.update(0, parseInt(color.get(0).concat(color.get(0)), 16)); 
+ rgb.update(1, parseint(color.get(1).concat(color.get(1)), 16)); 
+ rgb.update(2, parseint(color.get(2).concat(color.get(2)), 16)); 
+ ] else [ 
+ rgb.update(0, parseint(color.get(0).concat(color.get(1)), 16)); 
+ rgb.update(1, parseint(color.get(2).concat(color.get(3)), 16)); 
+ rgb.update(2, parseint(color.get(4).concat(color.get(5)), 16)); 
+ ]; 
+ 
+ variable output: Color.SRGB; 
+ output.r = rgb.get(0); 
+ output.g = rgb.get(1); 
+ output.b = rgb.get(2); 
+ 
+ return output; 

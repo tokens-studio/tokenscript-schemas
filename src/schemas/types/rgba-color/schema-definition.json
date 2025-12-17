@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "order": [
+    "r",
+    "g",
+    "b",
+    "a"
+  ],
+  "required": [
+    "r",
+    "g",
+    "b",
+    "a"
+  ],
+  "properties": {
+    "a": {
+      "type": "number"
+    },
+    "b": {
+      "type": "number"
+    },
+    "g": {
+      "type": "number"
+    },
+    "r": {
+      "type": "number"
+    }
+  },
+  "additionalProperties": false
+}

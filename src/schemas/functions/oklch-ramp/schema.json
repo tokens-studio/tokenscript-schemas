@@ -1,0 +1,11 @@
+{
+  "id": "260b0499-fb13-4489-ab4c-64535d166943",
+  "slug": "oklch-ramp",
+  "name": "OKLCH Ramp",
+  "description": "",
+  "type": "function",
+  "version": "0.0.10",
+  "originalVersion": "0.0.1",
+  "contentType": "function",
+  "metadata": {}
+}

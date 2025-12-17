@@ -1,0 +1,11 @@
+{
+  "id": "943199ed-b8df-421c-8141-2bca4b38621a",
+  "slug": "hsl-color-scale",
+  "name": "HSL Color Scale",
+  "description": "simple hsl color scale generator",
+  "type": "function",
+  "version": "0.0.10",
+  "originalVersion": "0.0.1",
+  "contentType": "function",
+  "metadata": {}
+}

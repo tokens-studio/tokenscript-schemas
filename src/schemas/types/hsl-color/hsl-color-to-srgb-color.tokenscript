@@ -1,0 +1,103 @@
+# Converts HSL to RGB using standard algorithm
+# Source: https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/schema/hsl-color/0/
+# Target: https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/schema/srgb-color/0/
+# Lossless: true
+
+variable hsl: List = {input}.h, {input}.s, {input}.l;
+variable rgb: List = 0, 0, 0;
+variable H: Number = hsl.get(0);
+variable S: Number = hsl.get(1) / 100;  // Convert percentage to [0,1]
+variable L: Number = hsl.get(2) / 100;  // Convert percentage to [0,1]
+
+// Step 1: Calculate chroma
+variable C: Number = (1 - abs(2 * L - 1)) * S;
+
+// Step 2: Calculate hue sector (H' = H / 60)
+variable H_prime: Number = H / 60;
+
+// Step 3: Calculate intermediate value X
+// X = C * (1 - |H' mod 2 - 1|)
+// Since we can't use mod, we'll implement it with conditional logic
+variable H_mod: Number = H_prime;
+if (H_prime >= 2) [
+    H_mod = H_prime - 2;
+];
+if (H_prime >= 4) [
+    H_mod = H_prime - 4;
+];
+variable X: Number = C * (1 - abs(H_mod - 1));
+
+// Step 4: Map (C, X, 0) to RGB' based on hue sector
+variable R1: Number = 0;
+variable G1: Number = 0;
+variable B1: Number = 0;
+
+if (H_prime >= 0 && H_prime < 1) [      // 0° ≤ H < 60°
+    R1 = C;
+    G1 = X;
+    B1 = 0;
+] else [
+    if (H_prime >= 1 && H_prime < 2) [  // 60° ≤ H < 120°
+        R1 = X;
+        G1 = C;
+        B1 = 0;
+    ] else [
+        if (H_prime >= 2 && H_prime < 3) [  // 120° ≤ H < 180°
+            R1 = 0;
+            G1 = C;
+            B1 = X;
+        ] else [
+            if (H_prime >= 3 && H_prime < 4) [  // 180° ≤ H < 240°
+                R1 = 0;
+                G1 = X;
+                B1 = C;
+            ] else [
+                if (H_prime >= 4 && H_prime < 5) [  // 240° ≤ H < 300°
+                    R1 = X;
+                    G1 = 0;
+                    B1 = C;
+                ] else [                             // 300° ≤ H < 360°
+                    R1 = C;
+                    G1 = 0;
+                    B1 = X;
+                ];
+            ];
+        ];
+    ];
+];
+
+// Step 5: Calculate match value and final RGB
+variable m: Number = L - C / 2;
+variable R: Number = (R1 + m) * 255;
+variable G: Number = (G1 + m) * 255;
+variable B: Number = (B1 + m) * 255;
+
+// Ensure RGB values are in [0,255] range
+if (R < 0) [
+    R = 0;
+];
+if (R > 255) [
+    R = 255;
+];
+if (G < 0) [
+    G = 0;
+];
+if (G > 255) [
+    G = 255;
+];
+if (B < 0) [
+    B = 0;
+];
+if (B > 255) [
+    B = 255;
+];
+
+rgb.update(0, R);
+rgb.update(1, G);
+rgb.update(2, B);
+
+variable output: Color.SRGB;
+output.r = rgb.get(0);
+output.g = rgb.get(1);
+output.b = rgb.get(2);
+return output;
