@@ -12,25 +12,52 @@ const __dirname = dirname(__filename);
 
 const SCHEMAS_DIR = join(__dirname, "../../src/schemas");
 
-interface SchemaMetadata {
-  id: string;
-  slug: string;
+// Types matching the new schema format (from typescript-interpreter)
+interface ScriptBlock {
+  type: string;
+  script: string;
+}
+
+interface Initializer {
+  title?: string;
+  keyword: string;
+  description?: string;
+  schema?: unknown;
+  script: ScriptBlock;
+}
+
+interface Conversion {
+  source: string;
+  target: string;
+  description?: string;
+  lossless: boolean;
+  script: ScriptBlock;
+}
+
+interface SpecProperty {
+  type: "number" | "string" | "color";
+}
+
+interface SpecSchema {
+  type: "object";
+  properties: Record<string, SpecProperty>;
+  required?: string[];
+  order?: string[];
+  additionalProperties?: boolean;
+}
+
+export interface ColorSpecification {
   name: string;
-  description: string;
-  type: "type" | "function";
-  version: string;
-  originalVersion: string;
-  contentType: string | null;
-  metadata: Record<string, unknown>;
+  type: "color";
+  description?: string;
+  schema?: SpecSchema;
+  initializers: Initializer[];
+  conversions: Conversion[];
 }
 
 interface LoadedSchema {
   slug: string;
-  name: string;
-  type: "type" | "function";
-  version: string;
-  metadata: SchemaMetadata;
-  schemaDefinition?: unknown;
+  specification: ColorSpecification;
   scripts: Record<string, string>;
 }
 
@@ -48,7 +75,7 @@ async function isDirectory(path: string): Promise<boolean> {
 }
 
 /**
- * Load a schema directly from source
+ * Load a schema directly from source with runtime bundling
  */
 export async function loadSchemaFromSource(
   slug: string,
@@ -61,22 +88,13 @@ export async function loadSchemaFromSource(
     return null;
   }
 
-  // Read schema.json
+  // Read schema.json (contains full specification)
   const schemaJsonPath = join(schemaDir, "schema.json");
-  const metadata = JSON.parse(
+  const specification = JSON.parse(
     await readFile(schemaJsonPath, "utf-8"),
-  ) as SchemaMetadata;
+  ) as ColorSpecification;
 
-  // Read schema-definition.json if it exists
-  let schemaDefinition: unknown | undefined;
-  try {
-    const schemaDefPath = join(schemaDir, "schema-definition.json");
-    schemaDefinition = JSON.parse(await readFile(schemaDefPath, "utf-8"));
-  } catch {
-    // Schema definition is optional
-  }
-
-  // Read all .tokenscript files
+  // Read all .tokenscript files into a map
   const scripts: Record<string, string> = {};
   const entries = await readdir(schemaDir);
 
@@ -90,12 +108,8 @@ export async function loadSchemaFromSource(
   }
 
   return {
-    slug: metadata.slug,
-    name: metadata.name,
-    type: metadata.type,
-    version: metadata.version,
-    metadata,
-    schemaDefinition,
+    slug,
+    specification,
     scripts,
   };
 }
@@ -126,8 +140,24 @@ export async function loadSchemasFromSource(
 }
 
 /**
- * Get a TokenScript from a schema
+ * Get a TokenScript from a schema by name
  */
 export function getScript(schema: LoadedSchema, scriptName: string): string | null {
   return schema.scripts[scriptName] || null;
+}
+
+/**
+ * Bundle a schema for runtime use by using the shared bundling logic
+ */
+export async function bundleSchemaForRuntime(
+  slug: string,
+  type: "type" | "function" = "type",
+): Promise<ColorSpecification> {
+  // Import the shared bundling function
+  const { bundleSchemaFromDirectory } = await import("../../src/bundler/bundle-schema.js");
+  
+  const categoryDir = type === "type" ? "types" : "functions";
+  const schemaDir = join(SCHEMAS_DIR, categoryDir, slug);
+
+  return await bundleSchemaFromDirectory(schemaDir);
 }

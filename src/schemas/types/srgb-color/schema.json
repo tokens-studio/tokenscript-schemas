@@ -1,11 +1,55 @@
 {
-  "id": "5a470913-3547-4ab4-93c1-418dd60ff63d",
-  "slug": "srgb-color",
-  "name": "SRGB Color",
-  "description": "RGB Color Representation. (as `rgb(255, 255, 0)`)",
-  "type": "type",
-  "version": "0.0.10",
-  "originalVersion": "0.0.1",
-  "contentType": "color",
-  "metadata": {}
+  "name": "SRGB",
+  "type": "color",
+  "description": "sRGB color",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "r": {
+        "type": "number"
+      },
+      "g": {
+        "type": "number"
+      },
+      "b": {
+        "type": "number"
+      }
+    },
+    "required": ["r", "g", "b"],
+    "order": ["r", "g", "b"],
+    "additionalProperties": false
+  },
+  "initializers": [
+    {
+      "title": "function",
+      "keyword": "srgb",
+      "description": "Creates an sRGB color",
+      "script": {
+        "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+        "script": "./srgb-initializer.tokenscript"
+      }
+    }
+  ],
+  "conversions": [
+    {
+      "source": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/hex-color/0/",
+      "target": "$self",
+      "description": "Converts HEX to sRGB",
+      "lossless": true,
+      "script": {
+        "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+        "script": "./from-hex-color.tokenscript"
+      }
+    },
+    {
+      "source": "$self",
+      "target": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/hex-color/0/",
+      "description": "Converts sRGB to HEX",
+      "lossless": true,
+      "script": {
+        "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+        "script": "./to-hex-color.tokenscript"
+      }
+    }
+  ]
 }

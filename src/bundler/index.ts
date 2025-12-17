@@ -4,25 +4,9 @@
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { BundledRegistry, SchemaBundle } from "./types.js";
-import {
-  fileExists,
-  getSubdirectories,
-  readJsonFile,
-  readTokenScriptFiles,
-} from "./utils.js";
-
-interface SchemaMetadata {
-  id: string;
-  slug: string;
-  name: string;
-  description: string;
-  type: "type" | "function";
-  version: string;
-  originalVersion: string;
-  contentType: string | null;
-  metadata: Record<string, unknown>;
-}
+import type { BundledRegistry, ColorSpecification } from "./types.js";
+import { getSubdirectories } from "./utils.js";
+import { bundleSchemaFromDirectory } from "./bundle-schema.js";
 
 /**
  * Bundle a single schema from its directory
@@ -31,35 +15,14 @@ async function bundleSchema(
   schemaDir: string,
   schemaSlug: string,
   schemaType: "type" | "function",
-): Promise<SchemaBundle> {
-  // Read schema metadata
-  const schemaJsonPath = join(schemaDir, "schema.json");
-  const metadata = await readJsonFile<SchemaMetadata>(schemaJsonPath);
+): Promise<ColorSpecification> {
+  // Use shared bundling logic
+  const bundled = await bundleSchemaFromDirectory(schemaDir);
 
-  // Read schema definition if it exists
-  const schemaDefPath = join(schemaDir, "schema-definition.json");
-  const hasSchemaDefinition = await fileExists(schemaDefPath);
-  const schemaDefinition = hasSchemaDefinition
-    ? await readJsonFile(schemaDefPath)
-    : undefined;
+  // Add slug from folder name
+  bundled.slug = schemaSlug;
 
-  // Read all tokenscript files
-  const scripts = await readTokenScriptFiles(schemaDir);
-
-  return {
-    slug: schemaSlug,
-    name: metadata.name,
-    type: schemaType,
-    version: metadata.version,
-    schema: schemaDefinition,
-    scripts,
-    metadata: {
-      id: metadata.id,
-      description: metadata.description,
-      contentType: metadata.contentType,
-      originalVersion: metadata.originalVersion,
-    },
-  };
+  return bundled;
 }
 
 /**
@@ -68,8 +31,8 @@ async function bundleSchema(
 async function bundleCategory(
   categoryDir: string,
   categoryType: "type" | "function",
-): Promise<SchemaBundle[]> {
-  const bundles: SchemaBundle[] = [];
+): Promise<ColorSpecification[]> {
+  const bundles: ColorSpecification[] = [];
   const schemaSlugs = await getSubdirectories(categoryDir);
 
   for (const slug of schemaSlugs) {
