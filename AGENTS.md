@@ -127,7 +127,9 @@ This function:
 ### 3. TokenScript Language
 
 **Syntax Rules:**
-- Snake_case for built-in methods: `to_string()`, `parse_int()`, NOT `toString()`, `parseInt()`
+- **Snake_case naming**: ALL variable names and built-in methods MUST use snake_case
+  - Variables: `rgb_color`, `inverted_r`, `color_parts` NOT `rgbColor`, `invertedR`, `colorParts`
+  - Built-in methods: `to_string()`, `parse_int()` NOT `toString()`, `parseInt()`
 - Type annotations: `variable output: Color.SRGB;`
 - Lists: `variable rgb: List = 0, 0, 0;`
 - Conditionals: `if(condition) [ ... ] else [ ... ];`
@@ -239,14 +241,28 @@ import { bundleSchemaFromDirectory } from "../../src/bundler/bundle-schema.js";
 ### 2. **One Bundling Function**
 Never duplicate bundling logic. Always use `bundleSchemaFromDirectory()` from `@/bundler/bundle-schema.ts`.
 
-### 3. **TokenScript File References**
+### 3. **TokenScript Naming Convention**
+ALL variables in `.tokenscript` files MUST use snake_case:
+```tokenscript
+// ✓ Correct
+variable rgb_color: Color.SRGB;
+variable inverted_r: Number;
+variable color_parts: List;
+
+// ✗ Wrong
+variable rgbColor: Color.SRGB;
+variable invertedR: Number;
+variable colorParts: List;
+```
+
+### 4. **TokenScript File References**
 In `schema.json`, always use relative paths:
 ```json
 "script": "./filename.tokenscript"
 ```
 NOT inline scripts in schema.json (they get inlined during bundling).
 
-### 4. **Test Structure**
+### 5. **Test Structure**
 Every schema MUST have:
 - Schema definition tests
 - Initialization tests
@@ -254,7 +270,7 @@ Every schema MUST have:
 - Round-trip tests (A→B→A)
 - Edge case tests
 
-### 5. **File Organization**
+### 6. **File Organization**
 Each schema type lives in its own directory with:
 - ONE `schema.json`
 - Multiple `.tokenscript` files (one per initializer/conversion)
@@ -322,7 +338,7 @@ createInterpreter(code, references, config)
 When working with this codebase, remember:
 1. Always use `@/` and `@tests/` path aliases for imports
 2. Use the shared bundling function from `@/bundler/bundle-schema.ts`
-3. Follow TokenScript syntax (snake_case methods)
+3. Follow TokenScript syntax (snake_case for ALL variables and methods)
 4. Access Symbol values with `.value`
 5. Write comprehensive tests
 6. Never import from other repos
