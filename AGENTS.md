@@ -121,8 +121,8 @@ This function:
 5. Returns the bundled schema
 
 **Two consumers:**
-- **Build-time** (`@/bundler/index.ts`): Bundles all schemas → `bundled/` directory
-- **Runtime** (`@tests/helpers/schema-loader.ts`): Bundles on-demand for tests
+- **Build-time** (`@/bundler/index.ts`): Bundles all schemas → `bundled/` directory (for distribution)
+- **Test-time** (`@tests/helpers/schema-loader.ts`): Bundles on-demand at runtime (no pre-build required)
 
 ### 3. TokenScript Language
 
@@ -205,14 +205,11 @@ describe("My Color Schema", () => {
 ### Running Commands
 
 ```bash
-# Build bundle
-npm run bundle
-
-# Run all tests
+# Run all tests (no bundling required!)
 npm test
 
 # Run specific test file
-npm test -- src/schemas/types/srgb-color/unit.test.ts
+npm test -- src/schemas/types/rgb-color/unit.test.ts
 
 # Type check
 npm run ts:typecheck
@@ -223,6 +220,9 @@ npm run lint:fix
 
 # Format
 npm run format
+
+# Build bundle (only for distribution)
+npm run bundle
 ```
 
 ## Critical Rules
