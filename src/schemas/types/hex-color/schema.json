@@ -1,0 +1,24 @@
+{
+  "name": "Hex",
+  "type": "color",
+  "description": "A color in hex format, e.g. #ff0000",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "value": {
+        "type": "string"
+      }
+    }
+  },
+  "initializers": [
+    {
+      "title": "Hex Color Initializer",
+      "keyword": "hex",
+      "script": {
+        "type": "/api/v1/core/tokenscript/0/",
+        "script": "./hex-initializer.tokenscript"
+      }
+    }
+  ],
+  "conversions": []
+}

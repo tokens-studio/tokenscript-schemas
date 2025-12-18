@@ -31,8 +31,8 @@ export async function setupColorManagerWithSchema(
   // Bundle the schema at runtime (inline script references) WITH baseUrl transformation
   const bundled = await bundleSchemaForRuntime(slug, "type", DEFAULT_REGISTRY_URL);
 
-  // Register with a URI format that matches the schema
-  const uri = `${DEFAULT_REGISTRY_URL}/api/v1/schema/${slug}/0/`;
+  // Register with a URI format that matches the conversions: /api/v1/core/{slug}/0/
+  const uri = `${DEFAULT_REGISTRY_URL}/api/v1/core/${slug}/0/`;
   colorManager.register(uri, bundled);
 
   return colorManager;
@@ -49,7 +49,8 @@ export async function setupColorManagerWithSchemas(
   for (const slug of slugs) {
     try {
       const bundled = await bundleSchemaForRuntime(slug, "type", DEFAULT_REGISTRY_URL);
-      const uri = `${DEFAULT_REGISTRY_URL}/api/v1/schema/${slug}/0/`;
+      // Register with a URI format that matches the conversions: /api/v1/core/{slug}/0/
+      const uri = `${DEFAULT_REGISTRY_URL}/api/v1/core/${slug}/0/`;
       colorManager.register(uri, bundled);
     } catch (error) {
       console.warn(`Failed to load schema ${slug}:`, error);

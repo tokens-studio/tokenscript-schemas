@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   setupColorManagerWithSchema,
+  setupColorManagerWithSchemas,
   createInterpreter,
   getBundledSchema,
   Config,
@@ -100,7 +101,7 @@ describe("SRGB Color Schema", () => {
 
   describe("Conversion from HEX to SRGB", () => {
     it("should convert 6-digit HEX to SRGB", async () => {
-      const colorManager = await setupColorManagerWithSchema("srgb-color");
+      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
       const config = new Config({ colorManager });
 
       const code = `
@@ -119,7 +120,7 @@ describe("SRGB Color Schema", () => {
     });
 
     it("should convert 3-digit HEX to SRGB", async () => {
-      const colorManager = await setupColorManagerWithSchema("srgb-color");
+      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
       const config = new Config({ colorManager });
 
       const code = `
@@ -138,7 +139,7 @@ describe("SRGB Color Schema", () => {
     });
 
     it("should convert black HEX to SRGB", async () => {
-      const colorManager = await setupColorManagerWithSchema("srgb-color");
+      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
       const config = new Config({ colorManager });
 
       const code = `
@@ -157,7 +158,7 @@ describe("SRGB Color Schema", () => {
     });
 
     it("should convert white HEX to SRGB", async () => {
-      const colorManager = await setupColorManagerWithSchema("srgb-color");
+      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
       const config = new Config({ colorManager });
 
       const code = `
@@ -178,7 +179,7 @@ describe("SRGB Color Schema", () => {
 
   describe("Conversion from SRGB to HEX", () => {
     it("should convert SRGB to HEX", async () => {
-      const colorManager = await setupColorManagerWithSchema("srgb-color");
+      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
       const config = new Config({ colorManager });
 
       const code = `
@@ -198,7 +199,7 @@ describe("SRGB Color Schema", () => {
     });
 
     it("should convert SRGB with low values to HEX", async () => {
-      const colorManager = await setupColorManagerWithSchema("srgb-color");
+      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
       const config = new Config({ colorManager });
 
       const code = `
@@ -218,7 +219,7 @@ describe("SRGB Color Schema", () => {
     });
 
     it("should convert black SRGB to HEX", async () => {
-      const colorManager = await setupColorManagerWithSchema("srgb-color");
+      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
       const config = new Config({ colorManager });
 
       const code = `
@@ -238,7 +239,7 @@ describe("SRGB Color Schema", () => {
     });
 
     it("should convert white SRGB to HEX", async () => {
-      const colorManager = await setupColorManagerWithSchema("srgb-color");
+      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
       const config = new Config({ colorManager });
 
       const code = `
@@ -260,7 +261,7 @@ describe("SRGB Color Schema", () => {
 
   describe("Round-trip Conversions", () => {
     it("should maintain color values through HEX -> SRGB -> HEX", async () => {
-      const colorManager = await setupColorManagerWithSchema("srgb-color");
+      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
       const config = new Config({ colorManager });
 
       const code = `
@@ -279,7 +280,7 @@ describe("SRGB Color Schema", () => {
     });
 
     it("should maintain color values through SRGB -> HEX -> SRGB", async () => {
-      const colorManager = await setupColorManagerWithSchema("srgb-color");
+      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
       const config = new Config({ colorManager });
 
       const code = `
