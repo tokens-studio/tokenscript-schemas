@@ -4,7 +4,7 @@ import {
   createInterpreter,
   getBundledSchema,
   Config,
-} from "../../../../tests/helpers/schema-test-utils.js";
+} from "@tests/helpers/schema-test-utils.js";
 
 describe("Hex Color Schema", () => {
   describe("Schema Definition", () => {

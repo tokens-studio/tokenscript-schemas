@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { loadRegistry, loadSchema, loadTypes, loadFunctions } from "../src/loader/index.js";
+import { loadRegistry, loadSchema, loadTypes, loadFunctions } from "@/loader/index.js";
 
 describe("Schema Loader", () => {
   test("loads complete registry", async () => {

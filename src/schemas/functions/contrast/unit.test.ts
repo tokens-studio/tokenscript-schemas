@@ -1,6 +1,6 @@
 import { describe, test } from "vitest";
 // import { Interpreter } from "@tokens-studio/tokenscript-interpreter";
-// import { loadSchemaFromSource, getScript } from "../../../../tests/helpers/schema-loader.js";
+// import { loadSchemaFromSource, getScript } from "@tests/helpers/schema-loader.js";
 
 describe("Contrast Function", () => {
   test.todo("calculates WCAG contrast ratio correctly");

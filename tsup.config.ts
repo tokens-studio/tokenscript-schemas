@@ -1,4 +1,5 @@
 import { defineConfig } from "tsup";
+import { resolve } from "node:path";
 
 export default defineConfig({
   entry: ["src/index.ts"],
@@ -9,4 +10,10 @@ export default defineConfig({
   clean: true,
   treeshake: true,
   outDir: "dist",
+  esbuildOptions(options) {
+    options.alias = {
+      "@": resolve(__dirname, "./src"),
+      "@tests": resolve(__dirname, "./tests"),
+    };
+  },
 });

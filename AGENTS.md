@@ -6,6 +6,26 @@
 
 This repository manages TokenScript color schemas with validation and unit testing. Schemas define color spaces (e.g., sRGB, HSL) and their conversions using the TokenScript language.
 
+## Path Aliases
+
+This project uses TypeScript path aliases for cleaner imports:
+
+- **`@/*`** → `./src/*` - For all source code
+- **`@tests/*`** → `./tests/*` - For test helpers
+
+**Examples:**
+```typescript
+// ✓ Use aliases
+import { bundleSchemaFromDirectory } from "@/bundler/bundle-schema.js";
+import { setupColorManagerWithSchema } from "@tests/helpers/schema-test-utils.js";
+
+// ✗ Don't use relative paths
+import { bundleSchemaFromDirectory } from "../../src/bundler/bundle-schema.js";
+import { setupColorManagerWithSchema } from "../../../../tests/helpers/schema-test-utils.js";
+```
+
+**Note:** Same-directory imports (e.g., `./types.js` within a module) can remain relative.
+
 ## Repository Structure
 
 ```
@@ -85,7 +105,7 @@ Schemas follow the typescript-interpreter format:
 
 ### 2. Bundling Process
 
-**There is ONE shared bundling function** in `src/bundler/bundle-schema.ts`:
+**There is ONE shared bundling function** in `@/bundler/bundle-schema.ts`:
 
 ```typescript
 export async function bundleSchemaFromDirectory(
@@ -101,8 +121,8 @@ This function:
 5. Returns the bundled schema
 
 **Two consumers:**
-- **Build-time** (`src/bundler/index.ts`): Bundles all schemas → `bundled/` directory
-- **Runtime** (`tests/helpers/schema-loader.ts`): Bundles on-demand for tests
+- **Build-time** (`@/bundler/index.ts`): Bundles all schemas → `bundled/` directory
+- **Runtime** (`@tests/helpers/schema-loader.ts`): Bundles on-demand for tests
 
 ### 3. TokenScript Language
 
@@ -153,7 +173,7 @@ import {
   createInterpreter,
   getBundledSchema,
   Config,
-} from "../../../../tests/helpers/schema-test-utils.js";
+} from "@tests/helpers/schema-test-utils.js";
 
 describe("My Color Schema", () => {
   it("should convert", async () => {
@@ -205,23 +225,34 @@ npm run format
 
 ## Critical Rules
 
-### 1. **One Bundling Function**
-Never duplicate bundling logic. Always use `bundleSchemaFromDirectory()` from `src/bundler/bundle-schema.ts`.
+### 1. **Use Path Aliases**
+Always use `@/` and `@tests/` aliases instead of relative paths:
+```typescript
+// ✓ Correct
+import { bundleSchemaFromDirectory } from "@/bundler/bundle-schema.js";
+import { setupColorManagerWithSchema } from "@tests/helpers/schema-test-utils.js";
 
-### 2. **No External Repo Imports**
+// ✗ Wrong
+import { bundleSchemaFromDirectory } from "../../src/bundler/bundle-schema.js";
+```
+
+### 2. **One Bundling Function**
+Never duplicate bundling logic. Always use `bundleSchemaFromDirectory()` from `@/bundler/bundle-schema.ts`.
+
+### 3. **No External Repo Imports**
 Only import from:
 - ✓ `@tokens-studio/tokenscript-interpreter` (published npm package)
-- ✓ Local files within this repo
+- ✓ Local files within this repo using `@/` or `@tests/` aliases
 - ✗ NEVER import from `~/Code/My/items/tokenscript/typescript-interpreter/src/...`
 
-### 3. **TokenScript File References**
+### 4. **TokenScript File References**
 In `schema.json`, always use relative paths:
 ```json
 "script": "./filename.tokenscript"
 ```
 NOT inline scripts in schema.json (they get inlined during bundling).
 
-### 4. **Test Structure**
+### 5. **Test Structure**
 Every schema MUST have:
 - Schema definition tests
 - Initialization tests
@@ -229,7 +260,7 @@ Every schema MUST have:
 - Round-trip tests (A→B→A)
 - Edge case tests
 
-### 5. **File Organization**
+### 6. **File Organization**
 Each schema type lives in its own directory with:
 - ONE `schema.json`
 - Multiple `.tokenscript` files (one per initializer/conversion)
@@ -332,10 +363,11 @@ createInterpreter(code, references, config)
 ## Questions?
 
 When working with this codebase, remember:
-1. Use the shared bundling function
-2. Follow TokenScript syntax (snake_case methods)
-3. Access Symbol values with `.value`
-4. Write comprehensive tests
-5. Never import from other repos
+1. Always use `@/` and `@tests/` path aliases for imports
+2. Use the shared bundling function from `@/bundler/bundle-schema.ts`
+3. Follow TokenScript syntax (snake_case methods)
+4. Access Symbol values with `.value`
+5. Write comprehensive tests
+6. Never import from other repos
 
 See `TESTING.md` for detailed testing documentation.

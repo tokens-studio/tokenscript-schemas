@@ -4,9 +4,9 @@
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { BundledRegistry, ColorSpecification } from "./types.js";
-import { getSubdirectories } from "./utils.js";
-import { bundleSchemaFromDirectory } from "./bundle-schema.js";
+import type { BundledRegistry, ColorSpecification } from "@/bundler/types.js";
+import { getSubdirectories } from "@/bundler/utils.js";
+import { bundleSchemaFromDirectory } from "@/bundler/bundle-schema.js";
 
 /**
  * Default registry URL for build-time bundling
@@ -128,4 +128,4 @@ export async function bundleAllSchemas(
   return registry;
 }
 
-export type * from "./types.js";
+export type * from "@/bundler/types.js";

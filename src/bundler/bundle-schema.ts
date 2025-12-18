@@ -5,7 +5,7 @@
 
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { ColorSpecification } from "./types.js";
+import type { ColorSpecification } from "@/bundler/types.js";
 
 export interface BundleOptions {
   /**

@@ -5,7 +5,7 @@
  */
 
 import { resolve } from "node:path";
-import { downloadAllSchemas } from "../src/downloader/index.js";
+import { downloadAllSchemas } from "@/downloader/index.js";
 
 const outputDir = resolve(process.cwd(), "src/schemas");
 

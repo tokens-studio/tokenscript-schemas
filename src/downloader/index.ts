@@ -9,7 +9,7 @@ import type {
   SchemaDetails,
   SchemaListItem,
   SchemaVersion,
-} from "./types.js";
+} from "@/downloader/types.js";
 
 const DEFAULT_CONFIG: SchemaConfig = {
   apiBaseUrl: "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1",
@@ -254,4 +254,4 @@ export async function downloadAllSchemas(
 }
 
 export { DEFAULT_CONFIG };
-export type * from "./types.js";
+export type * from "@/downloader/types.js";

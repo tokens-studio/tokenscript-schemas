@@ -5,7 +5,7 @@
  */
 
 import { resolve } from "node:path";
-import { bundleAllSchemas } from "../src/bundler/index.js";
+import { bundleAllSchemas } from "@/bundler/index.js";
 
 const schemasDir = resolve(process.cwd(), "src/schemas");
 const outputDir = resolve(process.cwd(), "bundled");

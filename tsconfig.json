@@ -18,7 +18,8 @@
     "resolveJsonModule": true,
     "noUncheckedSideEffectImports": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@tests/*": ["./tests/*"]
     }
   },
   "include": ["src/**/*", "scripts/**/*", "tests/**/*"],

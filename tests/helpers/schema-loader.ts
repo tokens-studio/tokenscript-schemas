@@ -155,7 +155,7 @@ export async function bundleSchemaForRuntime(
   baseUrl?: string,
 ): Promise<ColorSpecification> {
   // Import the shared bundling function
-  const { bundleSchemaFromDirectory } = await import("../../src/bundler/bundle-schema.js");
+  const { bundleSchemaFromDirectory } = await import("@/bundler/bundle-schema.js");
   
   const categoryDir = type === "type" ? "types" : "functions";
   const schemaDir = join(SCHEMAS_DIR, categoryDir, slug);

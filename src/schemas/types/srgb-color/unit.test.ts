@@ -5,7 +5,7 @@ import {
   createInterpreter,
   getBundledSchema,
   Config,
-} from "../../../../tests/helpers/schema-test-utils.js";
+} from "@tests/helpers/schema-test-utils.js";
 
 describe("SRGB Color Schema", () => {
   describe("Schema Definition", () => {
