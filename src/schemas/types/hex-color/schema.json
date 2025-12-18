@@ -16,7 +16,7 @@
       "keyword": "hex",
       "script": {
         "type": "/api/v1/core/tokenscript/0/",
-        "script": "./hex-initializer.tokenscript"
+        "script": "./initializer.tokenscript"
       }
     }
   ],

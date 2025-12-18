@@ -26,7 +26,7 @@
       "description": "Creates an sRGB color",
       "script": {
         "type": "/api/v1/core/tokenscript/0/",
-        "script": "./srgb-initializer.tokenscript"
+        "script": "./initializer.tokenscript"
       }
     }
   ],
@@ -38,7 +38,7 @@
       "lossless": true,
       "script": {
         "type": "/api/v1/core/tokenscript/0/",
-        "script": "./from-hex-color.tokenscript"
+        "script": "./from-hex.tokenscript"
       }
     },
     {
@@ -48,7 +48,7 @@
       "lossless": true,
       "script": {
         "type": "/api/v1/core/tokenscript/0/",
-        "script": "./to-hex-color.tokenscript"
+        "script": "./to-hex.tokenscript"
       }
     }
   ]
