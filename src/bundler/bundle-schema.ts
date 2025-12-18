@@ -116,7 +116,8 @@ async function inlineFunctionScriptReferences(
 
     // Transform requirement URIs
     if (result.requirements) {
-      result.requirements = result.requirements.map((req) => addBaseUrl(req, options.baseUrl));
+      const baseUrl = options.baseUrl;
+      result.requirements = result.requirements.map((req) => addBaseUrl(req, baseUrl));
     }
   }
 

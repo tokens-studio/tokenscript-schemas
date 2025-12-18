@@ -1,3 +1,4 @@
+import type { ColorSpecification } from "@/bundler/types.js";
 import {
   Config,
   createInterpreter,
@@ -10,7 +11,7 @@ import { describe, expect, it } from "vitest";
 describe("SRGB Color Schema", () => {
   describe("Schema Definition", () => {
     it("should have correct schema structure", async () => {
-      const schema = await getBundledSchema("srgb-color");
+      const schema = (await getBundledSchema("srgb-color")) as ColorSpecification;
 
       expect(schema.name).toBe("SRGB");
       expect(schema.type).toBe("color");
@@ -23,7 +24,7 @@ describe("SRGB Color Schema", () => {
     });
 
     it("should have initializers defined", async () => {
-      const schema = await getBundledSchema("srgb-color");
+      const schema = (await getBundledSchema("srgb-color")) as ColorSpecification;
 
       expect(schema.initializers).toHaveLength(1);
       expect(schema.initializers[0].keyword).toBe("srgb");
@@ -32,13 +33,14 @@ describe("SRGB Color Schema", () => {
     });
 
     it("should have conversions defined", async () => {
-      const schema = await getBundledSchema("srgb-color");
+      const schema = (await getBundledSchema("srgb-color")) as ColorSpecification;
 
       expect(schema.conversions).toHaveLength(2);
 
       // Check HEX to SRGB conversion
       const hexToSrgb = schema.conversions.find(
-        (c) => c.target === "$self" && c.source.includes("hex-color"),
+        (c: { target: string; source: string }) =>
+          c.target === "$self" && c.source.includes("hex-color"),
       );
       expect(hexToSrgb).toBeDefined();
       expect(hexToSrgb?.lossless).toBe(true);
@@ -47,7 +49,8 @@ describe("SRGB Color Schema", () => {
 
       // Check SRGB to HEX conversion
       const srgbToHex = schema.conversions.find(
-        (c) => c.source === "$self" && c.target.includes("hex-color"),
+        (c: { target: string; source: string }) =>
+          c.source === "$self" && c.target.includes("hex-color"),
       );
       expect(srgbToHex).toBeDefined();
       expect(srgbToHex?.lossless).toBe(true);

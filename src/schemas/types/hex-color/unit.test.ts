@@ -1,3 +1,4 @@
+import type { ColorSpecification } from "@/bundler/types.js";
 import {
   Config,
   createInterpreter,
@@ -9,18 +10,18 @@ import { describe, expect, it } from "vitest";
 describe("Hex Color Schema", () => {
   describe("Schema Definition", () => {
     it("should have valid schema structure", async () => {
-      const schema = await getBundledSchema("hex-color");
+      const schema = (await getBundledSchema("hex-color")) as ColorSpecification;
 
       expect(schema.name).toBe("Hex");
       expect(schema.type).toBe("color");
       expect(schema.schema).toBeDefined();
-      expect(schema.schema.type).toBe("object");
-      expect(schema.schema.properties.value).toBeDefined();
-      expect(schema.schema.properties.value.type).toBe("string");
+      expect(schema.schema?.type).toBe("object");
+      expect(schema.schema?.properties.value).toBeDefined();
+      expect(schema.schema?.properties.value.type).toBe("string");
     });
 
     it("should have hex initializer", async () => {
-      const schema = await getBundledSchema("hex-color");
+      const schema = (await getBundledSchema("hex-color")) as ColorSpecification;
 
       expect(schema.initializers).toHaveLength(1);
       expect(schema.initializers[0].keyword).toBe("hex");

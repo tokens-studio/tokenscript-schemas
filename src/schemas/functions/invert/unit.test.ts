@@ -1,3 +1,4 @@
+import type { FunctionSpecification } from "@/bundler/types.js";
 import {
   createInterpreter,
   getBundledSchema,
@@ -8,7 +9,7 @@ import { describe, expect, it } from "vitest";
 describe("Invert Function Schema", () => {
   describe("Schema Definition", () => {
     it("should have correct schema structure", async () => {
-      const schema = await getBundledSchema("invert", "function");
+      const schema = (await getBundledSchema("invert", "function")) as FunctionSpecification;
 
       expect(schema.name).toBe("Invert Color");
       expect(schema.type).toBe("function");
@@ -16,24 +17,24 @@ describe("Invert Function Schema", () => {
         "Inverts a color by inverting each RGB channel (R' = 255 - R, G' = 255 - G, B' = 255 - B).",
       );
       expect(schema.keyword).toBe("invert");
-      expect((schema as any).input).toBeDefined();
-      expect((schema as any).input.type).toBe("object");
-      expect((schema as any).input.properties).toHaveProperty("color");
+      expect(schema.input).toBeDefined();
+      expect(schema.input?.type).toBe("object");
+      expect(schema.input?.properties).toHaveProperty("color");
     });
 
     it("should have script defined", async () => {
-      const schema = await getBundledSchema("invert", "function");
+      const schema = (await getBundledSchema("invert", "function")) as FunctionSpecification;
 
-      expect((schema as any).script).toBeDefined();
-      expect((schema as any).script.script).toBeTruthy();
-      expect((schema as any).script.script).not.toContain("./");
+      expect(schema.script).toBeDefined();
+      expect(schema.script.script).toBeTruthy();
+      expect(schema.script.script).not.toContain("./");
     });
 
     it("should have requirements", async () => {
-      const schema = await getBundledSchema("invert", "function");
+      const schema = (await getBundledSchema("invert", "function")) as FunctionSpecification;
 
-      expect((schema as any).requirements).toBeDefined();
-      expect((schema as any).requirements).toContain(
+      expect(schema.requirements).toBeDefined();
+      expect(schema.requirements).toContain(
         "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/srgb-color/0/",
       );
     });

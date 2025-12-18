@@ -10,7 +10,8 @@ import {
   Lexer,
   Parser,
 } from "@tokens-studio/tokenscript-interpreter";
-import type { SchemaSpecification } from "./schema-loader.js";
+import type { ColorSpecification, FunctionSpecification, SchemaSpecification } from "@/bundler/types.js";
+
 import { bundleSchemaForRuntime } from "./schema-loader.js";
 
 // Re-export Config for convenience
@@ -30,9 +31,14 @@ export async function setupColorManagerWithSchema(slug: string): Promise<ColorMa
   // Bundle the schema at runtime (inline script references) WITH baseUrl transformation
   const bundled = await bundleSchemaForRuntime(slug, "type", DEFAULT_REGISTRY_URL);
 
+  // Type guard: ensure it's a ColorSpecification
+  if (bundled.type !== "color") {
+    throw new Error(`Expected color type for ${slug}, got ${bundled.type}`);
+  }
+
   // Register with a URI format that matches the conversions: /api/v1/core/{slug}/0/
   const uri = `${DEFAULT_REGISTRY_URL}/api/v1/core/${slug}/0/`;
-  colorManager.register(uri, bundled);
+  colorManager.register(uri, bundled as ColorSpecification);
 
   return colorManager;
 }
@@ -56,12 +62,22 @@ export async function setupColorManagerWithSchemas(
       const bundled = await bundleSchemaForRuntime(slug, type, DEFAULT_REGISTRY_URL);
 
       if (type === "function") {
+        // Ensure it's actually a function specification
+        if (bundled.type !== "function") {
+          throw new Error(`Expected function type for ${slug}, got ${bundled.type}`);
+        }
+        const funcSpec = bundled as FunctionSpecification;
         // Register as a function
-        functionsManager.register(slug, bundled as any);
+        functionsManager.register(slug, funcSpec);
       } else {
+        // Ensure it's actually a color specification
+        if (bundled.type !== "color") {
+          throw new Error(`Expected color type for ${slug}, got ${bundled.type}`);
+        }
+        const colorSpec = bundled as ColorSpecification;
         // Register as a color type
         const uri = `${DEFAULT_REGISTRY_URL}/api/v1/core/${slug}/0/`;
-        colorManager.register(uri, bundled);
+        colorManager.register(uri, colorSpec);
       }
     } catch (error) {
       console.warn(`Failed to load schema ${slug}:`, error);
