@@ -1,6 +1,6 @@
-import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils.js";
+import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
 import { describe, expect, it } from "vitest";
-import type { FunctionSpecification } from "@/bundler/types.js";
+import type { FunctionSpecification } from "@/bundler/types";
 
 describe("Invert Function Schema", () => {
   describe("Schema Definition", () => {

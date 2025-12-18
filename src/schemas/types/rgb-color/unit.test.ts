@@ -1,6 +1,6 @@
-import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils.js";
+import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
 import { describe, expect, it } from "vitest";
-import type { ColorSpecification } from "@/bundler/types.js";
+import type { ColorSpecification } from "@/bundler/types";
 
 describe("RGB Color Schema", () => {
   describe("Schema Definition", () => {

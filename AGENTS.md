@@ -16,12 +16,12 @@ This project uses TypeScript path aliases for cleaner imports:
 **Examples:**
 ```typescript
 // ✓ Use aliases
-import { bundleSchemaFromDirectory } from "@/bundler/bundle-schema.js";
-import { setupColorManagerWithSchema } from "@tests/helpers/schema-test-utils.js";
+import { bundleSchemaFromDirectory } from "@/bundler/bundle-schema";
+import { setupColorManagerWithSchema } from "@tests/helpers/schema-test-utils";
 
 // ✗ Don't use relative paths
-import { bundleSchemaFromDirectory } from "../../src/bundler/bundle-schema.js";
-import { setupColorManagerWithSchema } from "../../../../tests/helpers/schema-test-utils.js";
+import { bundleSchemaFromDirectory } from "../../src/bundler/bundle-schema";
+import { setupColorManagerWithSchema } from "../../../../tests/helpers/schema-test-utils";
 ```
 
 **Note:** Same-directory imports (e.g., `./types.js` within a module) can remain relative.
@@ -175,7 +175,7 @@ import {
   createInterpreter,
   getBundledSchema,
   Config,
-} from "@tests/helpers/schema-test-utils.js";
+} from "@tests/helpers/schema-test-utils";
 
 describe("My Color Schema", () => {
   it("should convert", async () => {
@@ -231,11 +231,11 @@ npm run bundle
 Always use `@/` and `@tests/` aliases instead of relative paths:
 ```typescript
 // ✓ Correct
-import { bundleSchemaFromDirectory } from "@/bundler/bundle-schema.js";
-import { setupColorManagerWithSchema } from "@tests/helpers/schema-test-utils.js";
+import { bundleSchemaFromDirectory } from "@/bundler/bundle-schema";
+import { setupColorManagerWithSchema } from "@tests/helpers/schema-test-utils";
 
 // ✗ Wrong
-import { bundleSchemaFromDirectory } from "../../src/bundler/bundle-schema.js";
+import { bundleSchemaFromDirectory } from "../../src/bundler/bundle-schema";
 ```
 
 ### 2. **One Bundling Function**

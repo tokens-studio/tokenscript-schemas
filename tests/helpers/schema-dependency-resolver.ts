@@ -7,8 +7,8 @@ import type {
   FunctionSpecification,
   SchemaSpecification,
 } from "@/bundler/types.js";
-import { extractSchemaName, parseSchemaUri } from "@/utils/schema-uri.js";
-import { bundleSchemaForRuntime } from "./schema-loader.js";
+import { extractSchemaName, parseSchemaUri } from "@/utils/schema-uri";
+import { bundleSchemaForRuntime } from "./schema-loader";
 
 export interface SchemaReference {
   slug: string;

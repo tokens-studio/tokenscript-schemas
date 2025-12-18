@@ -4,14 +4,14 @@
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { bundleSchemaFromDirectory } from "@/bundler/bundle-schema.js";
+import { bundleSchemaFromDirectory } from "@/bundler/bundle-schema";
 import type {
   BundledRegistry,
   ColorSpecification,
   FunctionSpecification,
   SchemaSpecification,
 } from "@/bundler/types.js";
-import { getSubdirectories } from "@/bundler/utils.js";
+import { getSubdirectories } from "@/bundler/utils";
 
 /**
  * Default registry URL for build-time bundling

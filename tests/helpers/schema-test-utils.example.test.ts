@@ -7,7 +7,7 @@ import {
   createInterpreter,
   setupConfigWithDependencies,
   setupConfigWithMultipleDependencies,
-} from "./schema-test-utils.js";
+} from "./schema-test-utils";
 
 describe("Automatic Dependency Resolution Examples", () => {
   describe("setupConfigWithDependencies", () => {
@@ -129,7 +129,7 @@ describe("Automatic Dependency Resolution Examples", () => {
   describe("Comparison: Old vs New Approach", () => {
     it("OLD: Manual dependency management", async () => {
       // Had to manually list all dependencies
-      const { setupColorManagerWithSchemas } = await import("./schema-test-utils.js");
+      const { setupColorManagerWithSchemas } = await import("./schema-test-utils");
       const config = await setupColorManagerWithSchemas(
         ["invert", "rgb-color", "hex-color"],
         ["function", "type", "type"],

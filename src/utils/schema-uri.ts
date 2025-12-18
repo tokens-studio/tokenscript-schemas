@@ -4,7 +4,7 @@
  * Handles URI construction, parsing, and manipulation for the TokenScript schema registry.
  */
 
-import { isObject } from "./type.js";
+import { isObject } from "./type";
 
 export type SemanticVersion =
   | { major: number }

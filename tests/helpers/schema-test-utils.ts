@@ -14,13 +14,13 @@ import type {
   ColorSpecification,
   FunctionSpecification,
   SchemaSpecification,
-} from "@/bundler/types.js";
+} from "@/bundler/types";
 import {
   collectRequiredSchemas,
   collectRequiredSchemasForList,
   type ResolvedDependencies,
-} from "./schema-dependency-resolver.js";
-import { bundleSchemaForRuntime } from "./schema-loader.js";
+} from "./schema-dependency-resolver";
+import { bundleSchemaForRuntime } from "./schema-loader";
 
 // Re-export Config and types for convenience
 export { Config };
@@ -221,7 +221,7 @@ export async function setupConfigWithDependencies(
   // Load the main schema itself
   try {
     // Resolve to get the actual slug
-    const { resolveSchemaReference } = await import("./schema-dependency-resolver.js");
+    const { resolveSchemaReference } = await import("./schema-dependency-resolver");
     const ref = resolveSchemaReference(slugOrUri);
 
     if (!ref) {
