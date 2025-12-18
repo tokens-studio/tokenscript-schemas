@@ -1,7 +1,7 @@
 import {
   createInterpreter,
   getBundledSchema,
-  setupColorManagerWithSchemas,
+  setupConfigWithDependencies,
 } from "@tests/helpers/schema-test-utils.js";
 import { describe, expect, it } from "vitest";
 import type { FunctionSpecification } from "@/bundler/types.js";
@@ -42,10 +42,7 @@ describe("Invert Function Schema", () => {
 
   describe("Function Execution", () => {
     it("should invert RGB color", async () => {
-      const config = await setupColorManagerWithSchemas(
-        ["rgb-color", "invert"],
-        ["type", "function"],
-      );
+      const config = await setupConfigWithDependencies("invert", "function");
 
       const code = `
         variable original: Color.Rgb = rgb(255, 128, 64);
@@ -63,10 +60,7 @@ describe("Invert Function Schema", () => {
     });
 
     it("should invert HEX color", async () => {
-      const config = await setupColorManagerWithSchemas(
-        ["hex-color", "rgb-color", "invert"],
-        ["type", "type", "function"],
-      );
+      const config = await setupConfigWithDependencies("invert", "function");
 
       const code = `
         variable original: Color.Hex = #ff8040;
@@ -84,10 +78,7 @@ describe("Invert Function Schema", () => {
     });
 
     it("should invert black to white", async () => {
-      const config = await setupColorManagerWithSchemas(
-        ["hex-color", "rgb-color", "invert"],
-        ["type", "type", "function"],
-      );
+      const config = await setupConfigWithDependencies("invert", "function");
 
       const code = `
         variable black: Color.Hex = #000000;
@@ -105,10 +96,7 @@ describe("Invert Function Schema", () => {
     });
 
     it("should invert white to black", async () => {
-      const config = await setupColorManagerWithSchemas(
-        ["hex-color", "rgb-color", "invert"],
-        ["type", "type", "function"],
-      );
+      const config = await setupConfigWithDependencies("invert", "function");
 
       const code = `
         variable white: Color.Hex = #ffffff;
@@ -126,10 +114,7 @@ describe("Invert Function Schema", () => {
     });
 
     it("should invert gray (127.5 rounds to 128)", async () => {
-      const config = await setupColorManagerWithSchemas(
-        ["hex-color", "rgb-color", "invert"],
-        ["type", "type", "function"],
-      );
+      const config = await setupConfigWithDependencies("invert", "function");
 
       const code = `
         variable gray: Color.Hex = #7f7f7f;
@@ -149,10 +134,7 @@ describe("Invert Function Schema", () => {
 
   describe("Round-trip Inversions", () => {
     it("should return to original color when inverted twice", async () => {
-      const config = await setupColorManagerWithSchemas(
-        ["hex-color", "rgb-color", "invert"],
-        ["type", "type", "function"],
-      );
+      const config = await setupConfigWithDependencies("invert", "function");
 
       const code = `
         variable original: Color.Hex = #3498db;
@@ -170,10 +152,7 @@ describe("Invert Function Schema", () => {
     });
 
     it("should handle double inversion of RGB color", async () => {
-      const config = await setupColorManagerWithSchemas(
-        ["rgb-color", "invert"],
-        ["type", "function"],
-      );
+      const config = await setupConfigWithDependencies("invert", "function");
 
       const code = `
         variable original: Color.Rgb = rgb(100, 150, 200);
@@ -195,10 +174,7 @@ describe("Invert Function Schema", () => {
 
   describe("Edge Cases", () => {
     it("should handle pure red", async () => {
-      const config = await setupColorManagerWithSchemas(
-        ["hex-color", "rgb-color", "invert"],
-        ["type", "type", "function"],
-      );
+      const config = await setupConfigWithDependencies("invert", "function");
 
       const code = `
         variable red: Color.Hex = #ff0000;
@@ -216,10 +192,7 @@ describe("Invert Function Schema", () => {
     });
 
     it("should handle pure green", async () => {
-      const config = await setupColorManagerWithSchemas(
-        ["hex-color", "rgb-color", "invert"],
-        ["type", "type", "function"],
-      );
+      const config = await setupConfigWithDependencies("invert", "function");
 
       const code = `
         variable green: Color.Hex = #00ff00;
@@ -237,10 +210,7 @@ describe("Invert Function Schema", () => {
     });
 
     it("should handle pure blue", async () => {
-      const config = await setupColorManagerWithSchemas(
-        ["hex-color", "rgb-color", "invert"],
-        ["type", "type", "function"],
-      );
+      const config = await setupConfigWithDependencies("invert", "function");
 
       const code = `
         variable blue: Color.Hex = #0000ff;

@@ -15,11 +15,16 @@ import type {
   FunctionSpecification,
   SchemaSpecification,
 } from "@/bundler/types.js";
-
+import {
+  collectRequiredSchemas,
+  collectRequiredSchemasForList,
+  type ResolvedDependencies,
+} from "./schema-dependency-resolver.js";
 import { bundleSchemaForRuntime } from "./schema-loader.js";
 
-// Re-export Config for convenience
+// Re-export Config and types for convenience
 export { Config };
+export type { ResolvedDependencies };
 
 /**
  * Default registry URL for test runtime bundling
@@ -112,4 +117,137 @@ export async function getBundledSchema(
   type: "type" | "function" = "type",
 ): Promise<SchemaSpecification> {
   return bundleSchemaForRuntime(slug, type, DEFAULT_REGISTRY_URL);
+}
+
+/**
+ * Automatically setup Config with a schema and all its dependencies
+ * This function will recursively collect all required schemas
+ *
+ * @param slugOrUri - Schema slug (e.g., "rgb-color") or full URI
+ * @param type - Schema type ("type" or "function"), optional if URI is provided
+ * @returns Config with all required schemas loaded
+ *
+ * @example
+ * // Load a function and all its dependencies
+ * const config = await setupConfigWithDependencies("invert", "function");
+ * // This will automatically load: invert (function) + rgb-color + hex-color (types)
+ *
+ * @example
+ * // Load a color type and its dependencies
+ * const config = await setupConfigWithDependencies("rgb-color");
+ * // This will automatically load: rgb-color + hex-color (types)
+ *
+ * @example
+ * // Using URI
+ * const config = await setupConfigWithDependencies("/api/v1/core/rgb-color/0/");
+ */
+export async function setupConfigWithDependencies(
+  slugOrUri: string,
+  type?: "type" | "function",
+): Promise<Config> {
+  const colorManager = new ColorManager();
+  const functionsManager = new FunctionsManager();
+  const config = new Config({ colorManager, functionsManager });
+
+  // Collect all required schemas
+  const deps = await collectRequiredSchemas(slugOrUri, type, DEFAULT_REGISTRY_URL);
+
+  // Load all type dependencies
+  for (const typeSlug of deps.types) {
+    try {
+      const bundled = await bundleSchemaForRuntime(typeSlug, "type", DEFAULT_REGISTRY_URL);
+      if (bundled.type === "color") {
+        const uri = `${DEFAULT_REGISTRY_URL}/api/v1/core/${typeSlug}/0/`;
+        colorManager.register(uri, bundled as ColorSpecification);
+      }
+    } catch (error) {
+      console.warn(`Failed to load type schema ${typeSlug}:`, error);
+    }
+  }
+
+  // Load all function dependencies
+  for (const funcSlug of deps.functions) {
+    try {
+      const bundled = await bundleSchemaForRuntime(funcSlug, "function", DEFAULT_REGISTRY_URL);
+      if (bundled.type === "function") {
+        functionsManager.register(funcSlug, bundled as FunctionSpecification);
+      }
+    } catch (error) {
+      console.warn(`Failed to load function schema ${funcSlug}:`, error);
+    }
+  }
+
+  // Load the main schema itself
+  try {
+    // Resolve to get the actual slug
+    const { resolveSchemaReference } = await import("./schema-dependency-resolver.js");
+    const ref = resolveSchemaReference(slugOrUri);
+
+    if (!ref) {
+      throw new Error(`Could not resolve schema reference: ${slugOrUri}`);
+    }
+
+    const actualSlug = ref.slug;
+    const actualType = type || ref.type;
+
+    const mainSchema = await bundleSchemaForRuntime(actualSlug, actualType, DEFAULT_REGISTRY_URL);
+
+    if (mainSchema.type === "function") {
+      functionsManager.register(actualSlug, mainSchema as FunctionSpecification);
+    } else if (mainSchema.type === "color") {
+      const uri = `${DEFAULT_REGISTRY_URL}/api/v1/core/${actualSlug}/0/`;
+      colorManager.register(uri, mainSchema as ColorSpecification);
+    }
+  } catch (error) {
+    console.warn(`Failed to load main schema ${slugOrUri}:`, error);
+  }
+
+  return config;
+}
+
+/**
+ * Setup Config with multiple schemas and their dependencies
+ *
+ * @example
+ * const config = await setupConfigWithMultipleDependencies([
+ *   { slug: "invert", type: "function" },
+ *   { slug: "rgb-color", type: "type" }
+ * ]);
+ */
+export async function setupConfigWithMultipleDependencies(
+  schemas: Array<{ slug: string; type: "type" | "function" }>,
+): Promise<Config> {
+  const colorManager = new ColorManager();
+  const functionsManager = new FunctionsManager();
+  const config = new Config({ colorManager, functionsManager });
+
+  // Collect all required schemas (including dependencies)
+  const deps = await collectRequiredSchemasForList(schemas, DEFAULT_REGISTRY_URL);
+
+  // Load all type schemas
+  for (const typeSlug of deps.types) {
+    try {
+      const bundled = await bundleSchemaForRuntime(typeSlug, "type", DEFAULT_REGISTRY_URL);
+      if (bundled.type === "color") {
+        const uri = `${DEFAULT_REGISTRY_URL}/api/v1/core/${typeSlug}/0/`;
+        colorManager.register(uri, bundled as ColorSpecification);
+      }
+    } catch (error) {
+      console.warn(`Failed to load type schema ${typeSlug}:`, error);
+    }
+  }
+
+  // Load all function schemas
+  for (const funcSlug of deps.functions) {
+    try {
+      const bundled = await bundleSchemaForRuntime(funcSlug, "function", DEFAULT_REGISTRY_URL);
+      if (bundled.type === "function") {
+        functionsManager.register(funcSlug, bundled as FunctionSpecification);
+      }
+    } catch (error) {
+      console.warn(`Failed to load function schema ${funcSlug}:`, error);
+    }
+  }
+
+  return config;
 }

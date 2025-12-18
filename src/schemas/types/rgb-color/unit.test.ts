@@ -1,9 +1,7 @@
 import {
-  Config,
   createInterpreter,
   getBundledSchema,
-  setupColorManagerWithSchema,
-  setupColorManagerWithSchemas,
+  setupConfigWithDependencies,
 } from "@tests/helpers/schema-test-utils.js";
 import { describe, expect, it } from "vitest";
 import type { ColorSpecification } from "@/bundler/types.js";
@@ -61,8 +59,7 @@ describe("RGB Color Schema", () => {
 
   describe("Initialization", () => {
     it("should initialize RGB color from object", async () => {
-      const colorManager = await setupColorManagerWithSchema("rgb-color");
-      const config = new Config({ colorManager });
+      const config = await setupConfigWithDependencies("rgb-color");
 
       const code = `
         variable c: Color.Rgb;
@@ -83,8 +80,7 @@ describe("RGB Color Schema", () => {
     });
 
     it("should access individual color channels", async () => {
-      const colorManager = await setupColorManagerWithSchema("rgb-color");
-      const config = new Config({ colorManager });
+      const config = await setupConfigWithDependencies("rgb-color");
 
       const code = `
         variable c: Color.Rgb;
@@ -104,7 +100,7 @@ describe("RGB Color Schema", () => {
 
   describe("Conversion from HEX to RGB", () => {
     it("should convert 6-digit HEX to RGB", async () => {
-      const config = await setupColorManagerWithSchemas(["hex-color", "rgb-color"]);
+      const config = await setupConfigWithDependencies("rgb-color");
 
       const code = `
         variable c: Color.Hex = #ff5733;
@@ -122,7 +118,7 @@ describe("RGB Color Schema", () => {
     });
 
     it("should convert 3-digit HEX to RGB", async () => {
-      const config = await setupColorManagerWithSchemas(["hex-color", "rgb-color"]);
+      const config = await setupConfigWithDependencies("rgb-color");
 
       const code = `
         variable c: Color.Hex = #f53;
@@ -140,7 +136,7 @@ describe("RGB Color Schema", () => {
     });
 
     it("should convert black HEX to RGB", async () => {
-      const config = await setupColorManagerWithSchemas(["hex-color", "rgb-color"]);
+      const config = await setupConfigWithDependencies("rgb-color");
 
       const code = `
         variable c: Color.Hex = #000;
@@ -158,7 +154,7 @@ describe("RGB Color Schema", () => {
     });
 
     it("should convert white HEX to RGB", async () => {
-      const config = await setupColorManagerWithSchemas(["hex-color", "rgb-color"]);
+      const config = await setupConfigWithDependencies("rgb-color");
 
       const code = `
         variable c: Color.Hex = #ffffff;
@@ -178,7 +174,7 @@ describe("RGB Color Schema", () => {
 
   describe("Conversion from RGB to HEX", () => {
     it("should convert RGB to HEX", async () => {
-      const config = await setupColorManagerWithSchemas(["hex-color", "rgb-color"]);
+      const config = await setupConfigWithDependencies("rgb-color");
 
       const code = `
         variable c: Color.Rgb;
@@ -197,7 +193,7 @@ describe("RGB Color Schema", () => {
     });
 
     it("should convert RGB with low values to HEX", async () => {
-      const config = await setupColorManagerWithSchemas(["hex-color", "rgb-color"]);
+      const config = await setupConfigWithDependencies("rgb-color");
 
       const code = `
         variable c: Color.Rgb;
@@ -216,7 +212,7 @@ describe("RGB Color Schema", () => {
     });
 
     it("should convert black RGB to HEX", async () => {
-      const config = await setupColorManagerWithSchemas(["hex-color", "rgb-color"]);
+      const config = await setupConfigWithDependencies("rgb-color");
 
       const code = `
         variable c: Color.Rgb;
@@ -235,7 +231,7 @@ describe("RGB Color Schema", () => {
     });
 
     it("should convert white RGB to HEX", async () => {
-      const config = await setupColorManagerWithSchemas(["hex-color", "rgb-color"]);
+      const config = await setupConfigWithDependencies("rgb-color");
 
       const code = `
         variable c: Color.Rgb;
@@ -256,7 +252,7 @@ describe("RGB Color Schema", () => {
 
   describe("Round-trip Conversions", () => {
     it("should maintain color values through HEX -> RGB -> HEX", async () => {
-      const config = await setupColorManagerWithSchemas(["hex-color", "rgb-color"]);
+      const config = await setupConfigWithDependencies("rgb-color");
 
       const code = `
         variable original: Color.Hex = #3498db;
@@ -274,7 +270,7 @@ describe("RGB Color Schema", () => {
     });
 
     it("should maintain color values through RGB -> HEX -> RGB", async () => {
-      const config = await setupColorManagerWithSchemas(["hex-color", "rgb-color"]);
+      const config = await setupConfigWithDependencies("rgb-color");
 
       const code = `
         variable original: Color.Rgb;
@@ -300,8 +296,7 @@ describe("RGB Color Schema", () => {
 
   describe("Identity Conversions", () => {
     it("should handle RGB to RGB identity conversion", async () => {
-      const colorManager = await setupColorManagerWithSchema("rgb-color");
-      const config = new Config({ colorManager });
+      const config = await setupConfigWithDependencies("rgb-color");
 
       const code = `
         variable c: Color.Rgb;

@@ -1,8 +1,7 @@
 import {
-  Config,
   createInterpreter,
   getBundledSchema,
-  setupColorManagerWithSchema,
+  setupConfigWithDependencies,
 } from "@tests/helpers/schema-test-utils.js";
 import { describe, expect, it } from "vitest";
 import type { ColorSpecification } from "@/bundler/types.js";
@@ -31,8 +30,7 @@ describe("Hex Color Schema", () => {
 
   describe("Initialization", () => {
     it("should create hex color from string", async () => {
-      const colorManager = await setupColorManagerWithSchema("hex-color");
-      const config = new Config({ colorManager });
+      const config = await setupConfigWithDependencies("hex-color");
 
       const code = `
         variable c: Color.Hex = #ff0000;
@@ -48,8 +46,7 @@ describe("Hex Color Schema", () => {
     });
 
     it("should create hex color with 6 digits", async () => {
-      const colorManager = await setupColorManagerWithSchema("hex-color");
-      const config = new Config({ colorManager });
+      const config = await setupConfigWithDependencies("hex-color");
 
       const code = `
         variable c: Color.Hex = #abcdef;
@@ -63,8 +60,7 @@ describe("Hex Color Schema", () => {
     });
 
     it("should create hex color with 3 digits", async () => {
-      const colorManager = await setupColorManagerWithSchema("hex-color");
-      const config = new Config({ colorManager });
+      const config = await setupConfigWithDependencies("hex-color");
 
       const code = `
         variable c: Color.Hex = #abc;
@@ -80,8 +76,7 @@ describe("Hex Color Schema", () => {
 
   describe("Edge Cases", () => {
     it("should handle lowercase hex", async () => {
-      const colorManager = await setupColorManagerWithSchema("hex-color");
-      const config = new Config({ colorManager });
+      const config = await setupConfigWithDependencies("hex-color");
 
       const code = `
         variable c: Color.Hex = #ffffff;
@@ -95,8 +90,7 @@ describe("Hex Color Schema", () => {
     });
 
     it("should handle uppercase hex", async () => {
-      const colorManager = await setupColorManagerWithSchema("hex-color");
-      const config = new Config({ colorManager });
+      const config = await setupConfigWithDependencies("hex-color");
 
       const code = `
         variable c: Color.Hex = #FFFFFF;
@@ -110,8 +104,7 @@ describe("Hex Color Schema", () => {
     });
 
     it("should handle black color", async () => {
-      const colorManager = await setupColorManagerWithSchema("hex-color");
-      const config = new Config({ colorManager });
+      const config = await setupConfigWithDependencies("hex-color");
 
       const code = `
         variable c: Color.Hex = #000000;
@@ -125,8 +118,7 @@ describe("Hex Color Schema", () => {
     });
 
     it("should handle white color", async () => {
-      const colorManager = await setupColorManagerWithSchema("hex-color");
-      const config = new Config({ colorManager });
+      const config = await setupConfigWithDependencies("hex-color");
 
       const code = `
         variable c: Color.Hex = #ffffff;
