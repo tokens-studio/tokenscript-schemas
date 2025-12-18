@@ -239,20 +239,14 @@ import { bundleSchemaFromDirectory } from "../../src/bundler/bundle-schema.js";
 ### 2. **One Bundling Function**
 Never duplicate bundling logic. Always use `bundleSchemaFromDirectory()` from `@/bundler/bundle-schema.ts`.
 
-### 3. **No External Repo Imports**
-Only import from:
-- ✓ `@tokens-studio/tokenscript-interpreter` (published npm package)
-- ✓ Local files within this repo using `@/` or `@tests/` aliases
-- ✗ NEVER import from `~/Code/My/items/tokenscript/typescript-interpreter/src/...`
-
-### 4. **TokenScript File References**
+### 3. **TokenScript File References**
 In `schema.json`, always use relative paths:
 ```json
 "script": "./filename.tokenscript"
 ```
 NOT inline scripts in schema.json (they get inlined during bundling).
 
-### 5. **Test Structure**
+### 4. **Test Structure**
 Every schema MUST have:
 - Schema definition tests
 - Initialization tests
@@ -260,7 +254,7 @@ Every schema MUST have:
 - Round-trip tests (A→B→A)
 - Edge case tests
 
-### 6. **File Organization**
+### 5. **File Organization**
 Each schema type lives in its own directory with:
 - ONE `schema.json`
 - Multiple `.tokenscript` files (one per initializer/conversion)
@@ -290,9 +284,6 @@ expect((result as any).value.r.value).toBe(255); // ✓ Works
 2. Conversion source/target URIs match exactly
 3. Script doesn't have syntax errors
 
-### Issue: Bundle doesn't update
-**Solution:** Always run `npm run bundle` after changing `.tokenscript` files
-
 ## Testing Strategy
 
 ### Test Categories
@@ -317,48 +308,14 @@ await setupColorManagerWithSchema("schema-slug")
 createInterpreter(code, references, config)
 ```
 
-## Dependencies
-
-```json
-{
-  "dependencies": {
-    "@tokens-studio/tokenscript-interpreter": "^0.16.0",
-    "arktype": "^2.1.25",
-    "commander": "^14.0.1"
-  },
-  "devDependencies": {
-    "vitest": "^3.2.4",
-    "typescript": "^5.9.2",
-    "tsup": "^8.5.0"
-  }
-}
-```
-
 ## Architecture Decisions
 
 ### Why separate schema.json and .tokenscript files?
+
 - **Readability**: Easier to read/write scripts in dedicated files
 - **Syntax highlighting**: `.tokenscript` files get proper highlighting
 - **Maintainability**: Clear separation of structure and logic
 - **Version control**: Better diffs for script changes
-
-### Why shared bundling logic?
-- **DRY**: Single source of truth
-- **Consistency**: Build and test use identical logic
-- **Maintainability**: Fix once, works everywhere
-
-### Why runtime bundling for tests?
-- **Fast iteration**: No build step needed before testing
-- **Isolation**: Each test gets fresh bundled schema
-- **Debugging**: Easy to trace bundling issues
-
-## Future Work
-
-- [ ] Add more color schemas (RGBA, HSL, OKLCH, etc.)
-- [ ] Add function schemas (contrast, ramp, etc.)
-- [ ] Schema validation (JSON Schema or ArkType)
-- [ ] Auto-generate TypeScript types from schemas
-- [ ] Performance benchmarks for conversions
 
 ## Questions?
 
@@ -369,5 +326,3 @@ When working with this codebase, remember:
 4. Access Symbol values with `.value`
 5. Write comprehensive tests
 6. Never import from other repos
-
-See `TESTING.md` for detailed testing documentation.
