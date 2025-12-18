@@ -61,17 +61,7 @@ npm test
 - No build step required - schemas are bundled on-demand
 - Same bundling logic as build-time for consistency
 
-## API Endpoint
-
-Schemas are fetched from:
-
-```
-https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/schema/?format=json
-```
-
 ## Links
 
 - [TokenScript Interpreter](https://github.com/tokens-studio/tokenscript-interpreter)
 - [Schema API](https://schema.tokenscript.dev.gcp.tokens.studio/)
-- [AGENTS.md](./AGENTS.md) - Detailed guide for AI agents
-- [TESTING.md](./TESTING.md) - Comprehensive testing documentation
