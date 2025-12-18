@@ -5,7 +5,7 @@
 import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { BundledRegistry, SchemaBundle } from "../bundler/types.js";
+import type { BundledRegistry, ColorSpecification } from "../bundler/types.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -40,20 +40,20 @@ export async function loadRegistry(): Promise<BundledRegistry> {
 /**
  * Load all type schemas
  */
-export async function loadTypes(): Promise<SchemaBundle[]> {
+export async function loadTypes(): Promise<ColorSpecification[]> {
   const typesPath = getBundledPath("types.json");
   const content = await readFile(typesPath, "utf-8");
-  const data = JSON.parse(content) as { version: string; types: SchemaBundle[] };
+  const data = JSON.parse(content) as { version: string; types: ColorSpecification[] };
   return data.types;
 }
 
 /**
  * Load all function schemas
  */
-export async function loadFunctions(): Promise<SchemaBundle[]> {
+export async function loadFunctions(): Promise<ColorSpecification[]> {
   const functionsPath = getBundledPath("functions.json");
   const content = await readFile(functionsPath, "utf-8");
-  const data = JSON.parse(content) as { version: string; functions: SchemaBundle[] };
+  const data = JSON.parse(content) as { version: string; functions: ColorSpecification[] };
   return data.functions;
 }
 
@@ -63,13 +63,13 @@ export async function loadFunctions(): Promise<SchemaBundle[]> {
 export async function loadSchema(
   slug: string,
   type: "type" | "function",
-): Promise<SchemaBundle | null> {
+): Promise<ColorSpecification | null> {
   const categoryPath = type === "type" ? "types" : "functions";
   const schemaPath = getBundledPath(categoryPath, `${slug}.json`);
 
   try {
     const content = await readFile(schemaPath, "utf-8");
-    return JSON.parse(content) as SchemaBundle;
+    return JSON.parse(content) as ColorSpecification;
   } catch {
     return null;
   }

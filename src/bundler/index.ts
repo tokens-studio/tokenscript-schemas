@@ -14,7 +14,6 @@ import { bundleSchemaFromDirectory } from "./bundle-schema.js";
 async function bundleSchema(
   schemaDir: string,
   schemaSlug: string,
-  schemaType: "type" | "function",
 ): Promise<ColorSpecification> {
   // Use shared bundling logic
   const bundled = await bundleSchemaFromDirectory(schemaDir);
@@ -30,7 +29,6 @@ async function bundleSchema(
  */
 async function bundleCategory(
   categoryDir: string,
-  categoryType: "type" | "function",
 ): Promise<ColorSpecification[]> {
   const bundles: ColorSpecification[] = [];
   const schemaSlugs = await getSubdirectories(categoryDir);
@@ -40,7 +38,7 @@ async function bundleCategory(
     console.log(`  Bundling ${slug}...`);
 
     try {
-      const bundle = await bundleSchema(schemaDir, slug, categoryType);
+      const bundle = await bundleSchema(schemaDir, slug);
       bundles.push(bundle);
     } catch (error) {
       console.error(`  ✗ Failed to bundle ${slug}:`, error);
@@ -60,13 +58,13 @@ export async function bundleAllSchemas(
   // Bundle types
   console.log("\nBundling type schemas...");
   const typesDir = join(schemasDir, "types");
-  const types = await bundleCategory(typesDir, "type");
+  const types = await bundleCategory(typesDir);
   console.log(`✓ Bundled ${types.length} type schemas`);
 
   // Bundle functions
   console.log("\nBundling function schemas...");
   const functionsDir = join(schemasDir, "functions");
-  const functions = await bundleCategory(functionsDir, "function");
+  const functions = await bundleCategory(functionsDir);
   console.log(`✓ Bundled ${functions.length} function schemas`);
 
   // Create bundled registry
