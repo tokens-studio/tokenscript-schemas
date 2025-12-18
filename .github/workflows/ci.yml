@@ -32,6 +32,9 @@ jobs:
     - name: Type check
       run: npm run ts:typecheck
 
+    - name: Bundle schemas
+      run: npm run bundle
+
     - name: Run tests
       run: npm test
 
