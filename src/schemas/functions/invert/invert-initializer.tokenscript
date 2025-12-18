@@ -1,10 +1,10 @@
 variable input: List = {input};
 
-variable rgbColor: Color.SRGB = input.get(0).to.srgb();
+variable rgb_color: Color.SRGB = input.get(0).to.srgb();
 
-variable invertedR: Number = 255 - rgbColor.r;
-variable invertedG: Number = 255 - rgbColor.g;
-variable invertedB: Number = 255 - rgbColor.b;
+variable inverted_r: Number = 255 - rgb_color.r;
+variable inverted_g: Number = 255 - rgb_color.g;
+variable inverted_b: Number = 255 - rgb_color.b;
 
-variable invertedColor: Color.SRGB = srgb(invertedR, invertedG, invertedB);
-return invertedColor;
+variable inverted_color: Color.SRGB = srgb(inverted_r, inverted_g, inverted_b);
+return inverted_color;
