@@ -1,7 +1,7 @@
 {
-  "name": "SRGB",
+  "name": "Rgb",
   "type": "color",
-  "description": "sRGB color",
+  "description": "RGB color",
   "schema": {
     "type": "object",
     "properties": {
@@ -22,8 +22,8 @@
   "initializers": [
     {
       "title": "function",
-      "keyword": "srgb",
-      "description": "Creates an sRGB color",
+      "keyword": "rgb",
+      "description": "Creates an RGB color",
       "script": {
         "type": "/api/v1/core/tokenscript/0/",
         "script": "./initializer.tokenscript"
@@ -34,7 +34,7 @@
     {
       "source": "/api/v1/core/hex-color/0/",
       "target": "$self",
-      "description": "Converts HEX to sRGB",
+      "description": "Converts HEX to RGB",
       "lossless": true,
       "script": {
         "type": "/api/v1/core/tokenscript/0/",
@@ -44,7 +44,7 @@
     {
       "source": "$self",
       "target": "/api/v1/core/hex-color/0/",
-      "description": "Converts sRGB to HEX",
+      "description": "Converts RGB to HEX",
       "lossless": true,
       "script": {
         "type": "/api/v1/core/tokenscript/0/",

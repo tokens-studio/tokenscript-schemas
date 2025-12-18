@@ -35,7 +35,7 @@ describe("Invert Function Schema", () => {
 
       expect(schema.requirements).toBeDefined();
       expect(schema.requirements).toContain(
-        "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/srgb-color/0/",
+        "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/rgb-color/0/",
       );
     });
   });
@@ -43,12 +43,12 @@ describe("Invert Function Schema", () => {
   describe("Function Execution", () => {
     it("should invert RGB color", async () => {
       const config = await setupColorManagerWithSchemas(
-        ["srgb-color", "invert"],
+        ["rgb-color", "invert"],
         ["type", "function"],
       );
 
       const code = `
-        variable original: Color.SRGB = srgb(255, 128, 64);
+        variable original: Color.Rgb = rgb(255, 128, 64);
         invert(original)
       `;
 
@@ -56,7 +56,7 @@ describe("Invert Function Schema", () => {
       const result = interpreter.interpret();
 
       expect(result?.constructor.name).toBe("ColorSymbol");
-      expect((result as any).subType).toBe("SRGB");
+      expect((result as any).subType).toBe("Rgb");
       expect((result as any).value.r.value).toBe(0);
       expect((result as any).value.g.value).toBe(127);
       expect((result as any).value.b.value).toBe(191);
@@ -64,7 +64,7 @@ describe("Invert Function Schema", () => {
 
     it("should invert HEX color", async () => {
       const config = await setupColorManagerWithSchemas(
-        ["hex-color", "srgb-color", "invert"],
+        ["hex-color", "rgb-color", "invert"],
         ["type", "type", "function"],
       );
 
@@ -77,7 +77,7 @@ describe("Invert Function Schema", () => {
       const result = interpreter.interpret();
 
       expect(result?.constructor.name).toBe("ColorSymbol");
-      expect((result as any).subType).toBe("SRGB");
+      expect((result as any).subType).toBe("Rgb");
       expect((result as any).value.r.value).toBe(0);
       expect((result as any).value.g.value).toBe(127);
       expect((result as any).value.b.value).toBe(191);
@@ -85,7 +85,7 @@ describe("Invert Function Schema", () => {
 
     it("should invert black to white", async () => {
       const config = await setupColorManagerWithSchemas(
-        ["hex-color", "srgb-color", "invert"],
+        ["hex-color", "rgb-color", "invert"],
         ["type", "type", "function"],
       );
 
@@ -98,7 +98,7 @@ describe("Invert Function Schema", () => {
       const result = interpreter.interpret();
 
       expect(result?.constructor.name).toBe("ColorSymbol");
-      expect((result as any).subType).toBe("SRGB");
+      expect((result as any).subType).toBe("Rgb");
       expect((result as any).value.r.value).toBe(255);
       expect((result as any).value.g.value).toBe(255);
       expect((result as any).value.b.value).toBe(255);
@@ -106,7 +106,7 @@ describe("Invert Function Schema", () => {
 
     it("should invert white to black", async () => {
       const config = await setupColorManagerWithSchemas(
-        ["hex-color", "srgb-color", "invert"],
+        ["hex-color", "rgb-color", "invert"],
         ["type", "type", "function"],
       );
 
@@ -119,7 +119,7 @@ describe("Invert Function Schema", () => {
       const result = interpreter.interpret();
 
       expect(result?.constructor.name).toBe("ColorSymbol");
-      expect((result as any).subType).toBe("SRGB");
+      expect((result as any).subType).toBe("Rgb");
       expect((result as any).value.r.value).toBe(0);
       expect((result as any).value.g.value).toBe(0);
       expect((result as any).value.b.value).toBe(0);
@@ -127,7 +127,7 @@ describe("Invert Function Schema", () => {
 
     it("should invert gray (127.5 rounds to 128)", async () => {
       const config = await setupColorManagerWithSchemas(
-        ["hex-color", "srgb-color", "invert"],
+        ["hex-color", "rgb-color", "invert"],
         ["type", "type", "function"],
       );
 
@@ -140,7 +140,7 @@ describe("Invert Function Schema", () => {
       const result = interpreter.interpret();
 
       expect(result?.constructor.name).toBe("ColorSymbol");
-      expect((result as any).subType).toBe("SRGB");
+      expect((result as any).subType).toBe("Rgb");
       expect((result as any).value.r.value).toBe(128);
       expect((result as any).value.g.value).toBe(128);
       expect((result as any).value.b.value).toBe(128);
@@ -150,14 +150,14 @@ describe("Invert Function Schema", () => {
   describe("Round-trip Inversions", () => {
     it("should return to original color when inverted twice", async () => {
       const config = await setupColorManagerWithSchemas(
-        ["hex-color", "srgb-color", "invert"],
+        ["hex-color", "rgb-color", "invert"],
         ["type", "type", "function"],
       );
 
       const code = `
         variable original: Color.Hex = #3498db;
-        variable inverted: Color.SRGB = invert(original);
-        variable backToOriginal: Color.SRGB = invert(inverted);
+        variable inverted: Color.Rgb = invert(original);
+        variable backToOriginal: Color.Rgb = invert(inverted);
         backToOriginal.to.hex()
       `;
 
@@ -171,14 +171,14 @@ describe("Invert Function Schema", () => {
 
     it("should handle double inversion of RGB color", async () => {
       const config = await setupColorManagerWithSchemas(
-        ["srgb-color", "invert"],
+        ["rgb-color", "invert"],
         ["type", "function"],
       );
 
       const code = `
-        variable original: Color.SRGB = srgb(100, 150, 200);
-        variable inverted: Color.SRGB = invert(original);
-        variable backToOriginal: Color.SRGB = invert(inverted);
+        variable original: Color.Rgb = rgb(100, 150, 200);
+        variable inverted: Color.Rgb = invert(original);
+        variable backToOriginal: Color.Rgb = invert(inverted);
         backToOriginal
       `;
 
@@ -186,7 +186,7 @@ describe("Invert Function Schema", () => {
       const result = interpreter.interpret();
 
       expect(result?.constructor.name).toBe("ColorSymbol");
-      expect((result as any).subType).toBe("SRGB");
+      expect((result as any).subType).toBe("Rgb");
       expect((result as any).value.r.value).toBe(100);
       expect((result as any).value.g.value).toBe(150);
       expect((result as any).value.b.value).toBe(200);
@@ -196,7 +196,7 @@ describe("Invert Function Schema", () => {
   describe("Edge Cases", () => {
     it("should handle pure red", async () => {
       const config = await setupColorManagerWithSchemas(
-        ["hex-color", "srgb-color", "invert"],
+        ["hex-color", "rgb-color", "invert"],
         ["type", "type", "function"],
       );
 
@@ -209,7 +209,7 @@ describe("Invert Function Schema", () => {
       const result = interpreter.interpret();
 
       expect(result?.constructor.name).toBe("ColorSymbol");
-      expect((result as any).subType).toBe("SRGB");
+      expect((result as any).subType).toBe("Rgb");
       expect((result as any).value.r.value).toBe(0);
       expect((result as any).value.g.value).toBe(255);
       expect((result as any).value.b.value).toBe(255);
@@ -217,7 +217,7 @@ describe("Invert Function Schema", () => {
 
     it("should handle pure green", async () => {
       const config = await setupColorManagerWithSchemas(
-        ["hex-color", "srgb-color", "invert"],
+        ["hex-color", "rgb-color", "invert"],
         ["type", "type", "function"],
       );
 
@@ -230,7 +230,7 @@ describe("Invert Function Schema", () => {
       const result = interpreter.interpret();
 
       expect(result?.constructor.name).toBe("ColorSymbol");
-      expect((result as any).subType).toBe("SRGB");
+      expect((result as any).subType).toBe("Rgb");
       expect((result as any).value.r.value).toBe(255);
       expect((result as any).value.g.value).toBe(0);
       expect((result as any).value.b.value).toBe(255);
@@ -238,7 +238,7 @@ describe("Invert Function Schema", () => {
 
     it("should handle pure blue", async () => {
       const config = await setupColorManagerWithSchemas(
-        ["hex-color", "srgb-color", "invert"],
+        ["hex-color", "rgb-color", "invert"],
         ["type", "type", "function"],
       );
 
@@ -251,7 +251,7 @@ describe("Invert Function Schema", () => {
       const result = interpreter.interpret();
 
       expect(result?.constructor.name).toBe("ColorSymbol");
-      expect((result as any).subType).toBe("SRGB");
+      expect((result as any).subType).toBe("Rgb");
       expect((result as any).value.r.value).toBe(255);
       expect((result as any).value.g.value).toBe(255);
       expect((result as any).value.b.value).toBe(0);

@@ -12,7 +12,7 @@ if(length == 3) [
   rgb.update(2, parse_int(color.get(4).concat(color.get(5)), 16)); 
 ]; 
 
-variable output: Color.SRGB; 
+variable output: Color.Rgb; 
 output.r = rgb.get(0); 
 output.g = rgb.get(1); 
 output.b = rgb.get(2); 

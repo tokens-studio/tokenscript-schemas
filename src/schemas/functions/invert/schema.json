@@ -16,5 +16,5 @@
     "type": "/api/v1/core/tokenscript/0/",
     "script": "./invert-initializer.tokenscript"
   },
-  "requirements": ["/api/v1/core/srgb-color/0/"]
+  "requirements": ["/api/v1/core/rgb-color/0/"]
 }

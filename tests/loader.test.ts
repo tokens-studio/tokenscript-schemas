@@ -18,10 +18,10 @@ describe("Schema Loader", () => {
     expect(types).toBeInstanceOf(Array);
     expect(types.length).toBeGreaterThan(0);
 
-    const srgbColor = types.find((t) => t.slug === "srgb-color");
-    expect(srgbColor).toBeDefined();
-    expect(srgbColor?.type).toBe("color");
-    expect(srgbColor?.name).toBe("SRGB");
+    const rgbColor = types.find((t) => t.slug === "rgb-color");
+    expect(rgbColor).toBeDefined();
+    expect(rgbColor?.type).toBe("color");
+    expect(rgbColor?.name).toBe("Rgb");
   });
 
   test("loads all function schemas", async () => {
@@ -37,15 +37,15 @@ describe("Schema Loader", () => {
   });
 
   test("loads specific schema by slug", async () => {
-    const srgbColor = await loadSchema("srgb-color", "type");
+    const rgbColor = await loadSchema("rgb-color", "type");
 
-    expect(srgbColor).toBeDefined();
-    expect(srgbColor?.slug).toBe("srgb-color");
-    expect(srgbColor?.type).toBe("color");
-    expect(srgbColor?.schema).toBeDefined();
+    expect(rgbColor).toBeDefined();
+    expect(rgbColor?.slug).toBe("rgb-color");
+    expect(rgbColor?.type).toBe("color");
+    expect(rgbColor?.schema).toBeDefined();
     // ColorSpecification has initializers and conversions, not scripts
-    expect((srgbColor as any)?.initializers).toBeDefined();
-    expect((srgbColor as any)?.conversions).toBeDefined();
+    expect((rgbColor as any)?.initializers).toBeDefined();
+    expect((rgbColor as any)?.conversions).toBeDefined();
   });
 
   test("returns null for non-existent schema", async () => {
@@ -54,18 +54,18 @@ describe("Schema Loader", () => {
     expect(nonExistent).toBeNull();
   });
 
-  test("srgb-color has expected conversions", async () => {
-    const srgbColor = (await loadSchema("srgb-color", "type")) as any;
+  test("rgb-color has expected conversions", async () => {
+    const rgbColor = (await loadSchema("rgb-color", "type")) as any;
 
-    expect(srgbColor?.conversions).toBeDefined();
-    expect(srgbColor?.conversions).toBeInstanceOf(Array);
-    expect(srgbColor?.conversions.length).toBeGreaterThan(0);
+    expect(rgbColor?.conversions).toBeDefined();
+    expect(rgbColor?.conversions).toBeInstanceOf(Array);
+    expect(rgbColor?.conversions.length).toBeGreaterThan(0);
 
     // Check for HEX conversions
-    const fromHex = srgbColor?.conversions.find(
+    const fromHex = rgbColor?.conversions.find(
       (c: any) => c.target === "$self" && c.source.includes("hex-color"),
     );
-    const toHex = srgbColor?.conversions.find(
+    const toHex = rgbColor?.conversions.find(
       (c: any) => c.source === "$self" && c.target.includes("hex-color"),
     );
 
@@ -73,17 +73,17 @@ describe("Schema Loader", () => {
     expect(toHex).toBeDefined();
   });
 
-  test("srgb-color has valid schema definition", async () => {
-    const srgbColor = await loadSchema("srgb-color", "type");
+  test("rgb-color has valid schema definition", async () => {
+    const rgbColor = await loadSchema("rgb-color", "type");
 
-    expect(srgbColor?.schema).toBeDefined();
-    const schema = srgbColor?.schema as any;
+    expect(rgbColor?.schema).toBeDefined();
+    const schema = rgbColor?.schema as any;
 
     expect(schema.type).toBe("object");
     expect(schema.required).toContain("r");
     expect(schema.required).toContain("g");
     expect(schema.required).toContain("b");
-    // SRGB doesn't have alpha channel
+    // RGB doesn't have alpha channel
     // expect(schema.required).toContain("a");
   });
 });
