@@ -1,8 +1,4 @@
-import {
-  createInterpreter,
-  getBundledSchema,
-  setupConfigWithDependencies,
-} from "@tests/helpers/schema-test-utils.js";
+import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils.js";
 import { describe, expect, it } from "vitest";
 import type { ColorSpecification } from "@/bundler/types.js";
 
@@ -30,15 +26,14 @@ describe("Hex Color Schema", () => {
 
   describe("Initialization", () => {
     it("should create hex color from string", async () => {
-      const config = await setupConfigWithDependencies("hex-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "hex-color",
+        "type",
+        `
         variable c: Color.Hex = #ff0000;
         return c;
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Hex");
@@ -46,29 +41,27 @@ describe("Hex Color Schema", () => {
     });
 
     it("should create hex color with 6 digits", async () => {
-      const config = await setupConfigWithDependencies("hex-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "hex-color",
+        "type",
+        `
         variable c: Color.Hex = #abcdef;
         return c;
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect((result as any).value).toBe("#abcdef");
     });
 
     it("should create hex color with 3 digits", async () => {
-      const config = await setupConfigWithDependencies("hex-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "hex-color",
+        "type",
+        `
         variable c: Color.Hex = #abc;
         return c;
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect((result as any).value).toBe("#abc");
     });
@@ -76,57 +69,53 @@ describe("Hex Color Schema", () => {
 
   describe("Edge Cases", () => {
     it("should handle lowercase hex", async () => {
-      const config = await setupConfigWithDependencies("hex-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "hex-color",
+        "type",
+        `
         variable c: Color.Hex = #ffffff;
         return c;
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect((result as any).value).toBe("#ffffff");
     });
 
     it("should handle uppercase hex", async () => {
-      const config = await setupConfigWithDependencies("hex-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "hex-color",
+        "type",
+        `
         variable c: Color.Hex = #FFFFFF;
         return c;
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect((result as any).value).toBe("#FFFFFF");
     });
 
     it("should handle black color", async () => {
-      const config = await setupConfigWithDependencies("hex-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "hex-color",
+        "type",
+        `
         variable c: Color.Hex = #000000;
         return c;
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect((result as any).value).toBe("#000000");
     });
 
     it("should handle white color", async () => {
-      const config = await setupConfigWithDependencies("hex-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "hex-color",
+        "type",
+        `
         variable c: Color.Hex = #ffffff;
         return c;
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect((result as any).value).toBe("#ffffff");
     });

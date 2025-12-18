@@ -1,8 +1,4 @@
-import {
-  createInterpreter,
-  getBundledSchema,
-  setupConfigWithDependencies,
-} from "@tests/helpers/schema-test-utils.js";
+import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils.js";
 import { describe, expect, it } from "vitest";
 import type { ColorSpecification } from "@/bundler/types.js";
 
@@ -59,18 +55,17 @@ describe("RGB Color Schema", () => {
 
   describe("Initialization", () => {
     it("should initialize RGB color from object", async () => {
-      const config = await setupConfigWithDependencies("rgb-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
         variable c: Color.Rgb;
         c.r = 255;
         c.g = 128;
         c.b = 64;
         c
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Rgb");
@@ -80,18 +75,17 @@ describe("RGB Color Schema", () => {
     });
 
     it("should access individual color channels", async () => {
-      const config = await setupConfigWithDependencies("rgb-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
         variable c: Color.Rgb;
         c.r = 200;
         c.g = 150;
         c.b = 100;
         c.r
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("NumberSymbol");
       expect(result?.toString()).toBe("200");
@@ -100,15 +94,14 @@ describe("RGB Color Schema", () => {
 
   describe("Conversion from HEX to RGB", () => {
     it("should convert 6-digit HEX to RGB", async () => {
-      const config = await setupConfigWithDependencies("rgb-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
         variable c: Color.Hex = #ff5733;
         c.to.rgb()
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Rgb");
@@ -118,15 +111,14 @@ describe("RGB Color Schema", () => {
     });
 
     it("should convert 3-digit HEX to RGB", async () => {
-      const config = await setupConfigWithDependencies("rgb-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
         variable c: Color.Hex = #f53;
         c.to.rgb()
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Rgb");
@@ -136,15 +128,14 @@ describe("RGB Color Schema", () => {
     });
 
     it("should convert black HEX to RGB", async () => {
-      const config = await setupConfigWithDependencies("rgb-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
         variable c: Color.Hex = #000;
         c.to.rgb()
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Rgb");
@@ -154,15 +145,14 @@ describe("RGB Color Schema", () => {
     });
 
     it("should convert white HEX to RGB", async () => {
-      const config = await setupConfigWithDependencies("rgb-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
         variable c: Color.Hex = #ffffff;
         c.to.rgb()
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Rgb");
@@ -174,18 +164,17 @@ describe("RGB Color Schema", () => {
 
   describe("Conversion from RGB to HEX", () => {
     it("should convert RGB to HEX", async () => {
-      const config = await setupConfigWithDependencies("rgb-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
         variable c: Color.Rgb;
         c.r = 255;
         c.g = 87;
         c.b = 51;
         c.to.hex()
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Hex");
@@ -193,18 +182,17 @@ describe("RGB Color Schema", () => {
     });
 
     it("should convert RGB with low values to HEX", async () => {
-      const config = await setupConfigWithDependencies("rgb-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
         variable c: Color.Rgb;
         c.r = 10;
         c.g = 5;
         c.b = 0;
         c.to.hex()
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Hex");
@@ -212,18 +200,17 @@ describe("RGB Color Schema", () => {
     });
 
     it("should convert black RGB to HEX", async () => {
-      const config = await setupConfigWithDependencies("rgb-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
         variable c: Color.Rgb;
         c.r = 0;
         c.g = 0;
         c.b = 0;
         c.to.hex()
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Hex");
@@ -231,18 +218,17 @@ describe("RGB Color Schema", () => {
     });
 
     it("should convert white RGB to HEX", async () => {
-      const config = await setupConfigWithDependencies("rgb-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
         variable c: Color.Rgb;
         c.r = 255;
         c.g = 255;
         c.b = 255;
         c.to.hex()
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Hex");
@@ -252,17 +238,16 @@ describe("RGB Color Schema", () => {
 
   describe("Round-trip Conversions", () => {
     it("should maintain color values through HEX -> RGB -> HEX", async () => {
-      const config = await setupConfigWithDependencies("rgb-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
         variable original: Color.Hex = #3498db;
         variable rgb: Color.Rgb = original.to.rgb();
         variable back: Color.Hex = rgb.to.hex();
         back
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Hex");
@@ -270,9 +255,10 @@ describe("RGB Color Schema", () => {
     });
 
     it("should maintain color values through RGB -> HEX -> RGB", async () => {
-      const config = await setupConfigWithDependencies("rgb-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
         variable original: Color.Rgb;
         original.r = 52;
         original.g = 152;
@@ -281,10 +267,8 @@ describe("RGB Color Schema", () => {
         variable hex: Color.Hex = original.to.hex();
         variable back: Color.Rgb = hex.to.rgb();
         back
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Rgb");
@@ -296,18 +280,17 @@ describe("RGB Color Schema", () => {
 
   describe("Identity Conversions", () => {
     it("should handle RGB to RGB identity conversion", async () => {
-      const config = await setupConfigWithDependencies("rgb-color");
-
-      const code = `
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
         variable c: Color.Rgb;
         c.r = 100;
         c.g = 150;
         c.b = 200;
         c.to.rgb()
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Rgb");

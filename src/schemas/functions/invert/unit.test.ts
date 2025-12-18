@@ -1,8 +1,4 @@
-import {
-  createInterpreter,
-  getBundledSchema,
-  setupConfigWithDependencies,
-} from "@tests/helpers/schema-test-utils.js";
+import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils.js";
 import { describe, expect, it } from "vitest";
 import type { FunctionSpecification } from "@/bundler/types.js";
 
@@ -42,15 +38,14 @@ describe("Invert Function Schema", () => {
 
   describe("Function Execution", () => {
     it("should invert RGB color", async () => {
-      const config = await setupConfigWithDependencies("invert", "function");
-
-      const code = `
+      const result = await executeWithSchema(
+        "invert",
+        "function",
+        `
         variable original: Color.Rgb = rgb(255, 128, 64);
         invert(original)
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Rgb");
@@ -60,15 +55,14 @@ describe("Invert Function Schema", () => {
     });
 
     it("should invert HEX color", async () => {
-      const config = await setupConfigWithDependencies("invert", "function");
-
-      const code = `
+      const result = await executeWithSchema(
+        "invert",
+        "function",
+        `
         variable original: Color.Hex = #ff8040;
         invert(original)
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Rgb");
@@ -78,15 +72,14 @@ describe("Invert Function Schema", () => {
     });
 
     it("should invert black to white", async () => {
-      const config = await setupConfigWithDependencies("invert", "function");
-
-      const code = `
+      const result = await executeWithSchema(
+        "invert",
+        "function",
+        `
         variable black: Color.Hex = #000000;
         invert(black)
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Rgb");
@@ -96,15 +89,14 @@ describe("Invert Function Schema", () => {
     });
 
     it("should invert white to black", async () => {
-      const config = await setupConfigWithDependencies("invert", "function");
-
-      const code = `
+      const result = await executeWithSchema(
+        "invert",
+        "function",
+        `
         variable white: Color.Hex = #ffffff;
         invert(white)
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Rgb");
@@ -114,15 +106,14 @@ describe("Invert Function Schema", () => {
     });
 
     it("should invert gray (127.5 rounds to 128)", async () => {
-      const config = await setupConfigWithDependencies("invert", "function");
-
-      const code = `
+      const result = await executeWithSchema(
+        "invert",
+        "function",
+        `
         variable gray: Color.Hex = #7f7f7f;
         invert(gray)
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Rgb");
@@ -134,17 +125,16 @@ describe("Invert Function Schema", () => {
 
   describe("Round-trip Inversions", () => {
     it("should return to original color when inverted twice", async () => {
-      const config = await setupConfigWithDependencies("invert", "function");
-
-      const code = `
+      const result = await executeWithSchema(
+        "invert",
+        "function",
+        `
         variable original: Color.Hex = #3498db;
         variable inverted: Color.Rgb = invert(original);
         variable backToOriginal: Color.Rgb = invert(inverted);
         backToOriginal.to.hex()
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Hex");
@@ -152,17 +142,16 @@ describe("Invert Function Schema", () => {
     });
 
     it("should handle double inversion of RGB color", async () => {
-      const config = await setupConfigWithDependencies("invert", "function");
-
-      const code = `
+      const result = await executeWithSchema(
+        "invert",
+        "function",
+        `
         variable original: Color.Rgb = rgb(100, 150, 200);
         variable inverted: Color.Rgb = invert(original);
         variable backToOriginal: Color.Rgb = invert(inverted);
         backToOriginal
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Rgb");
@@ -174,15 +163,14 @@ describe("Invert Function Schema", () => {
 
   describe("Edge Cases", () => {
     it("should handle pure red", async () => {
-      const config = await setupConfigWithDependencies("invert", "function");
-
-      const code = `
+      const result = await executeWithSchema(
+        "invert",
+        "function",
+        `
         variable red: Color.Hex = #ff0000;
         invert(red)
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Rgb");
@@ -192,15 +180,14 @@ describe("Invert Function Schema", () => {
     });
 
     it("should handle pure green", async () => {
-      const config = await setupConfigWithDependencies("invert", "function");
-
-      const code = `
+      const result = await executeWithSchema(
+        "invert",
+        "function",
+        `
         variable green: Color.Hex = #00ff00;
         invert(green)
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Rgb");
@@ -210,15 +197,14 @@ describe("Invert Function Schema", () => {
     });
 
     it("should handle pure blue", async () => {
-      const config = await setupConfigWithDependencies("invert", "function");
-
-      const code = `
+      const result = await executeWithSchema(
+        "invert",
+        "function",
+        `
         variable blue: Color.Hex = #0000ff;
         invert(blue)
-      `;
-
-      const interpreter = createInterpreter(code, {}, config);
-      const result = interpreter.interpret();
+      `,
+      );
 
       expect(result?.constructor.name).toBe("ColorSymbol");
       expect((result as any).subType).toBe("Rgb");

@@ -97,6 +97,47 @@ export async function setupColorManagerWithSchemas(
 }
 
 /**
+ * Execute a TokenScript code snippet with automatic schema dependency setup
+ *
+ * This helper simplifies the common test pattern of:
+ * 1. Setting up config with dependencies
+ * 2. Creating interpreter with code
+ * 3. Interpreting and returning the result
+ *
+ * @param schemaSlug - The schema slug to load (e.g., "invert", "rgb-color")
+ * @param schemaType - The schema type ("type" or "function")
+ * @param code - The TokenScript code to execute
+ * @param references - Optional variable references for the interpreter
+ * @returns The interpretation result
+ *
+ * @example
+ * // Test a function
+ * const result = await executeWithSchema("invert", "function", `
+ *   variable black: Color.Hex = #000000;
+ *   invert(black)
+ * `);
+ * expect(result?.constructor.name).toBe("ColorSymbol");
+ *
+ * @example
+ * // Test a color conversion
+ * const result = await executeWithSchema("rgb-color", "type", `
+ *   variable c: Color.Rgb = rgb(255, 128, 64);
+ *   c.to.hex()
+ * `);
+ * expect(result?.toString()).toBe("#ff8040");
+ */
+export async function executeWithSchema(
+  schemaSlug: string,
+  schemaType: "type" | "function",
+  code: string,
+  references: Record<string, any> = {},
+): Promise<any> {
+  const config = await setupConfigWithDependencies(schemaSlug, schemaType);
+  const interpreter = createInterpreter(code, references, config);
+  return interpreter.interpret();
+}
+
+/**
  * Create interpreter for testing with schema
  */
 export function createInterpreter(
