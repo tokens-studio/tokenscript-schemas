@@ -1,11 +1,22 @@
 {
-  "id": "9b56ac34-736f-412f-92e3-5695626d628d",
-  "slug": "invert",
-  "name": "Invert",
-  "description": "Invert a color",
+  "name": "Invert Color",
   "type": "function",
-  "version": "0.0.10",
-  "originalVersion": "0.0.1",
-  "contentType": "function",
-  "metadata": {}
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "The color to invert."
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./invert-initializer.tokenscript"
+  },
+  "keyword": "invert",
+  "description": "Inverts a color by inverting each RGB channel (R' = 255 - R, G' = 255 - G, B' = 255 - B).",
+  "requirements": [
+    "/api/v1/core/srgb-color/0/"
+  ]
 }
