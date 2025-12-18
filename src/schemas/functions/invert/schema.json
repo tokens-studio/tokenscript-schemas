@@ -1,6 +1,8 @@
 {
   "name": "Invert Color",
   "type": "function",
+  "description": "Inverts a color by inverting each RGB channel (R' = 255 - R, G' = 255 - G, B' = 255 - B).",
+  "keyword": "invert",
   "input": {
     "type": "object",
     "properties": {
@@ -14,7 +16,5 @@
     "type": "/api/v1/core/tokenscript/0/",
     "script": "./invert-initializer.tokenscript"
   },
-  "keyword": "invert",
-  "description": "Inverts a color by inverting each RGB channel (R' = 255 - R, G' = 255 - G, B' = 255 - B).",
   "requirements": ["/api/v1/core/srgb-color/0/"]
 }
