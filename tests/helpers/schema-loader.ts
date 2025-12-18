@@ -6,58 +6,19 @@
 import { readdir, readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import type { ColorSpecification, FunctionSpecification, SchemaSpecification } from "@/bundler/types.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const SCHEMAS_DIR = join(__dirname, "../../src/schemas");
 
-// Types matching the new schema format (from typescript-interpreter)
-interface ScriptBlock {
-  type: string;
-  script: string;
-}
-
-interface Initializer {
-  title?: string;
-  keyword: string;
-  description?: string;
-  schema?: unknown;
-  script: ScriptBlock;
-}
-
-interface Conversion {
-  source: string;
-  target: string;
-  description?: string;
-  lossless: boolean;
-  script: ScriptBlock;
-}
-
-interface SpecProperty {
-  type: "number" | "string" | "color";
-}
-
-interface SpecSchema {
-  type: "object";
-  properties: Record<string, SpecProperty>;
-  required?: string[];
-  order?: string[];
-  additionalProperties?: boolean;
-}
-
-export interface ColorSpecification {
-  name: string;
-  type: "color";
-  description?: string;
-  schema?: SpecSchema;
-  initializers: Initializer[];
-  conversions: Conversion[];
-}
+// Re-export types
+export type { ColorSpecification, FunctionSpecification, SchemaSpecification };
 
 interface LoadedSchema {
   slug: string;
-  specification: ColorSpecification;
+  specification: SchemaSpecification;
   scripts: Record<string, string>;
 }
 
@@ -92,7 +53,7 @@ export async function loadSchemaFromSource(
   const schemaJsonPath = join(schemaDir, "schema.json");
   const specification = JSON.parse(
     await readFile(schemaJsonPath, "utf-8"),
-  ) as ColorSpecification;
+  ) as SchemaSpecification;
 
   // Read all .tokenscript files into a map
   const scripts: Record<string, string> = {};
@@ -153,7 +114,7 @@ export async function bundleSchemaForRuntime(
   slug: string,
   type: "type" | "function" = "type",
   baseUrl?: string,
-): Promise<ColorSpecification> {
+): Promise<SchemaSpecification> {
   // Import the shared bundling function
   const { bundleSchemaFromDirectory } = await import("@/bundler/bundle-schema.js");
   

@@ -5,12 +5,13 @@
 import {
   ColorManager,
   Config,
+  FunctionsManager,
   Interpreter,
   Lexer,
   Parser,
 } from "@tokens-studio/tokenscript-interpreter";
-import type { ColorSpecification } from "./schema-loader.js";
-import { loadSchemaFromSource, bundleSchemaForRuntime } from "./schema-loader.js";
+import type { ColorSpecification, SchemaSpecification } from "./schema-loader.js";
+import { bundleSchemaForRuntime } from "./schema-loader.js";
 
 // Re-export Config for convenience
 export { Config };
@@ -39,25 +40,37 @@ export async function setupColorManagerWithSchema(
 }
 
 /**
- * Setup ColorManager with multiple schemas
+ * Setup Config with multiple schemas (colors and functions)
  */
 export async function setupColorManagerWithSchemas(
   slugs: string[],
-): Promise<ColorManager> {
+  types?: Array<"type" | "function">,
+): Promise<Config> {
   const colorManager = new ColorManager();
+  const functionsManager = new FunctionsManager();
+  const config = new Config({ colorManager, functionsManager });
 
-  for (const slug of slugs) {
+  for (let i = 0; i < slugs.length; i++) {
+    const slug = slugs[i];
+    const type = types?.[i] || "type";
+    
     try {
-      const bundled = await bundleSchemaForRuntime(slug, "type", DEFAULT_REGISTRY_URL);
-      // Register with a URI format that matches the conversions: /api/v1/core/{slug}/0/
-      const uri = `${DEFAULT_REGISTRY_URL}/api/v1/core/${slug}/0/`;
-      colorManager.register(uri, bundled);
+      const bundled = await bundleSchemaForRuntime(slug, type, DEFAULT_REGISTRY_URL);
+      
+      if (type === "function") {
+        // Register as a function
+        functionsManager.register(slug, bundled as any);
+      } else {
+        // Register as a color type
+        const uri = `${DEFAULT_REGISTRY_URL}/api/v1/core/${slug}/0/`;
+        colorManager.register(uri, bundled);
+      }
     } catch (error) {
       console.warn(`Failed to load schema ${slug}:`, error);
     }
   }
 
-  return colorManager;
+  return config;
 }
 
 /**
@@ -76,6 +89,9 @@ export function createInterpreter(
 /**
  * Get a bundled schema for testing
  */
-export async function getBundledSchema(slug: string): Promise<ColorSpecification> {
-  return bundleSchemaForRuntime(slug, "type", DEFAULT_REGISTRY_URL);
+export async function getBundledSchema(
+  slug: string,
+  type: "type" | "function" = "type",
+): Promise<SchemaSpecification> {
+  return bundleSchemaForRuntime(slug, type, DEFAULT_REGISTRY_URL);
 }

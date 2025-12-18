@@ -5,7 +5,7 @@
 
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { ColorSpecification } from "@/bundler/types.js";
+import type { ColorSpecification, FunctionSpecification, SchemaSpecification } from "@/bundler/types.js";
 
 export interface BundleOptions {
   /**
@@ -23,19 +23,23 @@ export interface BundleOptions {
 export async function bundleSchemaFromDirectory(
   schemaDir: string,
   options?: BundleOptions,
-): Promise<ColorSpecification> {
+): Promise<SchemaSpecification> {
   // Read schema.json which contains the full specification
   const schemaJsonPath = join(schemaDir, "schema.json");
   const schemaContent = await readFile(schemaJsonPath, "utf-8");
-  const schema = JSON.parse(schemaContent) as ColorSpecification;
+  const schema = JSON.parse(schemaContent) as SchemaSpecification;
 
-  return await inlineScriptReferences(schemaDir, schema, options);
+  if (schema.type === "function") {
+    return await inlineFunctionScriptReferences(schemaDir, schema as FunctionSpecification, options);
+  } else {
+    return await inlineColorScriptReferences(schemaDir, schema as ColorSpecification, options);
+  }
 }
 
 /**
- * Inline script file references in a schema specification
+ * Inline script file references in a color schema specification
  */
-async function inlineScriptReferences(
+async function inlineColorScriptReferences(
   schemaDir: string,
   schema: ColorSpecification,
   options?: BundleOptions,
@@ -75,6 +79,36 @@ async function inlineScriptReferences(
       if (conversion.target !== "$self") {
         conversion.target = addBaseUrl(conversion.target, options.baseUrl);
       }
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Inline script file references in a function specification
+ */
+async function inlineFunctionScriptReferences(
+  schemaDir: string,
+  schema: FunctionSpecification,
+  options?: BundleOptions,
+): Promise<FunctionSpecification> {
+  const result = JSON.parse(JSON.stringify(schema)) as FunctionSpecification;
+
+  // Inline the main function script
+  if (result.script.script.startsWith("./")) {
+    const scriptPath = join(schemaDir, result.script.script.slice(2));
+    const scriptContent = await readFile(scriptPath, "utf-8");
+    result.script.script = scriptContent.trim();
+  }
+
+  // Transform script type URI if baseUrl is provided
+  if (options?.baseUrl) {
+    result.script.type = addBaseUrl(result.script.type, options.baseUrl);
+    
+    // Transform requirement URIs
+    if (result.requirements) {
+      result.requirements = result.requirements.map(req => addBaseUrl(req, options.baseUrl));
     }
   }
 

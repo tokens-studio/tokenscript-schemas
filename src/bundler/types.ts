@@ -66,10 +66,26 @@ export interface ColorSpecification {
   slug?: string; // Added for bundling purposes
 }
 
+export interface FunctionSpecification {
+  name: string;
+  type: "function";
+  input?: {
+    type: "object";
+    properties?: Record<string, unknown>;
+  };
+  script: ScriptBlock;
+  keyword: string;
+  description?: string;
+  requirements?: string[];
+  slug?: string; // Added for bundling purposes
+}
+
+export type SchemaSpecification = ColorSpecification | FunctionSpecification;
+
 export interface BundledRegistry {
   version: string;
   types: ColorSpecification[];
-  functions: ColorSpecification[];
+  functions: FunctionSpecification[];
   metadata: {
     generatedAt: string;
     totalSchemas: number;

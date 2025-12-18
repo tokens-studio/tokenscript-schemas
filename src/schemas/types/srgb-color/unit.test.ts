@@ -101,8 +101,7 @@ describe("SRGB Color Schema", () => {
 
   describe("Conversion from HEX to SRGB", () => {
     it("should convert 6-digit HEX to SRGB", async () => {
-      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
-      const config = new Config({ colorManager });
+      const config = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
 
       const code = `
         variable c: Color.Hex = #ff5733;
@@ -120,8 +119,7 @@ describe("SRGB Color Schema", () => {
     });
 
     it("should convert 3-digit HEX to SRGB", async () => {
-      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
-      const config = new Config({ colorManager });
+      const config = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
 
       const code = `
         variable c: Color.Hex = #f53;
@@ -139,8 +137,7 @@ describe("SRGB Color Schema", () => {
     });
 
     it("should convert black HEX to SRGB", async () => {
-      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
-      const config = new Config({ colorManager });
+      const config = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
 
       const code = `
         variable c: Color.Hex = #000;
@@ -158,8 +155,7 @@ describe("SRGB Color Schema", () => {
     });
 
     it("should convert white HEX to SRGB", async () => {
-      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
-      const config = new Config({ colorManager });
+      const config = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
 
       const code = `
         variable c: Color.Hex = #ffffff;
@@ -179,8 +175,7 @@ describe("SRGB Color Schema", () => {
 
   describe("Conversion from SRGB to HEX", () => {
     it("should convert SRGB to HEX", async () => {
-      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
-      const config = new Config({ colorManager });
+      const config = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
 
       const code = `
         variable c: Color.SRGB;
@@ -199,8 +194,7 @@ describe("SRGB Color Schema", () => {
     });
 
     it("should convert SRGB with low values to HEX", async () => {
-      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
-      const config = new Config({ colorManager });
+      const config = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
 
       const code = `
         variable c: Color.SRGB;
@@ -219,8 +213,7 @@ describe("SRGB Color Schema", () => {
     });
 
     it("should convert black SRGB to HEX", async () => {
-      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
-      const config = new Config({ colorManager });
+      const config = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
 
       const code = `
         variable c: Color.SRGB;
@@ -239,8 +232,7 @@ describe("SRGB Color Schema", () => {
     });
 
     it("should convert white SRGB to HEX", async () => {
-      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
-      const config = new Config({ colorManager });
+      const config = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
 
       const code = `
         variable c: Color.SRGB;
@@ -261,8 +253,7 @@ describe("SRGB Color Schema", () => {
 
   describe("Round-trip Conversions", () => {
     it("should maintain color values through HEX -> SRGB -> HEX", async () => {
-      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
-      const config = new Config({ colorManager });
+      const config = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
 
       const code = `
         variable original: Color.Hex = #3498db;
@@ -280,8 +271,7 @@ describe("SRGB Color Schema", () => {
     });
 
     it("should maintain color values through SRGB -> HEX -> SRGB", async () => {
-      const colorManager = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
-      const config = new Config({ colorManager });
+      const config = await setupColorManagerWithSchemas(["hex-color", "srgb-color"]);
 
       const code = `
         variable original: Color.SRGB;

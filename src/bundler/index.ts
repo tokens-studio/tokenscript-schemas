@@ -4,7 +4,7 @@
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { BundledRegistry, ColorSpecification } from "@/bundler/types.js";
+import type { BundledRegistry, ColorSpecification, FunctionSpecification, SchemaSpecification } from "@/bundler/types.js";
 import { getSubdirectories } from "@/bundler/utils.js";
 import { bundleSchemaFromDirectory } from "@/bundler/bundle-schema.js";
 
@@ -19,7 +19,7 @@ const DEFAULT_REGISTRY_URL = "https://schema.tokenscript.dev.gcp.tokens.studio";
 async function bundleSchema(
   schemaDir: string,
   schemaSlug: string,
-): Promise<ColorSpecification> {
+): Promise<SchemaSpecification> {
   // Use shared bundling logic with baseUrl for build-time
   const bundled = await bundleSchemaFromDirectory(schemaDir, {
     baseUrl: DEFAULT_REGISTRY_URL,
@@ -32,9 +32,9 @@ async function bundleSchema(
 }
 
 /**
- * Bundle all schemas from a category (types or functions)
+ * Bundle all color type schemas from a category directory
  */
-async function bundleCategory(
+async function bundleTypeCategory(
   categoryDir: string,
 ): Promise<ColorSpecification[]> {
   const bundles: ColorSpecification[] = [];
@@ -46,7 +46,35 @@ async function bundleCategory(
 
     try {
       const bundle = await bundleSchema(schemaDir, slug);
-      bundles.push(bundle);
+      if (bundle.type === "color") {
+        bundles.push(bundle as ColorSpecification);
+      }
+    } catch (error) {
+      console.error(`  ✗ Failed to bundle ${slug}:`, error);
+    }
+  }
+
+  return bundles;
+}
+
+/**
+ * Bundle all function schemas from a category directory
+ */
+async function bundleFunctionCategory(
+  categoryDir: string,
+): Promise<FunctionSpecification[]> {
+  const bundles: FunctionSpecification[] = [];
+  const schemaSlugs = await getSubdirectories(categoryDir);
+
+  for (const slug of schemaSlugs) {
+    const schemaDir = join(categoryDir, slug);
+    console.log(`  Bundling ${slug}...`);
+
+    try {
+      const bundle = await bundleSchema(schemaDir, slug);
+      if (bundle.type === "function") {
+        bundles.push(bundle as FunctionSpecification);
+      }
     } catch (error) {
       console.error(`  ✗ Failed to bundle ${slug}:`, error);
     }
@@ -65,13 +93,13 @@ export async function bundleAllSchemas(
   // Bundle types
   console.log("\nBundling type schemas...");
   const typesDir = join(schemasDir, "types");
-  const types = await bundleCategory(typesDir);
+  const types = await bundleTypeCategory(typesDir);
   console.log(`✓ Bundled ${types.length} type schemas`);
 
   // Bundle functions
   console.log("\nBundling function schemas...");
   const functionsDir = join(schemasDir, "functions");
-  const functions = await bundleCategory(functionsDir);
+  const functions = await bundleFunctionCategory(functionsDir);
   console.log(`✓ Bundled ${functions.length} function schemas`);
 
   // Create bundled registry
