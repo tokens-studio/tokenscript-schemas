@@ -5,15 +5,13 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "node",
-    exclude: ["**/node_modules/**", "**/dist/**"],
-    env: {
-      NODE_ENV: "test",
-    },
+    watchExclude: ["**/node_modules/**", "**/dist/**", "**/bundled/**", "**/.git/**"],
+    forceRerunTriggers: ["**/src/schemas/**/*.tokenscript", "**/src/schemas/**/*.json"],
   },
   resolve: {
     alias: {
-      "@": resolve(__dirname, "src"),
-      "@tests": resolve(__dirname, "tests"),
+      "@": resolve(__dirname, "./src"),
+      "@tests": resolve(__dirname, "./tests"),
     },
   },
 });
