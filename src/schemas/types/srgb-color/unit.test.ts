@@ -1,4 +1,3 @@
-import type { ColorSpecification } from "@/bundler/types.js";
 import {
   Config,
   createInterpreter,
@@ -7,6 +6,7 @@ import {
   setupColorManagerWithSchemas,
 } from "@tests/helpers/schema-test-utils.js";
 import { describe, expect, it } from "vitest";
+import type { ColorSpecification } from "@/bundler/types.js";
 
 describe("SRGB Color Schema", () => {
   describe("Schema Definition", () => {

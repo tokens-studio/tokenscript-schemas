@@ -1,10 +1,10 @@
-import type { FunctionSpecification } from "@/bundler/types.js";
 import {
   createInterpreter,
   getBundledSchema,
   setupColorManagerWithSchemas,
 } from "@tests/helpers/schema-test-utils.js";
 import { describe, expect, it } from "vitest";
+import type { FunctionSpecification } from "@/bundler/types.js";
 
 describe("Invert Function Schema", () => {
   describe("Schema Definition", () => {

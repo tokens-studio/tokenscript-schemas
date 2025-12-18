@@ -10,7 +10,11 @@ import {
   Lexer,
   Parser,
 } from "@tokens-studio/tokenscript-interpreter";
-import type { ColorSpecification, FunctionSpecification, SchemaSpecification } from "@/bundler/types.js";
+import type {
+  ColorSpecification,
+  FunctionSpecification,
+  SchemaSpecification,
+} from "@/bundler/types.js";
 
 import { bundleSchemaForRuntime } from "./schema-loader.js";
 

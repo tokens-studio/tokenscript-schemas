@@ -1,4 +1,3 @@
-import type { ColorSpecification } from "@/bundler/types.js";
 import {
   Config,
   createInterpreter,
@@ -6,6 +5,7 @@ import {
   setupColorManagerWithSchema,
 } from "@tests/helpers/schema-test-utils.js";
 import { describe, expect, it } from "vitest";
+import type { ColorSpecification } from "@/bundler/types.js";
 
 describe("Hex Color Schema", () => {
   describe("Schema Definition", () => {
