@@ -1,0 +1,17 @@
+variable rgba: List = {input}.r, {input}.g, {input}.b;
+variable hex: String = "#";
+variable i: Number = 0;
+variable value: Number = 0;
+
+// Convert RGBA to Hex (excluding alpha)
+while( i < rgba.length()) [
+  value = round(rgba.get(i));
+  if(value < 16) [
+    hex = hex.concat("0").concat(value.to_string(16));
+  ] else [
+    hex = hex.concat(value.to_string(16));
+  ];
+  i = i + 1;
+];
+
+return hex;

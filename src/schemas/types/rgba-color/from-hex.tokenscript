@@ -1,0 +1,20 @@
+variable color: List = {input}.to_string()
+                              .split('#')
+                              .get(1)
+                              .split();
+
+variable output: Color.Rgba;
+output.a = 1;
+
+variable length: Number = color.length();
+if(length == 3) [
+  output.r = parse_int(color.get(0).concat(color.get(0)), 16);
+  output.g = parse_int(color.get(1).concat(color.get(1)), 16);
+  output.b = parse_int(color.get(2).concat(color.get(2)), 16);
+] elif (length == 6) [
+  output.r = parse_int(color.get(0).concat(color.get(1)), 16);
+  output.g = parse_int(color.get(2).concat(color.get(3)), 16);
+  output.b = parse_int(color.get(4).concat(color.get(5)), 16);
+];
+
+return output;

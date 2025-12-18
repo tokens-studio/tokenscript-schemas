@@ -276,7 +276,10 @@ Each schema type lives in its own directory with:
 - Multiple `.tokenscript` files (one per initializer/conversion)
 - ONE `unit.test.ts`
 
-## Common Issues & Solutions
+### Issue: Hex color parsing fails for 4 or 8 digit hex codes
+**Problem:** The TokenScript interpreter's lexer currently only supports 3-digit (`#RGB`) or 6-digit (`#RRGGBB`) hex color formats. Attempting to parse 4-digit (`#RGBA`) or 8-digit (`#RRGGBBAA`) hex codes will result in a `LexerError: Invalid hex color format`.
+**Solution:** When writing TokenScript code that parses hex color strings, ensure the input adheres to the 3-digit or 6-digit format. If working with RGBA colors, convert them to a 6-digit hex and handle the alpha channel separately in your TokenScript logic, or use direct RGBA value assignments rather than hex string parsing for colors with alpha.
+
 
 ### Issue: "Method 'tostring' not found"
 **Solution:** Use snake_case: `to_string()` not `toString()`

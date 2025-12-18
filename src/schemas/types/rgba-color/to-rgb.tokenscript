@@ -1,0 +1,5 @@
+variable output: Color.Rgb;
+output.r = {input}.r;
+output.g = {input}.g;
+output.b = {input}.b;
+return output;

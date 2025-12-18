@@ -1,0 +1,6 @@
+variable output: Color.Rgba;
+output.r = {input}.r;
+output.g = {input}.g;
+output.b = {input}.b;
+output.a = 1.0;
+return output;
