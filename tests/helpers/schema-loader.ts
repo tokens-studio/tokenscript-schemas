@@ -152,6 +152,7 @@ export function getScript(schema: LoadedSchema, scriptName: string): string | nu
 export async function bundleSchemaForRuntime(
   slug: string,
   type: "type" | "function" = "type",
+  baseUrl?: string,
 ): Promise<ColorSpecification> {
   // Import the shared bundling function
   const { bundleSchemaFromDirectory } = await import("../../src/bundler/bundle-schema.js");
@@ -159,5 +160,5 @@ export async function bundleSchemaForRuntime(
   const categoryDir = type === "type" ? "types" : "functions";
   const schemaDir = join(SCHEMAS_DIR, categoryDir, slug);
 
-  return await bundleSchemaFromDirectory(schemaDir);
+  return await bundleSchemaFromDirectory(schemaDir, baseUrl ? { baseUrl } : undefined);
 }

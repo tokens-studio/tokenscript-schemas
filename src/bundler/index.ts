@@ -9,14 +9,21 @@ import { getSubdirectories } from "./utils.js";
 import { bundleSchemaFromDirectory } from "./bundle-schema.js";
 
 /**
+ * Default registry URL for build-time bundling
+ */
+const DEFAULT_REGISTRY_URL = "https://schema.tokenscript.dev.gcp.tokens.studio";
+
+/**
  * Bundle a single schema from its directory
  */
 async function bundleSchema(
   schemaDir: string,
   schemaSlug: string,
 ): Promise<ColorSpecification> {
-  // Use shared bundling logic
-  const bundled = await bundleSchemaFromDirectory(schemaDir);
+  // Use shared bundling logic with baseUrl for build-time
+  const bundled = await bundleSchemaFromDirectory(schemaDir, {
+    baseUrl: DEFAULT_REGISTRY_URL,
+  });
 
   // Add slug from folder name
   bundled.slug = schemaSlug;

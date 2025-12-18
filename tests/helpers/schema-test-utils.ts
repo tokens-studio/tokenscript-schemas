@@ -16,6 +16,11 @@ import { loadSchemaFromSource, bundleSchemaForRuntime } from "./schema-loader.js
 export { Config };
 
 /**
+ * Default registry URL for test runtime bundling
+ */
+const DEFAULT_REGISTRY_URL = "https://schema.tokenscript.dev.gcp.tokens.studio";
+
+/**
  * Setup ColorManager with a schema loaded from source with runtime bundling
  */
 export async function setupColorManagerWithSchema(
@@ -23,11 +28,11 @@ export async function setupColorManagerWithSchema(
 ): Promise<ColorManager> {
   const colorManager = new ColorManager();
 
-  // Bundle the schema at runtime (inline script references)
-  const bundled = await bundleSchemaForRuntime(slug, "type");
+  // Bundle the schema at runtime (inline script references) WITH baseUrl transformation
+  const bundled = await bundleSchemaForRuntime(slug, "type", DEFAULT_REGISTRY_URL);
 
   // Register with a URI format that matches the schema
-  const uri = `https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/schema/${slug}/0/`;
+  const uri = `${DEFAULT_REGISTRY_URL}/api/v1/schema/${slug}/0/`;
   colorManager.register(uri, bundled);
 
   return colorManager;
@@ -43,8 +48,8 @@ export async function setupColorManagerWithSchemas(
 
   for (const slug of slugs) {
     try {
-      const bundled = await bundleSchemaForRuntime(slug, "type");
-      const uri = `https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/schema/${slug}/0/`;
+      const bundled = await bundleSchemaForRuntime(slug, "type", DEFAULT_REGISTRY_URL);
+      const uri = `${DEFAULT_REGISTRY_URL}/api/v1/schema/${slug}/0/`;
       colorManager.register(uri, bundled);
     } catch (error) {
       console.warn(`Failed to load schema ${slug}:`, error);
@@ -71,5 +76,5 @@ export function createInterpreter(
  * Get a bundled schema for testing
  */
 export async function getBundledSchema(slug: string): Promise<ColorSpecification> {
-  return bundleSchemaForRuntime(slug, "type");
+  return bundleSchemaForRuntime(slug, "type", DEFAULT_REGISTRY_URL);
 }
