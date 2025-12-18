@@ -3,7 +3,7 @@
  */
 
 import { readFile } from "node:fs/promises";
-import { join, dirname } from "node:path";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { BundledRegistry, ColorSpecification } from "@/bundler/types.js";
 
@@ -18,13 +18,13 @@ function getBundledPath(...paths: string[]): string {
   // When running from built code, bundled is relative to dist
   const sourceBundledPath = join(__dirname, "../../bundled", ...paths);
   const builtBundledPath = join(__dirname, "../bundled", ...paths);
-  
+
   // Try to detect which environment we're in
   // If __dirname contains 'src/', we're in source mode
   if (__dirname.includes("/src/")) {
     return sourceBundledPath;
   }
-  
+
   return builtBundledPath;
 }
 

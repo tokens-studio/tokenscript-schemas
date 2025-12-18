@@ -4,9 +4,13 @@
  */
 
 import { readdir, readFile } from "node:fs/promises";
-import { join, dirname } from "node:path";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { ColorSpecification, FunctionSpecification, SchemaSpecification } from "@/bundler/types.js";
+import type {
+  ColorSpecification,
+  FunctionSpecification,
+  SchemaSpecification,
+} from "@/bundler/types.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -51,9 +55,7 @@ export async function loadSchemaFromSource(
 
   // Read schema.json (contains full specification)
   const schemaJsonPath = join(schemaDir, "schema.json");
-  const specification = JSON.parse(
-    await readFile(schemaJsonPath, "utf-8"),
-  ) as SchemaSpecification;
+  const specification = JSON.parse(await readFile(schemaJsonPath, "utf-8")) as SchemaSpecification;
 
   // Read all .tokenscript files into a map
   const scripts: Record<string, string> = {};
@@ -78,9 +80,7 @@ export async function loadSchemaFromSource(
 /**
  * Load all schemas of a specific type from source
  */
-export async function loadSchemasFromSource(
-  type: "type" | "function",
-): Promise<LoadedSchema[]> {
+export async function loadSchemasFromSource(type: "type" | "function"): Promise<LoadedSchema[]> {
   const categoryDir = type === "type" ? "types" : "functions";
   const categoryPath = join(SCHEMAS_DIR, categoryDir);
 
@@ -117,7 +117,7 @@ export async function bundleSchemaForRuntime(
 ): Promise<SchemaSpecification> {
   // Import the shared bundling function
   const { bundleSchemaFromDirectory } = await import("@/bundler/bundle-schema.js");
-  
+
   const categoryDir = type === "type" ? "types" : "functions";
   const schemaDir = join(SCHEMAS_DIR, categoryDir, slug);
 

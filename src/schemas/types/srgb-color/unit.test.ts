@@ -1,11 +1,11 @@
-import { describe, expect, it } from "vitest";
 import {
-  setupColorManagerWithSchema,
-  setupColorManagerWithSchemas,
+  Config,
   createInterpreter,
   getBundledSchema,
-  Config,
+  setupColorManagerWithSchema,
+  setupColorManagerWithSchemas,
 } from "@tests/helpers/schema-test-utils.js";
+import { describe, expect, it } from "vitest";
 
 describe("SRGB Color Schema", () => {
   describe("Schema Definition", () => {
@@ -35,7 +35,7 @@ describe("SRGB Color Schema", () => {
       const schema = await getBundledSchema("srgb-color");
 
       expect(schema.conversions).toHaveLength(2);
-      
+
       // Check HEX to SRGB conversion
       const hexToSrgb = schema.conversions.find(
         (c) => c.target === "$self" && c.source.includes("hex-color"),

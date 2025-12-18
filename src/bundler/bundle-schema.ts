@@ -5,7 +5,11 @@
 
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { ColorSpecification, FunctionSpecification, SchemaSpecification } from "@/bundler/types.js";
+import type {
+  ColorSpecification,
+  FunctionSpecification,
+  SchemaSpecification,
+} from "@/bundler/types.js";
 
 export interface BundleOptions {
   /**
@@ -30,7 +34,11 @@ export async function bundleSchemaFromDirectory(
   const schema = JSON.parse(schemaContent) as SchemaSpecification;
 
   if (schema.type === "function") {
-    return await inlineFunctionScriptReferences(schemaDir, schema as FunctionSpecification, options);
+    return await inlineFunctionScriptReferences(
+      schemaDir,
+      schema as FunctionSpecification,
+      options,
+    );
   } else {
     return await inlineColorScriptReferences(schemaDir, schema as ColorSpecification, options);
   }
@@ -53,7 +61,7 @@ async function inlineColorScriptReferences(
       const scriptContent = await readFile(scriptPath, "utf-8");
       initializer.script.script = scriptContent.trim();
     }
-    
+
     // Transform script type URI if baseUrl is provided
     if (options?.baseUrl) {
       initializer.script.type = addBaseUrl(initializer.script.type, options.baseUrl);
@@ -67,11 +75,11 @@ async function inlineColorScriptReferences(
       const scriptContent = await readFile(scriptPath, "utf-8");
       conversion.script.script = scriptContent.trim();
     }
-    
+
     // Transform URIs if baseUrl is provided
     if (options?.baseUrl) {
       conversion.script.type = addBaseUrl(conversion.script.type, options.baseUrl);
-      
+
       // Transform source and target URIs (but not $self)
       if (conversion.source !== "$self") {
         conversion.source = addBaseUrl(conversion.source, options.baseUrl);
@@ -105,10 +113,10 @@ async function inlineFunctionScriptReferences(
   // Transform script type URI if baseUrl is provided
   if (options?.baseUrl) {
     result.script.type = addBaseUrl(result.script.type, options.baseUrl);
-    
+
     // Transform requirement URIs
     if (result.requirements) {
-      result.requirements = result.requirements.map(req => addBaseUrl(req, options.baseUrl));
+      result.requirements = result.requirements.map((req) => addBaseUrl(req, options.baseUrl));
     }
   }
 
@@ -124,14 +132,14 @@ function addBaseUrl(uri: string, baseUrl: string): string {
   if (uri.includes("://")) {
     return uri;
   }
-  
+
   // If URI is relative (starts with /), prepend base URL
   if (uri.startsWith("/")) {
     // Remove trailing slash from baseUrl if present
     const cleanBaseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
     return `${cleanBaseUrl}${uri}`;
   }
-  
+
   // Otherwise return as-is (e.g., $self)
   return uri;
 }

@@ -5,8 +5,7 @@
  */
 
 import { readdir, readFile, writeFile } from "node:fs/promises";
-import { join } from "node:path";
-import { resolve } from "node:path";
+import { join, resolve } from "node:path";
 
 const SCHEMAS_DIR = resolve(process.cwd(), "src/schemas");
 const TARGET_VERSION = "0.0.10";
@@ -33,10 +32,7 @@ async function isDirectory(path: string): Promise<boolean> {
   }
 }
 
-async function updateSchemaVersion(
-  schemaDir: string,
-  schemaSlug: string,
-): Promise<void> {
+async function updateSchemaVersion(schemaDir: string, schemaSlug: string): Promise<void> {
   const schemaJsonPath = join(schemaDir, "schema.json");
 
   // Read current schema
@@ -48,7 +44,7 @@ async function updateSchemaVersion(
     schema.version = TARGET_VERSION;
 
     // Write updated schema
-    await writeFile(schemaJsonPath, JSON.stringify(schema, null, 2) + "\n");
+    await writeFile(schemaJsonPath, `${JSON.stringify(schema, null, 2)}\n`);
 
     console.log(`✓ Updated ${schemaSlug}: ${schema.originalVersion} → ${TARGET_VERSION}`);
   } else {
@@ -87,7 +83,7 @@ async function main(): Promise<void> {
   const functionsDir = join(SCHEMAS_DIR, "functions");
   const functionsUpdated = await updateCategory(functionsDir);
 
-  console.log("\n" + "=".repeat(60));
+  console.log(`\n${"=".repeat(60)}`);
   console.log(`✓ Updated ${typesUpdated + functionsUpdated} schemas to version ${TARGET_VERSION}`);
 }
 

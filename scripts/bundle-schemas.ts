@@ -19,7 +19,7 @@ console.log(`Output directory: ${outputDir}`);
 try {
   const registry = await bundleAllSchemas(schemasDir, outputDir);
 
-  console.log("\n" + "=".repeat(60));
+  console.log(`\n${"=".repeat(60)}`);
   console.log("Bundle Summary:");
   console.log("=".repeat(60));
   console.log(`Types: ${registry.types.length}`);

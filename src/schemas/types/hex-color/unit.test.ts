@@ -1,10 +1,10 @@
-import { describe, expect, it } from "vitest";
 import {
-  setupColorManagerWithSchema,
+  Config,
   createInterpreter,
   getBundledSchema,
-  Config,
+  setupColorManagerWithSchema,
 } from "@tests/helpers/schema-test-utils.js";
+import { describe, expect, it } from "vitest";
 
 describe("Hex Color Schema", () => {
   describe("Schema Definition", () => {
@@ -76,8 +76,6 @@ describe("Hex Color Schema", () => {
       expect((result as any).value).toBe("#abc");
     });
   });
-
-
 
   describe("Edge Cases", () => {
     it("should handle lowercase hex", async () => {

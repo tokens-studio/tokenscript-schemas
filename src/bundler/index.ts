@@ -4,9 +4,14 @@
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { BundledRegistry, ColorSpecification, FunctionSpecification, SchemaSpecification } from "@/bundler/types.js";
-import { getSubdirectories } from "@/bundler/utils.js";
 import { bundleSchemaFromDirectory } from "@/bundler/bundle-schema.js";
+import type {
+  BundledRegistry,
+  ColorSpecification,
+  FunctionSpecification,
+  SchemaSpecification,
+} from "@/bundler/types.js";
+import { getSubdirectories } from "@/bundler/utils.js";
 
 /**
  * Default registry URL for build-time bundling
@@ -16,10 +21,7 @@ const DEFAULT_REGISTRY_URL = "https://schema.tokenscript.dev.gcp.tokens.studio";
 /**
  * Bundle a single schema from its directory
  */
-async function bundleSchema(
-  schemaDir: string,
-  schemaSlug: string,
-): Promise<SchemaSpecification> {
+async function bundleSchema(schemaDir: string, schemaSlug: string): Promise<SchemaSpecification> {
   // Use shared bundling logic with baseUrl for build-time
   const bundled = await bundleSchemaFromDirectory(schemaDir, {
     baseUrl: DEFAULT_REGISTRY_URL,
@@ -34,9 +36,7 @@ async function bundleSchema(
 /**
  * Bundle all color type schemas from a category directory
  */
-async function bundleTypeCategory(
-  categoryDir: string,
-): Promise<ColorSpecification[]> {
+async function bundleTypeCategory(categoryDir: string): Promise<ColorSpecification[]> {
   const bundles: ColorSpecification[] = [];
   const schemaSlugs = await getSubdirectories(categoryDir);
 
@@ -60,9 +60,7 @@ async function bundleTypeCategory(
 /**
  * Bundle all function schemas from a category directory
  */
-async function bundleFunctionCategory(
-  categoryDir: string,
-): Promise<FunctionSpecification[]> {
+async function bundleFunctionCategory(categoryDir: string): Promise<FunctionSpecification[]> {
   const bundles: FunctionSpecification[] = [];
   const schemaSlugs = await getSubdirectories(categoryDir);
 
@@ -123,17 +121,11 @@ export async function bundleAllSchemas(
 
   // Write individual category bundles
   const typesPath = join(outputDir, "types.json");
-  await writeFile(
-    typesPath,
-    JSON.stringify({ version: registry.version, types }, null, 2),
-  );
+  await writeFile(typesPath, JSON.stringify({ version: registry.version, types }, null, 2));
   console.log(`✓ Written types bundle to ${typesPath}`);
 
   const functionsPath = join(outputDir, "functions.json");
-  await writeFile(
-    functionsPath,
-    JSON.stringify({ version: registry.version, functions }, null, 2),
-  );
+  await writeFile(functionsPath, JSON.stringify({ version: registry.version, functions }, null, 2));
   console.log(`✓ Written functions bundle to ${functionsPath}`);
 
   // Write individual schema bundles

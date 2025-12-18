@@ -20,19 +20,21 @@ const DEFAULT_CONFIG: SchemaConfig = {
 /**
  * Fetch all schemas from the API
  */
-export async function fetchSchemaList(config: SchemaConfig = DEFAULT_CONFIG): Promise<SchemaListItem[]> {
+export async function fetchSchemaList(
+  config: SchemaConfig = DEFAULT_CONFIG,
+): Promise<SchemaListItem[]> {
   const url = `${config.apiBaseUrl}/schema/?format=json`;
-  
+
   console.log(`Fetching schema list from ${url}...`);
   const response = await fetch(url);
-  
+
   if (!response.ok) {
     throw new Error(`Failed to fetch schemas: ${response.statusText}`);
   }
-  
-  const data = await response.json() as SchemaListItem[];
+
+  const data = (await response.json()) as SchemaListItem[];
   console.log(`Found ${data.length} schemas`);
-  
+
   return data;
 }
 
@@ -44,14 +46,14 @@ export async function fetchSchemaVersions(
   config: SchemaConfig = DEFAULT_CONFIG,
 ): Promise<SchemaVersion[]> {
   const url = `${config.apiBaseUrl}/schema/${schemaSlug}/versions/?format=json`;
-  
+
   const response = await fetch(url);
-  
+
   if (!response.ok) {
     throw new Error(`Failed to fetch versions for ${schemaSlug}: ${response.statusText}`);
   }
-  
-  return await response.json() as SchemaVersion[];
+
+  return (await response.json()) as SchemaVersion[];
 }
 
 /**
@@ -76,7 +78,7 @@ async function writeSchemaJson(
   targetVersion: string,
 ): Promise<void> {
   const content = schema.content as any;
-  
+
   const schemaJson = {
     id: schema.id,
     slug: schema.slug,
@@ -88,11 +90,8 @@ async function writeSchemaJson(
     contentType: content.type || null,
     metadata: schema.metadata || {},
   };
-  
-  await writeFile(
-    join(schemaPath, "schema.json"),
-    JSON.stringify(schemaJson, null, 2),
-  );
+
+  await writeFile(join(schemaPath, "schema.json"), JSON.stringify(schemaJson, null, 2));
 }
 
 /**
@@ -109,7 +108,7 @@ describe("${schemaName}", () => {
   test.todo("should implement ${schemaType} functionality");
 });
 `;
-  
+
   await writeFile(join(schemaPath, "unit.test.ts"), testContent);
 }
 
@@ -122,29 +121,26 @@ function getConversionFileName(source: string, target: string): string {
     const match = url.match(/\/([^/]+)\/\d+\/?$/);
     return match ? match[1] : url;
   };
-  
+
   const sourceType = extractType(source);
   const targetType = extractType(target);
-  
+
   if (target === "$self") {
     return `to-${sourceType}.tokenscript`;
   }
   if (source === "$self") {
     return `from-${targetType}.tokenscript`;
   }
-  
+
   return `${sourceType}-to-${targetType}.tokenscript`;
 }
 
 /**
  * Write TokenScript files from schema content
  */
-async function writeTokenScriptFiles(
-  schemaPath: string,
-  schema: SchemaDetails,
-): Promise<void> {
+async function writeTokenScriptFiles(schemaPath: string, schema: SchemaDetails): Promise<void> {
   const content = schema.content as any;
-  
+
   // Write the main schema definition as JSON
   if (content.schema) {
     await writeFile(
@@ -152,16 +148,13 @@ async function writeTokenScriptFiles(
       JSON.stringify(content.schema, null, 2),
     );
   }
-  
+
   // Extract and write conversion scripts
   if (content.conversions && Array.isArray(content.conversions)) {
     for (const conversion of content.conversions) {
-      if (conversion.script && conversion.script.script) {
-        const fileName = getConversionFileName(
-          conversion.source || "",
-          conversion.target || "",
-        );
-        
+      if (conversion.script?.script) {
+        const fileName = getConversionFileName(conversion.source || "", conversion.target || "");
+
         // Add description as comment if available
         let scriptContent = "";
         if (conversion.description) {
@@ -170,14 +163,14 @@ async function writeTokenScriptFiles(
           scriptContent += `# Target: ${conversion.target}\n`;
           scriptContent += `# Lossless: ${conversion.lossless || false}\n\n`;
         }
-        
+
         scriptContent += conversion.script.script;
-        
+
         await writeFile(join(schemaPath, fileName), scriptContent);
       }
     }
   }
-  
+
   // Create initializer if no conversions found
   if (!content.conversions || content.conversions.length === 0) {
     const initializerContent = `# ${schema.name} Initializer
@@ -196,21 +189,21 @@ export async function downloadSchema(
   config: SchemaConfig = DEFAULT_CONFIG,
 ): Promise<void> {
   console.log(`Downloading ${schema.slug}...`);
-  
+
   // Fetch all versions
   const versions = await fetchSchemaVersions(schema.slug, config);
-  
+
   if (versions.length === 0) {
     console.warn(`No versions found for ${schema.slug}, skipping`);
     return;
   }
-  
+
   // Get the latest version (first one)
   const latestVersion = versions[0];
-  
+
   // Create folder structure
   const schemaPath = await createSchemaFolder(schema.slug, schema.type, config.outputDir);
-  
+
   // Combine schema info with version info
   const details: SchemaDetails = {
     id: schema.id,
@@ -221,26 +214,24 @@ export async function downloadSchema(
     version: latestVersion.version,
     content: latestVersion.content,
   };
-  
+
   // Write files
   await writeSchemaJson(schemaPath, details, config.targetVersion);
   await writeTokenScriptFiles(schemaPath, details);
   await createUnitTestStub(schemaPath, schema.name, schema.type);
-  
+
   console.log(`✓ Downloaded ${schema.slug} to ${schemaPath}`);
 }
 
 /**
  * Download all schemas from the API
  */
-export async function downloadAllSchemas(
-  config: Partial<SchemaConfig> = {},
-): Promise<void> {
+export async function downloadAllSchemas(config: Partial<SchemaConfig> = {}): Promise<void> {
   const fullConfig = { ...DEFAULT_CONFIG, ...config };
-  
+
   // Fetch schema list
   const schemas = await fetchSchemaList(fullConfig);
-  
+
   // Download each schema
   for (const schema of schemas) {
     try {
@@ -249,7 +240,7 @@ export async function downloadAllSchemas(
       console.error(`Failed to download ${schema.slug}:`, error);
     }
   }
-  
+
   console.log("\n✓ All schemas downloaded successfully!");
 }
 

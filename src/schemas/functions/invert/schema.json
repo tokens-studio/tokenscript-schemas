@@ -16,7 +16,5 @@
   },
   "keyword": "invert",
   "description": "Inverts a color by inverting each RGB channel (R' = 255 - R, G' = 255 - G, B' = 255 - B).",
-  "requirements": [
-    "/api/v1/core/srgb-color/0/"
-  ]
+  "requirements": ["/api/v1/core/srgb-color/0/"]
 }

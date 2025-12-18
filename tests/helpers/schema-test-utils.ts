@@ -10,7 +10,7 @@ import {
   Lexer,
   Parser,
 } from "@tokens-studio/tokenscript-interpreter";
-import type { ColorSpecification, SchemaSpecification } from "./schema-loader.js";
+import type { SchemaSpecification } from "./schema-loader.js";
 import { bundleSchemaForRuntime } from "./schema-loader.js";
 
 // Re-export Config for convenience
@@ -24,9 +24,7 @@ const DEFAULT_REGISTRY_URL = "https://schema.tokenscript.dev.gcp.tokens.studio";
 /**
  * Setup ColorManager with a schema loaded from source with runtime bundling
  */
-export async function setupColorManagerWithSchema(
-  slug: string,
-): Promise<ColorManager> {
+export async function setupColorManagerWithSchema(slug: string): Promise<ColorManager> {
   const colorManager = new ColorManager();
 
   // Bundle the schema at runtime (inline script references) WITH baseUrl transformation
@@ -53,10 +51,10 @@ export async function setupColorManagerWithSchemas(
   for (let i = 0; i < slugs.length; i++) {
     const slug = slugs[i];
     const type = types?.[i] || "type";
-    
+
     try {
       const bundled = await bundleSchemaForRuntime(slug, type, DEFAULT_REGISTRY_URL);
-      
+
       if (type === "function") {
         // Register as a function
         functionsManager.register(slug, bundled as any);

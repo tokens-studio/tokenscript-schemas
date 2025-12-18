@@ -1,9 +1,9 @@
-import { describe, expect, it } from "vitest";
 import {
-  setupColorManagerWithSchemas,
   createInterpreter,
   getBundledSchema,
+  setupColorManagerWithSchemas,
 } from "@tests/helpers/schema-test-utils.js";
+import { describe, expect, it } from "vitest";
 
 describe("Invert Function Schema", () => {
   describe("Schema Definition", () => {
@@ -12,7 +12,9 @@ describe("Invert Function Schema", () => {
 
       expect(schema.name).toBe("Invert Color");
       expect(schema.type).toBe("function");
-      expect(schema.description).toBe("Inverts a color by inverting each RGB channel (R' = 255 - R, G' = 255 - G, B' = 255 - B).");
+      expect(schema.description).toBe(
+        "Inverts a color by inverting each RGB channel (R' = 255 - R, G' = 255 - G, B' = 255 - B).",
+      );
       expect(schema.keyword).toBe("invert");
       expect((schema as any).input).toBeDefined();
       expect((schema as any).input.type).toBe("object");
@@ -31,13 +33,18 @@ describe("Invert Function Schema", () => {
       const schema = await getBundledSchema("invert", "function");
 
       expect((schema as any).requirements).toBeDefined();
-      expect((schema as any).requirements).toContain("/api/v1/core/srgb-color/0/");
+      expect((schema as any).requirements).toContain(
+        "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/srgb-color/0/",
+      );
     });
   });
 
   describe("Function Execution", () => {
     it("should invert RGB color", async () => {
-      const config = await setupColorManagerWithSchemas(["srgb-color", "invert"], ["type", "function"]);
+      const config = await setupColorManagerWithSchemas(
+        ["srgb-color", "invert"],
+        ["type", "function"],
+      );
 
       const code = `
         variable original: Color.SRGB = srgb(255, 128, 64);
@@ -55,7 +62,10 @@ describe("Invert Function Schema", () => {
     });
 
     it("should invert HEX color", async () => {
-      const config = await setupColorManagerWithSchemas(["hex-color", "srgb-color", "invert"], ["type", "type", "function"]);
+      const config = await setupColorManagerWithSchemas(
+        ["hex-color", "srgb-color", "invert"],
+        ["type", "type", "function"],
+      );
 
       const code = `
         variable original: Color.Hex = #ff8040;
@@ -73,7 +83,10 @@ describe("Invert Function Schema", () => {
     });
 
     it("should invert black to white", async () => {
-      const config = await setupColorManagerWithSchemas(["hex-color", "srgb-color", "invert"], ["type", "type", "function"]);
+      const config = await setupColorManagerWithSchemas(
+        ["hex-color", "srgb-color", "invert"],
+        ["type", "type", "function"],
+      );
 
       const code = `
         variable black: Color.Hex = #000000;
@@ -91,7 +104,10 @@ describe("Invert Function Schema", () => {
     });
 
     it("should invert white to black", async () => {
-      const config = await setupColorManagerWithSchemas(["hex-color", "srgb-color", "invert"], ["type", "type", "function"]);
+      const config = await setupColorManagerWithSchemas(
+        ["hex-color", "srgb-color", "invert"],
+        ["type", "type", "function"],
+      );
 
       const code = `
         variable white: Color.Hex = #ffffff;
@@ -109,7 +125,10 @@ describe("Invert Function Schema", () => {
     });
 
     it("should invert gray (127.5 rounds to 128)", async () => {
-      const config = await setupColorManagerWithSchemas(["hex-color", "srgb-color", "invert"], ["type", "type", "function"]);
+      const config = await setupColorManagerWithSchemas(
+        ["hex-color", "srgb-color", "invert"],
+        ["type", "type", "function"],
+      );
 
       const code = `
         variable gray: Color.Hex = #7f7f7f;
@@ -129,7 +148,10 @@ describe("Invert Function Schema", () => {
 
   describe("Round-trip Inversions", () => {
     it("should return to original color when inverted twice", async () => {
-      const config = await setupColorManagerWithSchemas(["hex-color", "srgb-color", "invert"], ["type", "type", "function"]);
+      const config = await setupColorManagerWithSchemas(
+        ["hex-color", "srgb-color", "invert"],
+        ["type", "type", "function"],
+      );
 
       const code = `
         variable original: Color.Hex = #3498db;
@@ -147,7 +169,10 @@ describe("Invert Function Schema", () => {
     });
 
     it("should handle double inversion of RGB color", async () => {
-      const config = await setupColorManagerWithSchemas(["srgb-color", "invert"], ["type", "function"]);
+      const config = await setupColorManagerWithSchemas(
+        ["srgb-color", "invert"],
+        ["type", "function"],
+      );
 
       const code = `
         variable original: Color.SRGB = srgb(100, 150, 200);
@@ -169,7 +194,10 @@ describe("Invert Function Schema", () => {
 
   describe("Edge Cases", () => {
     it("should handle pure red", async () => {
-      const config = await setupColorManagerWithSchemas(["hex-color", "srgb-color", "invert"], ["type", "type", "function"]);
+      const config = await setupColorManagerWithSchemas(
+        ["hex-color", "srgb-color", "invert"],
+        ["type", "type", "function"],
+      );
 
       const code = `
         variable red: Color.Hex = #ff0000;
@@ -187,7 +215,10 @@ describe("Invert Function Schema", () => {
     });
 
     it("should handle pure green", async () => {
-      const config = await setupColorManagerWithSchemas(["hex-color", "srgb-color", "invert"], ["type", "type", "function"]);
+      const config = await setupColorManagerWithSchemas(
+        ["hex-color", "srgb-color", "invert"],
+        ["type", "type", "function"],
+      );
 
       const code = `
         variable green: Color.Hex = #00ff00;
@@ -205,7 +236,10 @@ describe("Invert Function Schema", () => {
     });
 
     it("should handle pure blue", async () => {
-      const config = await setupColorManagerWithSchemas(["hex-color", "srgb-color", "invert"], ["type", "type", "function"]);
+      const config = await setupColorManagerWithSchemas(
+        ["hex-color", "srgb-color", "invert"],
+        ["type", "type", "function"],
+      );
 
       const code = `
         variable blue: Color.Hex = #0000ff;

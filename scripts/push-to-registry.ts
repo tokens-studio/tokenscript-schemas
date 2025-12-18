@@ -2,7 +2,7 @@
 
 /**
  * Push schemas to the TokenScript registry
- * 
+ *
  * This script is a placeholder for future implementation.
  * It would require:
  * - Authentication credentials

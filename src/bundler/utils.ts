@@ -37,9 +37,7 @@ export async function getSubdirectories(dir: string): Promise<string[]> {
 /**
  * Read all tokenscript files from a schema directory
  */
-export async function readTokenScriptFiles(
-  schemaDir: string,
-): Promise<Record<string, string>> {
+export async function readTokenScriptFiles(schemaDir: string): Promise<Record<string, string>> {
   const entries = await readdir(schemaDir);
   const scripts: Record<string, string> = {};
 
