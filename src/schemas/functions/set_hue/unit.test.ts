@@ -88,4 +88,3 @@ describe("Set Hue Function", () => {
     });
   });
 });
-

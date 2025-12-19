@@ -89,4 +89,3 @@ describe("Contrast Ratio Function", () => {
     });
   });
 });
-

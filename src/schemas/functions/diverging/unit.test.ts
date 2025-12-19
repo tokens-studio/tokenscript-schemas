@@ -68,4 +68,3 @@ describe("Diverging Function", () => {
     });
   });
 });
-

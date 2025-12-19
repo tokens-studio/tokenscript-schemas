@@ -78,4 +78,3 @@ describe("Set Lightness Function", () => {
     });
   });
 });
-

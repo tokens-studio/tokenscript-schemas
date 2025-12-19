@@ -77,4 +77,3 @@ describe("Set Chroma Function", () => {
     });
   });
 });
-

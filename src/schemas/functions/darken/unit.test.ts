@@ -103,4 +103,3 @@ describe("Darken Function", () => {
     });
   });
 });
-

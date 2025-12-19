@@ -84,4 +84,3 @@ describe("Rotate Hue Function", () => {
     });
   });
 });
-

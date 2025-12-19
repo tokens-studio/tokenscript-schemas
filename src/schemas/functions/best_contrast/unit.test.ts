@@ -62,4 +62,3 @@ describe("Best Contrast Function", () => {
     });
   });
 });
-

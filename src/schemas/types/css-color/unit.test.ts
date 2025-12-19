@@ -6,10 +6,9 @@
  */
 
 import {
-  setupColorManagerWithSchemas,
   createInterpreter,
   getBundledSchema,
-  Config,
+  setupColorManagerWithSchemas,
 } from "@tests/helpers/schema-test-utils";
 import { describe, expect, it } from "vitest";
 import type { ColorSpecification } from "@/bundler/types";
@@ -17,10 +16,7 @@ import type { ColorSpecification } from "@/bundler/types";
 /**
  * Helper to execute code with css-color and required source schemas loaded
  */
-async function executeWithCssColor(
-  sourceSchemas: string[],
-  code: string,
-): Promise<any> {
+async function executeWithCssColor(sourceSchemas: string[], code: string): Promise<any> {
   // Always include css-color plus the source schemas needed
   const allSchemas = [...new Set([...sourceSchemas, "css-color"])];
   const config = await setupColorManagerWithSchemas(allSchemas);
@@ -55,9 +51,8 @@ describe("CSS Color Schema", () => {
       // Verify all expected sources exist (with full registry URL)
       const sources = schema.conversions.map((c: { source: string }) => c.source);
       // Sources are transformed to include the registry base URL during bundling
-      const containsSource = (slug: string) =>
-        sources.some((s: string) => s.includes(slug));
-      
+      const containsSource = (slug: string) => sources.some((s: string) => s.includes(slug));
+
       expect(containsSource("rgb-color")).toBe(true);
       expect(containsSource("srgb-color")).toBe(true);
       expect(containsSource("hsl-color")).toBe(true);
@@ -224,7 +219,14 @@ describe("CSS Color Schema", () => {
   describe("LCH to CSS", () => {
     it("should convert LCH to lch() syntax with L as percentage", async () => {
       const result = await executeWithCssColor(
-        ["lch-color", "lab-color", "xyz-d50-color", "xyz-d65-color", "srgb-linear-color", "srgb-color"],
+        [
+          "lch-color",
+          "lab-color",
+          "xyz-d50-color",
+          "xyz-d65-color",
+          "srgb-linear-color",
+          "srgb-color",
+        ],
         `
         variable c: Color.LCH;
         c.l = 75;

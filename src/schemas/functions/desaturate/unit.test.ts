@@ -52,4 +52,3 @@ describe("Desaturate Function", () => {
     });
   });
 });
-

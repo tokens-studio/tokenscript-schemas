@@ -85,4 +85,3 @@ describe("Is Dark Function", () => {
     });
   });
 });
-

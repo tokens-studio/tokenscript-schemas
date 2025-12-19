@@ -84,4 +84,3 @@ describe("Is Light Function", () => {
     });
   });
 });
-
