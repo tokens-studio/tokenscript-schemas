@@ -35,16 +35,22 @@ describe("XYZ-D65 Color Schema", () => {
       expect(schema.initializers[0].script.script).toContain("Color.XYZD65");
     });
 
-    it("should have conversion from Linear sRGB", async () => {
+    it("should have conversions from Linear sRGB and Linear P3", async () => {
       const schema = (await getBundledSchema("xyz-d65-color")) as ColorSpecification;
 
-      expect(schema.conversions).toHaveLength(1);
+      expect(schema.conversions).toHaveLength(2);
 
-      const linearToXyz = schema.conversions.find(
+      const linearSrgbToXyz = schema.conversions.find(
         (c: { source: string }) => c.source.includes("srgb-linear-color"),
       );
-      expect(linearToXyz).toBeDefined();
-      expect(linearToXyz?.lossless).toBe(true);
+      expect(linearSrgbToXyz).toBeDefined();
+      expect(linearSrgbToXyz?.lossless).toBe(true);
+
+      const linearP3ToXyz = schema.conversions.find(
+        (c: { source: string }) => c.source.includes("p3-linear-color"),
+      );
+      expect(linearP3ToXyz).toBeDefined();
+      expect(linearP3ToXyz?.lossless).toBe(true);
     });
   });
 
