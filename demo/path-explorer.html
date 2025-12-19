@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Conversion Path Explorer</title>
+  <script src="https://colorjs.io/dist/color.global.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+      background: linear-gradient(145deg, #0d0d0d 0%, #1a1a2e 50%, #0d0d0d 100%);
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .subtitle {
+      color: #888;
+      margin-bottom: 2rem;
+    }
+    
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .control-group label {
+      font-size: 0.75rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    select, input[type="text"], input[type="color"] {
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(0,0,0,0.3);
+      color: #fff;
+      font-size: 1rem;
+      min-width: 150px;
+    }
+    
+    select:focus, input:focus {
+      outline: none;
+      border-color: #60a5fa;
+    }
+    
+    input[type="color"] {
+      width: 60px;
+      height: 44px;
+      padding: 4px;
+      cursor: pointer;
+    }
+    
+    button {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.1s;
+    }
+    
+    button:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    
+    .path-display {
+      margin-bottom: 2rem;
+    }
+    
+    .path-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      font-size: 0.9rem;
+      flex-wrap: wrap;
+    }
+    
+    .path-step {
+      padding: 0.3rem 0.7rem;
+      background: rgba(96, 165, 250, 0.2);
+      border-radius: 6px;
+      color: #60a5fa;
+      font-weight: 500;
+    }
+    
+    .path-arrow {
+      color: #666;
+    }
+    
+    .conversion-chain {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    
+    .chain-step {
+      display: flex;
+      align-items: stretch;
+      position: relative;
+    }
+    
+    .chain-connector {
+      width: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0.5rem 0;
+    }
+    
+    .connector-line {
+      width: 2px;
+      flex-grow: 1;
+      background: linear-gradient(180deg, #60a5fa, #a78bfa);
+    }
+    
+    .connector-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      border: 3px solid #1a1a2e;
+      z-index: 1;
+    }
+    
+    .chain-step:first-child .connector-line:first-child,
+    .chain-step:last-child .connector-line:last-child {
+      background: transparent;
+    }
+    
+    .step-card {
+      flex: 1;
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 1.25rem;
+      margin: 0.5rem 0;
+    }
+    
+    .step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .step-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    
+    .step-id {
+      font-size: 0.75rem;
+      color: #666;
+      font-family: 'SF Mono', Monaco, monospace;
+    }
+    
+    .step-content {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    
+    .color-swatch {
+      width: 100px;
+      height: 80px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      flex-shrink: 0;
+    }
+    
+    .swatch-unavailable {
+      background: repeating-linear-gradient(45deg, #222, #222 5px, #333 5px, #333 10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: #666;
+    }
+    
+    .step-values {
+      flex: 1;
+    }
+    
+    .coord-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 0.25rem;
+    }
+    
+    .coord-item {
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 0.85rem;
+    }
+    
+    .coord-label {
+      color: #888;
+      width: 20px;
+      display: inline-block;
+    }
+    
+    .coord-value {
+      color: #60a5fa;
+    }
+    
+    .css-value {
+      margin-top: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      background: rgba(0,0,0,0.3);
+      border-radius: 6px;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 0.75rem;
+      color: #a78bfa;
+      word-break: break-all;
+    }
+    
+    .transform-label {
+      position: absolute;
+      left: 70px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(167, 139, 250, 0.2);
+      color: #a78bfa;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      white-space: nowrap;
+      z-index: 2;
+    }
+    
+    .graph-section {
+      margin-top: 3rem;
+      padding: 1.5rem;
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .graph-section h2 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: #a78bfa;
+    }
+    
+    .graph-description {
+      font-size: 0.85rem;
+      color: #888;
+      line-height: 1.6;
+    }
+    
+    .space-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    
+    .space-chip {
+      padding: 0.4rem 0.6rem;
+      background: rgba(96, 165, 250, 0.1);
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      text-align: center;
+      color: #60a5fa;
+    }
+    
+    .space-chip.hub {
+      background: rgba(167, 139, 250, 0.2);
+      border-color: rgba(167, 139, 250, 0.4);
+      color: #a78bfa;
+    }
+    
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      color: #666;
+      font-size: 0.85rem;
+    }
+    
+    #no-path {
+      padding: 2rem;
+      text-align: center;
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+      border-radius: 12px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔀 Color Conversion Path Explorer</h1>
+  <p class="subtitle">Visualize the automatic conversion chain between color spaces</p>
+  
+  <div class="controls">
+    <div class="control-group">
+      <label>From Space</label>
+      <select id="from-space">
+        <option value="srgb">sRGB</option>
+        <option value="srgb-linear">Linear sRGB</option>
+        <option value="xyz-d65">XYZ (D65)</option>
+        <option value="xyz-d50">XYZ (D50)</option>
+        <option value="oklab">OKLab</option>
+        <option value="oklch">OKLCH</option>
+        <option value="lab">CIE Lab</option>
+        <option value="lch">CIE LCH</option>
+        <option value="hsl">HSL</option>
+        <option value="hsv">HSV</option>
+        <option value="hwb">HWB</option>
+        <option value="p3">Display P3</option>
+      </select>
+    </div>
+    
+    <div class="control-group">
+      <label>To Space</label>
+      <select id="to-space">
+        <option value="srgb" >sRGB</option>
+        <option value="srgb-linear" >Linear sRGB</option>
+        <option value="xyz-d65" >XYZ (D65)</option>
+        <option value="xyz-d50" >XYZ (D50)</option>
+        <option value="oklab" >OKLab</option>
+        <option value="oklch" selected>OKLCH</option>
+        <option value="lab" >CIE Lab</option>
+        <option value="lch" >CIE LCH</option>
+        <option value="hsl" >HSL</option>
+        <option value="hsv" >HSV</option>
+        <option value="hwb" >HWB</option>
+        <option value="p3" >Display P3</option>
+      </select>
+    </div>
+    
+    <div class="control-group">
+      <label>Pick Color</label>
+      <input type="color" id="color-picker" value="#ff6b6b">
+    </div>
+    
+    <div class="control-group">
+      <label>Or Enter Hex</label>
+      <input type="text" id="hex-input" value="#ff6b6b" placeholder="#ff6b6b">
+    </div>
+    
+    <div class="control-group" style="justify-content: flex-end;">
+      <button onclick="updateConversion()">Convert →</button>
+    </div>
+  </div>
+  
+  <div class="path-display">
+    <div class="path-header" id="path-header"></div>
+    <div id="no-path">No conversion path found between these spaces!</div>
+    <div class="conversion-chain" id="conversion-chain"></div>
+  </div>
+  
+  <div class="graph-section">
+    <h2>📊 Conversion Graph</h2>
+    <p class="graph-description">
+      The TokenScript interpreter automatically finds the shortest path between color spaces.
+      <strong>XYZ-D65</strong> serves as the central hub, connecting most spaces.
+      Some spaces (HSL, HSV, HWB) connect directly through sRGB.
+    </p>
+    <div class="space-grid">
+      <div class="space-chip ">sRGB</div>
+      <div class="space-chip ">Linear sRGB</div>
+      <div class="space-chip hub">XYZ (D65)</div>
+      <div class="space-chip ">XYZ (D50)</div>
+      <div class="space-chip ">OKLab</div>
+      <div class="space-chip ">OKLCH</div>
+      <div class="space-chip ">CIE Lab</div>
+      <div class="space-chip ">CIE LCH</div>
+      <div class="space-chip ">HSL</div>
+      <div class="space-chip ">HSV</div>
+      <div class="space-chip ">HWB</div>
+      <div class="space-chip ">Display P3</div>
+    </div>
+  </div>
+  
+  <footer>
+    <p>TokenScript Color Schema Registry • Path Explorer</p>
+  </footer>
+  
+  <script>
+    // Pre-computed paths from server
+    const allPaths = {
+  "srgb": {
+    "srgb": [
+      "srgb"
+    ],
+    "srgb-linear": [
+      "srgb",
+      "srgb-linear"
+    ],
+    "xyz-d65": [
+      "srgb",
+      "srgb-linear",
+      "xyz-d65"
+    ],
+    "xyz-d50": [
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "xyz-d50"
+    ],
+    "oklab": [
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "oklab"
+    ],
+    "oklch": [
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "oklab",
+      "oklch"
+    ],
+    "lab": [
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "xyz-d50",
+      "lab"
+    ],
+    "lch": [
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "xyz-d50",
+      "lab",
+      "lch"
+    ],
+    "hsl": [
+      "srgb",
+      "hsl"
+    ],
+    "hsv": [
+      "srgb",
+      "hsv"
+    ],
+    "hwb": [
+      "srgb",
+      "hwb"
+    ],
+    "p3": [
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "p3"
+    ]
+  },
+  "srgb-linear": {
+    "srgb": [
+      "srgb-linear",
+      "srgb"
+    ],
+    "srgb-linear": [
+      "srgb-linear"
+    ],
+    "xyz-d65": [
+      "srgb-linear",
+      "xyz-d65"
+    ],
+    "xyz-d50": [
+      "srgb-linear",
+      "xyz-d65",
+      "xyz-d50"
+    ],
+    "oklab": [
+      "srgb-linear",
+      "xyz-d65",
+      "oklab"
+    ],
+    "oklch": [
+      "srgb-linear",
+      "xyz-d65",
+      "oklab",
+      "oklch"
+    ],
+    "lab": [
+      "srgb-linear",
+      "xyz-d65",
+      "xyz-d50",
+      "lab"
+    ],
+    "lch": [
+      "srgb-linear",
+      "xyz-d65",
+      "xyz-d50",
+      "lab",
+      "lch"
+    ],
+    "hsl": [
+      "srgb-linear",
+      "srgb",
+      "hsl"
+    ],
+    "hsv": [
+      "srgb-linear",
+      "srgb",
+      "hsv"
+    ],
+    "hwb": [
+      "srgb-linear",
+      "srgb",
+      "hwb"
+    ],
+    "p3": [
+      "srgb-linear",
+      "xyz-d65",
+      "p3"
+    ]
+  },
+  "xyz-d65": {
+    "srgb": [
+      "xyz-d65",
+      "srgb-linear",
+      "srgb"
+    ],
+    "srgb-linear": [
+      "xyz-d65",
+      "srgb-linear"
+    ],
+    "xyz-d65": [
+      "xyz-d65"
+    ],
+    "xyz-d50": [
+      "xyz-d65",
+      "xyz-d50"
+    ],
+    "oklab": [
+      "xyz-d65",
+      "oklab"
+    ],
+    "oklch": [
+      "xyz-d65",
+      "oklab",
+      "oklch"
+    ],
+    "lab": [
+      "xyz-d65",
+      "xyz-d50",
+      "lab"
+    ],
+    "lch": [
+      "xyz-d65",
+      "xyz-d50",
+      "lab",
+      "lch"
+    ],
+    "hsl": [
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hsl"
+    ],
+    "hsv": [
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hsv"
+    ],
+    "hwb": [
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hwb"
+    ],
+    "p3": [
+      "xyz-d65",
+      "p3"
+    ]
+  },
+  "xyz-d50": {
+    "srgb": [
+      "xyz-d50",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb"
+    ],
+    "srgb-linear": [
+      "xyz-d50",
+      "xyz-d65",
+      "srgb-linear"
+    ],
+    "xyz-d65": [
+      "xyz-d50",
+      "xyz-d65"
+    ],
+    "xyz-d50": [
+      "xyz-d50"
+    ],
+    "oklab": [
+      "xyz-d50",
+      "xyz-d65",
+      "oklab"
+    ],
+    "oklch": [
+      "xyz-d50",
+      "xyz-d65",
+      "oklab",
+      "oklch"
+    ],
+    "lab": [
+      "xyz-d50",
+      "lab"
+    ],
+    "lch": [
+      "xyz-d50",
+      "lab",
+      "lch"
+    ],
+    "hsl": [
+      "xyz-d50",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hsl"
+    ],
+    "hsv": [
+      "xyz-d50",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hsv"
+    ],
+    "hwb": [
+      "xyz-d50",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hwb"
+    ],
+    "p3": [
+      "xyz-d50",
+      "xyz-d65",
+      "p3"
+    ]
+  },
+  "oklab": {
+    "srgb": [
+      "oklab",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb"
+    ],
+    "srgb-linear": [
+      "oklab",
+      "xyz-d65",
+      "srgb-linear"
+    ],
+    "xyz-d65": [
+      "oklab",
+      "xyz-d65"
+    ],
+    "xyz-d50": [
+      "oklab",
+      "xyz-d65",
+      "xyz-d50"
+    ],
+    "oklab": [
+      "oklab"
+    ],
+    "oklch": [
+      "oklab",
+      "oklch"
+    ],
+    "lab": [
+      "oklab",
+      "xyz-d65",
+      "xyz-d50",
+      "lab"
+    ],
+    "lch": [
+      "oklab",
+      "xyz-d65",
+      "xyz-d50",
+      "lab",
+      "lch"
+    ],
+    "hsl": [
+      "oklab",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hsl"
+    ],
+    "hsv": [
+      "oklab",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hsv"
+    ],
+    "hwb": [
+      "oklab",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hwb"
+    ],
+    "p3": [
+      "oklab",
+      "xyz-d65",
+      "p3"
+    ]
+  },
+  "oklch": {
+    "srgb": [
+      "oklch",
+      "oklab",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb"
+    ],
+    "srgb-linear": [
+      "oklch",
+      "oklab",
+      "xyz-d65",
+      "srgb-linear"
+    ],
+    "xyz-d65": [
+      "oklch",
+      "oklab",
+      "xyz-d65"
+    ],
+    "xyz-d50": [
+      "oklch",
+      "oklab",
+      "xyz-d65",
+      "xyz-d50"
+    ],
+    "oklab": [
+      "oklch",
+      "oklab"
+    ],
+    "oklch": [
+      "oklch"
+    ],
+    "lab": [
+      "oklch",
+      "oklab",
+      "xyz-d65",
+      "xyz-d50",
+      "lab"
+    ],
+    "lch": [
+      "oklch",
+      "oklab",
+      "xyz-d65",
+      "xyz-d50",
+      "lab",
+      "lch"
+    ],
+    "hsl": [
+      "oklch",
+      "oklab",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hsl"
+    ],
+    "hsv": [
+      "oklch",
+      "oklab",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hsv"
+    ],
+    "hwb": [
+      "oklch",
+      "oklab",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hwb"
+    ],
+    "p3": [
+      "oklch",
+      "oklab",
+      "xyz-d65",
+      "p3"
+    ]
+  },
+  "lab": {
+    "srgb": [
+      "lab",
+      "xyz-d50",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb"
+    ],
+    "srgb-linear": [
+      "lab",
+      "xyz-d50",
+      "xyz-d65",
+      "srgb-linear"
+    ],
+    "xyz-d65": [
+      "lab",
+      "xyz-d50",
+      "xyz-d65"
+    ],
+    "xyz-d50": [
+      "lab",
+      "xyz-d50"
+    ],
+    "oklab": [
+      "lab",
+      "xyz-d50",
+      "xyz-d65",
+      "oklab"
+    ],
+    "oklch": [
+      "lab",
+      "xyz-d50",
+      "xyz-d65",
+      "oklab",
+      "oklch"
+    ],
+    "lab": [
+      "lab"
+    ],
+    "lch": [
+      "lab",
+      "lch"
+    ],
+    "hsl": [
+      "lab",
+      "xyz-d50",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hsl"
+    ],
+    "hsv": [
+      "lab",
+      "xyz-d50",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hsv"
+    ],
+    "hwb": [
+      "lab",
+      "xyz-d50",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hwb"
+    ],
+    "p3": [
+      "lab",
+      "xyz-d50",
+      "xyz-d65",
+      "p3"
+    ]
+  },
+  "lch": {
+    "srgb": [
+      "lch",
+      "lab",
+      "xyz-d50",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb"
+    ],
+    "srgb-linear": [
+      "lch",
+      "lab",
+      "xyz-d50",
+      "xyz-d65",
+      "srgb-linear"
+    ],
+    "xyz-d65": [
+      "lch",
+      "lab",
+      "xyz-d50",
+      "xyz-d65"
+    ],
+    "xyz-d50": [
+      "lch",
+      "lab",
+      "xyz-d50"
+    ],
+    "oklab": [
+      "lch",
+      "lab",
+      "xyz-d50",
+      "xyz-d65",
+      "oklab"
+    ],
+    "oklch": [
+      "lch",
+      "lab",
+      "xyz-d50",
+      "xyz-d65",
+      "oklab",
+      "oklch"
+    ],
+    "lab": [
+      "lch",
+      "lab"
+    ],
+    "lch": [
+      "lch"
+    ],
+    "hsl": [
+      "lch",
+      "lab",
+      "xyz-d50",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hsl"
+    ],
+    "hsv": [
+      "lch",
+      "lab",
+      "xyz-d50",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hsv"
+    ],
+    "hwb": [
+      "lch",
+      "lab",
+      "xyz-d50",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hwb"
+    ],
+    "p3": [
+      "lch",
+      "lab",
+      "xyz-d50",
+      "xyz-d65",
+      "p3"
+    ]
+  },
+  "hsl": {
+    "srgb": [
+      "hsl",
+      "srgb"
+    ],
+    "srgb-linear": [
+      "hsl",
+      "srgb",
+      "srgb-linear"
+    ],
+    "xyz-d65": [
+      "hsl",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65"
+    ],
+    "xyz-d50": [
+      "hsl",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "xyz-d50"
+    ],
+    "oklab": [
+      "hsl",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "oklab"
+    ],
+    "oklch": [
+      "hsl",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "oklab",
+      "oklch"
+    ],
+    "lab": [
+      "hsl",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "xyz-d50",
+      "lab"
+    ],
+    "lch": [
+      "hsl",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "xyz-d50",
+      "lab",
+      "lch"
+    ],
+    "hsl": [
+      "hsl"
+    ],
+    "hsv": [
+      "hsl",
+      "srgb",
+      "hsv"
+    ],
+    "hwb": [
+      "hsl",
+      "srgb",
+      "hwb"
+    ],
+    "p3": [
+      "hsl",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "p3"
+    ]
+  },
+  "hsv": {
+    "srgb": [
+      "hsv",
+      "srgb"
+    ],
+    "srgb-linear": [
+      "hsv",
+      "srgb",
+      "srgb-linear"
+    ],
+    "xyz-d65": [
+      "hsv",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65"
+    ],
+    "xyz-d50": [
+      "hsv",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "xyz-d50"
+    ],
+    "oklab": [
+      "hsv",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "oklab"
+    ],
+    "oklch": [
+      "hsv",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "oklab",
+      "oklch"
+    ],
+    "lab": [
+      "hsv",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "xyz-d50",
+      "lab"
+    ],
+    "lch": [
+      "hsv",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "xyz-d50",
+      "lab",
+      "lch"
+    ],
+    "hsl": [
+      "hsv",
+      "srgb",
+      "hsl"
+    ],
+    "hsv": [
+      "hsv"
+    ],
+    "hwb": [
+      "hsv",
+      "srgb",
+      "hwb"
+    ],
+    "p3": [
+      "hsv",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "p3"
+    ]
+  },
+  "hwb": {
+    "srgb": [
+      "hwb",
+      "srgb"
+    ],
+    "srgb-linear": [
+      "hwb",
+      "srgb",
+      "srgb-linear"
+    ],
+    "xyz-d65": [
+      "hwb",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65"
+    ],
+    "xyz-d50": [
+      "hwb",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "xyz-d50"
+    ],
+    "oklab": [
+      "hwb",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "oklab"
+    ],
+    "oklch": [
+      "hwb",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "oklab",
+      "oklch"
+    ],
+    "lab": [
+      "hwb",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "xyz-d50",
+      "lab"
+    ],
+    "lch": [
+      "hwb",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "xyz-d50",
+      "lab",
+      "lch"
+    ],
+    "hsl": [
+      "hwb",
+      "srgb",
+      "hsl"
+    ],
+    "hsv": [
+      "hwb",
+      "srgb",
+      "hsv"
+    ],
+    "hwb": [
+      "hwb"
+    ],
+    "p3": [
+      "hwb",
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "p3"
+    ]
+  },
+  "p3": {
+    "srgb": [
+      "p3",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb"
+    ],
+    "srgb-linear": [
+      "p3",
+      "xyz-d65",
+      "srgb-linear"
+    ],
+    "xyz-d65": [
+      "p3",
+      "xyz-d65"
+    ],
+    "xyz-d50": [
+      "p3",
+      "xyz-d65",
+      "xyz-d50"
+    ],
+    "oklab": [
+      "p3",
+      "xyz-d65",
+      "oklab"
+    ],
+    "oklch": [
+      "p3",
+      "xyz-d65",
+      "oklab",
+      "oklch"
+    ],
+    "lab": [
+      "p3",
+      "xyz-d65",
+      "xyz-d50",
+      "lab"
+    ],
+    "lch": [
+      "p3",
+      "xyz-d65",
+      "xyz-d50",
+      "lab",
+      "lch"
+    ],
+    "hsl": [
+      "p3",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hsl"
+    ],
+    "hsv": [
+      "p3",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hsv"
+    ],
+    "hwb": [
+      "p3",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+      "hwb"
+    ],
+    "p3": [
+      "p3"
+    ]
+  }
+};
+    
+    // Color space info
+    const colorSpaces = [
+  {
+    "id": "srgb",
+    "name": "SRGB",
+    "displayName": "sRGB",
+    "coords": [
+      "r",
+      "g",
+      "b"
+    ],
+    "cssSupported": true
+  },
+  {
+    "id": "srgb-linear",
+    "name": "LinearSRGB",
+    "displayName": "Linear sRGB",
+    "coords": [
+      "r",
+      "g",
+      "b"
+    ],
+    "cssSupported": true
+  },
+  {
+    "id": "xyz-d65",
+    "name": "XYZD65",
+    "displayName": "XYZ (D65)",
+    "coords": [
+      "x",
+      "y",
+      "z"
+    ],
+    "cssSupported": true
+  },
+  {
+    "id": "xyz-d50",
+    "name": "XYZD50",
+    "displayName": "XYZ (D50)",
+    "coords": [
+      "x",
+      "y",
+      "z"
+    ],
+    "cssSupported": true
+  },
+  {
+    "id": "oklab",
+    "name": "OKLab",
+    "displayName": "OKLab",
+    "coords": [
+      "l",
+      "a",
+      "b"
+    ],
+    "cssSupported": true
+  },
+  {
+    "id": "oklch",
+    "name": "OKLCH",
+    "displayName": "OKLCH",
+    "coords": [
+      "l",
+      "c",
+      "h"
+    ],
+    "cssSupported": true
+  },
+  {
+    "id": "lab",
+    "name": "Lab",
+    "displayName": "CIE Lab",
+    "coords": [
+      "l",
+      "a",
+      "b"
+    ],
+    "cssSupported": true
+  },
+  {
+    "id": "lch",
+    "name": "LCH",
+    "displayName": "CIE LCH",
+    "coords": [
+      "l",
+      "c",
+      "h"
+    ],
+    "cssSupported": true
+  },
+  {
+    "id": "hsl",
+    "name": "HSL",
+    "displayName": "HSL",
+    "coords": [
+      "h",
+      "s",
+      "l"
+    ],
+    "cssSupported": true
+  },
+  {
+    "id": "hsv",
+    "name": "HSV",
+    "displayName": "HSV",
+    "coords": [
+      "h",
+      "s",
+      "v"
+    ],
+    "cssSupported": false
+  },
+  {
+    "id": "hwb",
+    "name": "HWB",
+    "displayName": "HWB",
+    "coords": [
+      "h",
+      "w",
+      "b"
+    ],
+    "cssSupported": true
+  },
+  {
+    "id": "p3",
+    "name": "P3",
+    "displayName": "Display P3",
+    "coords": [
+      "r",
+      "g",
+      "b"
+    ],
+    "cssSupported": true
+  }
+];
+    
+    // Transform names between steps
+    const transforms = {
+      'srgb->srgb-linear': 'Gamma decode (^2.4)',
+      'srgb-linear->srgb': 'Gamma encode (^1/2.4)',
+      'srgb-linear->xyz-d65': 'Matrix (sRGB→XYZ)',
+      'xyz-d65->srgb-linear': 'Matrix (XYZ→sRGB)',
+      'xyz-d65->oklab': 'LMS cone response',
+      'oklab->xyz-d65': 'Inverse LMS',
+      'oklab->oklch': 'Cartesian→Polar',
+      'oklch->oklab': 'Polar→Cartesian',
+      'xyz-d65->xyz-d50': 'Bradford CAT (D65→D50)',
+      'xyz-d50->xyz-d65': 'Bradford CAT (D50→D65)',
+      'xyz-d50->lab': 'CIE Lab formula',
+      'lab->xyz-d50': 'Inverse Lab',
+      'lab->lch': 'Cartesian→Polar',
+      'lch->lab': 'Polar→Cartesian',
+      'srgb->hsl': 'RGB→HSL',
+      'hsl->srgb': 'HSL→RGB',
+      'srgb->hsv': 'RGB→HSV',
+      'hsv->srgb': 'HSV→RGB',
+      'srgb->hwb': 'RGB→HWB',
+      'hwb->srgb': 'HWB→RGB',
+      'xyz-d65->p3-linear': 'Matrix (XYZ→P3)',
+      'p3-linear->xyz-d65': 'Matrix (P3→XYZ)',
+      'p3-linear->p3': 'Gamma encode',
+      'p3->p3-linear': 'Gamma decode',
+    };
+    
+    function getTransformLabel(from, to) {
+      const key = from + '->' + to;
+      return transforms[key] || 'Convert';
+    }
+    
+    function hexToRgb(hex) {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? [
+        parseInt(result[1], 16) / 255,
+        parseInt(result[2], 16) / 255,
+        parseInt(result[3], 16) / 255
+      ] : [1, 0, 0];
+    }
+    
+    function formatCoord(value, precision = 4) {
+      if (value === undefined || value === null) return 'N/A';
+      if (isNaN(value)) return 'NaN';
+      return value.toFixed(precision);
+    }
+    
+    function getCssColor(spaceId, coords) {
+      if (coords.some(v => isNaN(v))) {
+        // Replace NaN with 0 for display
+        coords = coords.map(v => isNaN(v) ? 0 : v);
+      }
+      
+      switch (spaceId) {
+        case 'srgb':
+          return `color(srgb ${coords.map(v => v.toFixed(4)).join(' ')})`;
+        case 'srgb-linear':
+          return `color(srgb-linear ${coords.map(v => v.toFixed(4)).join(' ')})`;
+        case 'xyz-d65':
+          return `color(xyz-d65 ${coords.map(v => v.toFixed(4)).join(' ')})`;
+        case 'xyz-d50':
+          return `color(xyz-d50 ${coords.map(v => v.toFixed(4)).join(' ')})`;
+        case 'oklab':
+          return `oklab(${coords[0].toFixed(4)} ${coords[1].toFixed(4)} ${coords[2].toFixed(4)})`;
+        case 'oklch':
+          return `oklch(${coords[0].toFixed(4)} ${coords[1].toFixed(4)} ${coords[2].toFixed(2)})`;
+        case 'lab':
+          return `lab(${coords[0].toFixed(2)} ${coords[1].toFixed(4)} ${coords[2].toFixed(4)})`;
+        case 'lch':
+          return `lch(${coords[0].toFixed(2)} ${coords[1].toFixed(4)} ${coords[2].toFixed(2)})`;
+        case 'hsl':
+          return `hsl(${coords[0].toFixed(1)} ${(coords[1] * 100).toFixed(1)}% ${(coords[2] * 100).toFixed(1)}%)`;
+        case 'hsv':
+          return null; // No CSS support
+        case 'hwb':
+          return `hwb(${coords[0].toFixed(1)} ${(coords[1] * 100).toFixed(1)}% ${(coords[2] * 100).toFixed(1)}%)`;
+        case 'p3':
+          return `color(display-p3 ${coords.map(v => v.toFixed(4)).join(' ')})`;
+        default:
+          return null;
+      }
+    }
+    
+    function updateConversion() {
+      const fromSpace = document.getElementById('from-space').value;
+      const toSpace = document.getElementById('to-space').value;
+      const hexInput = document.getElementById('hex-input').value;
+      
+      // Get the path
+      const path = allPaths[fromSpace]?.[toSpace];
+      
+      const pathHeader = document.getElementById('path-header');
+      const noPath = document.getElementById('no-path');
+      const chainContainer = document.getElementById('conversion-chain');
+      
+      if (!path) {
+        pathHeader.innerHTML = '';
+        noPath.style.display = 'block';
+        chainContainer.innerHTML = '';
+        return;
+      }
+      
+      noPath.style.display = 'none';
+      
+      // Show path header
+      pathHeader.innerHTML = '<strong>Path:</strong> ' + path.map((step, i) => {
+        const space = colorSpaces.find(s => s.id === step);
+        const html = `<span class="path-step">${space?.displayName || step}</span>`;
+        return i < path.length - 1 ? html + '<span class="path-arrow">→</span>' : html;
+      }).join(' ');
+      
+      // Convert through each step using ColorJS
+      const rgb = hexToRgb(hexInput);
+      let currentColor = new Color('srgb', rgb);
+      
+      // Build chain HTML
+      let chainHTML = '';
+      
+      for (let i = 0; i < path.length; i++) {
+        const spaceId = path[i];
+        const spaceInfo = colorSpaces.find(s => s.id === spaceId);
+        
+        // Convert to this space
+        const converted = currentColor.to(spaceId);
+        const coords = [...converted.coords];
+        
+        // Normalize HSL/HSV/HWB from 0-100 to 0-1
+        if (spaceId === 'hsl' || spaceId === 'hsv' || spaceId === 'hwb') {
+          coords[1] = coords[1] / 100;
+          coords[2] = coords[2] / 100;
+        }
+        
+        const cssColor = getCssColor(spaceId, coords);
+        const canShowSwatch = spaceInfo?.cssSupported && cssColor;
+        
+        // Transform label for the connector
+        const transformLabel = i > 0 ? getTransformLabel(path[i-1], spaceId) : null;
+        
+        chainHTML += `
+          <div class="chain-step">
+            <div class="chain-connector">
+              <div class="connector-line"></div>
+              <div class="connector-dot"></div>
+              <div class="connector-line"></div>
+            </div>
+            ${transformLabel ? `<div class="transform-label">${transformLabel}</div>` : ''}
+            <div class="step-card">
+              <div class="step-header">
+                <span class="step-name">${spaceInfo?.displayName || spaceId}</span>
+                <span class="step-id">${spaceId}</span>
+              </div>
+              <div class="step-content">
+                ${canShowSwatch 
+                  ? `<div class="color-swatch" style="background: ${cssColor}"></div>`
+                  : `<div class="color-swatch swatch-unavailable">No CSS</div>`
+                }
+                <div class="step-values">
+                  <div class="coord-row">
+                    ${spaceInfo?.coords.map((c, j) => `
+                      <span class="coord-item">
+                        <span class="coord-label">${c}:</span>
+                        <span class="coord-value">${formatCoord(coords[j])}</span>
+                      </span>
+                    `).join('') || ''}
+                  </div>
+                  ${cssColor ? `<div class="css-value">${cssColor}</div>` : ''}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      
+      chainContainer.innerHTML = chainHTML;
+    }
+    
+    // Sync color picker and hex input
+    document.getElementById('color-picker').addEventListener('input', (e) => {
+      document.getElementById('hex-input').value = e.target.value;
+    });
+    
+    document.getElementById('hex-input').addEventListener('input', (e) => {
+      const hex = e.target.value;
+      if (/^#[0-9A-Fa-f]{6}$/.test(hex)) {
+        document.getElementById('color-picker').value = hex;
+      }
+    });
+    
+    // Initial conversion
+    updateConversion();
+  </script>
+</body>
+</html>
