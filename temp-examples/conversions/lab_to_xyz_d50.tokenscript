@@ -1,0 +1,84 @@
+// @source: lab
+// @target: xyz-d50
+// @description: Converts CIE Lab to CIE XYZ D50 using standard CIE algorithm
+// @lossless: True
+// @end
+
+// === Input Processing ===
+variable lab: List = {input}.l, {input}.a, {input}.b;
+variable L: Number = lab.get(0);  // Lightness component [0,100]
+variable a: Number = lab.get(1);  // Green-Red axis component
+variable b: Number = lab.get(2);  // Blue-Yellow axis component
+
+// === Working Variables ===
+variable xyz: List = 0, 0, 0;
+
+// === CIE Standard Illuminant D50 White Point ===
+// Reference: CIE 15:2004 "Colorimetry"
+variable Xn: Number = 0.9642;   // D50 white point X
+variable Yn: Number = 1.0000;   // D50 white point Y
+variable Zn: Number = 0.8249;   // D50 white point Z
+
+// === Lab to XYZ D50 Conversion Algorithm ===
+// Based on: CIE 15:2004 "Colorimetry" standard
+// Inverse transformation of XYZ to Lab conversion
+
+// Step 1: Calculate intermediate values from Lab components
+variable fy: Number = (L + 16) / 116;       // Y component transform
+variable fx: Number = a / 500 + fy;         // X component transform
+variable fz: Number = fy - b / 200;         // Z component transform
+
+// === Inverse CIE Lab Transform Function ===
+// Apply inverse f⁻¹(t) transformation where:
+//   f⁻¹(t) = t³ if t > δ
+//   f⁻¹(t) = 3δ²(t - 4/29) if t ≤ δ
+// where δ = 6/29
+
+// Constants for inverse Lab transformation
+variable delta: Number = 6.0 / 29.0;           // δ = 6/29
+variable delta_squared: Number = delta * delta; // δ²
+variable three_delta_squared: Number = 3.0 * delta_squared;  // 3δ²
+variable linear_offset: Number = 4.0 / 29.0;   // 4/29
+
+// Step 2: Transform X component
+variable x_norm: Number = 0;
+if (fx > delta) [
+    x_norm = fx * fx * fx;  // Cubic transformation
+] else [
+    x_norm = three_delta_squared * (fx - linear_offset);  // Linear transformation
+];
+
+// Step 3: Transform Y component
+variable y_norm: Number = 0;
+if (fy > delta) [
+    y_norm = fy * fy * fy;  // Cubic transformation
+] else [
+    y_norm = three_delta_squared * (fy - linear_offset);  // Linear transformation
+];
+
+// Step 4: Transform Z component
+variable z_norm: Number = 0;
+if (fz > delta) [
+    z_norm = fz * fz * fz;  // Cubic transformation
+] else [
+    z_norm = three_delta_squared * (fz - linear_offset);  // Linear transformation
+];
+
+// === XYZ Component Calculation ===
+// Step 5: Denormalize relative to D50 white point
+variable X: Number = x_norm * Xn;
+variable Y: Number = y_norm * Yn;
+variable Z: Number = z_norm * Zn;
+
+// Step 6: Store final XYZ values
+xyz.update(0, X);  // X tristimulus value
+xyz.update(1, Y);  // Y tristimulus value (luminance)
+xyz.update(2, Z);  // Z tristimulus value
+
+// === Output Construction ===
+variable output: Color.XYZD50;
+output.x = xyz.get(0);
+output.y = xyz.get(1);
+output.z = xyz.get(2);
+
+return output;

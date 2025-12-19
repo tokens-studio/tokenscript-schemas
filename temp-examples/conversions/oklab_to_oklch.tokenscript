@@ -1,0 +1,48 @@
+// @source: oklab
+// @target: oklch
+// @description: Converts OKLab to OKLCH using polar coordinate transformation
+// @lossless: True
+// @end
+
+// === Input Processing ===
+variable oklab: List = {input}.l, {input}.a, {input}.b;
+variable L: Number = oklab.get(0);  // Lightness component
+variable a: Number = oklab.get(1);  // Green-Red axis component
+variable b: Number = oklab.get(2);  // Blue-Yellow axis component
+
+// === Working Variables ===
+variable oklch: List = 0, 0, 0;
+
+// === OKLab to OKLCH Conversion Algorithm ===
+// Based on: Björn Ottosson's OKLab color space specification
+// Reference: https://bottosson.github.io/posts/oklab/
+// Conversion: Cartesian to polar coordinate transformation
+
+// Step 1: Lightness remains unchanged
+variable L_oklch: Number = L;
+
+// Step 2: Calculate Chroma using Euclidean distance
+// C = √(a² + b²)
+variable C: Number = sqrt(a * a + b * b);
+
+// Step 3: Calculate Hue angle using arctangent
+// H = atan2(b, a) converted to degrees
+variable H: Number = atan2(b, a) * 180 / 3.14159265359;
+
+// Step 4: Normalize hue to [0, 360) range
+if (H < 0) [
+    H = H + 360;
+];
+
+// Step 5: Store final OKLCH values
+oklch.update(0, L_oklch);  // Lightness [0,1]
+oklch.update(1, C);        // Chroma [0,~0.4 for sRGB gamut]
+oklch.update(2, H);        // Hue angle [0,360)
+
+// === Output Construction ===
+variable output: Color.OKLCH;
+output.l = oklch.get(0);
+output.c = oklch.get(1);
+output.h = oklch.get(2);
+
+return output;

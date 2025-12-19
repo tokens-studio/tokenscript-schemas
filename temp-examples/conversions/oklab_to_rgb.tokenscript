@@ -1,0 +1,95 @@
+// @source: oklab
+// @target: srgb
+// @description: Converts OKLab to sRGB via Linear sRGB using Ottosson's algorithm
+// @lossless: True
+// @end
+
+// === Input Processing ===
+variable oklab: List = {input}.l, {input}.a, {input}.b;
+variable L: Number = oklab.get(0);  // Lightness component [0,1]
+variable a: Number = oklab.get(1);  // Green-Red axis component
+variable b: Number = oklab.get(2);  // Blue-Yellow axis component
+
+// === Working Variables ===
+variable srgb: List = 0, 0, 0;
+
+// === OKLab to sRGB Conversion Algorithm ===
+// Two-step process: OKLab → Linear sRGB → sRGB
+// Based on: Björn Ottosson's OKLab color space specification
+// Reference: https://bottosson.github.io/posts/oklab/
+
+// === Step 1: OKLab to Linear sRGB ===
+// Transform from OKLab to LMS cone response space
+variable l_: Number = L + 0.3963377774 * a + 0.2158037573 * b;
+variable m_: Number = L - 0.1055613458 * a - 0.0638541728 * b;
+variable s_: Number = L - 0.0894841775 * a - 1.2914855480 * b;
+
+// Convert from cubic root space back to linear LMS
+variable l: Number = l_ * l_ * l_;
+variable m: Number = m_ * m_ * m_;
+variable s: Number = s_ * s_ * s_;
+
+// Transform from LMS to Linear sRGB using transformation matrix
+variable r_linear: Number = 4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+variable g_linear: Number = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+variable b_linear: Number = -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s;
+
+// === Step 2: Linear sRGB to sRGB (Gamma Correction) ===
+// sRGB gamma correction constants
+variable gamma_threshold: Number = 0.0031308;
+variable linear_coefficient: Number = 12.92;
+variable gamma_scale: Number = 1.055;
+variable gamma_exponent: Number = 2.4;
+variable gamma_offset: Number = 0.055;
+
+// Process red component
+variable r: Number = 0;
+if (r_linear <= gamma_threshold) [
+    r = r_linear * linear_coefficient;
+] else [
+    r = gamma_scale * pow(r_linear, 1 / gamma_exponent) - gamma_offset;
+];
+
+// Process green component
+variable g: Number = 0;
+if (g_linear <= gamma_threshold) [
+    g = g_linear * linear_coefficient;
+] else [
+    g = gamma_scale * pow(g_linear, 1 / gamma_exponent) - gamma_offset;
+];
+
+// Process blue component
+variable b_srgb: Number = 0;
+if (b_linear <= gamma_threshold) [
+    b_srgb = b_linear * linear_coefficient;
+] else [
+    b_srgb = gamma_scale * pow(b_linear, 1 / gamma_exponent) - gamma_offset;
+];
+
+// === Value Scaling and Clamping ===
+// Convert from [0,1] to [0,255] range
+variable rgb_max: Number = 255;
+r = r * rgb_max;
+g = g * rgb_max;
+b_srgb = b_srgb * rgb_max;
+
+// Clamp values to valid sRGB range [0, 255]
+if (r < 0) [ r = 0; ];
+if (r > rgb_max) [ r = rgb_max; ];
+if (g < 0) [ g = 0; ];
+if (g > rgb_max) [ g = rgb_max; ];
+if (b_srgb < 0) [ b_srgb = 0; ];
+if (b_srgb > rgb_max) [ b_srgb = rgb_max; ];
+
+// Store final sRGB values
+srgb.update(0, r);
+srgb.update(1, g);
+srgb.update(2, b_srgb);
+
+// === Output Construction ===
+variable output: Color.sRGB;
+output.r = srgb.get(0);
+output.g = srgb.get(1);
+output.b = srgb.get(2);
+
+return output;

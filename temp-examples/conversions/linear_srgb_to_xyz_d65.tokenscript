@@ -1,0 +1,39 @@
+// @source: linear-srgb
+// @target: xyz-d65
+// @description: Converts Linear sRGB to XYZ-D65 using sRGB transformation matrix
+// @lossless: True
+// @end
+
+// === Input Processing ===
+variable linear_srgb: List = {input}.r, {input}.g, {input}.b;
+variable r: Number = linear_srgb.get(0);  // Linear red component
+variable g: Number = linear_srgb.get(1);  // Linear green component
+variable b: Number = linear_srgb.get(2);  // Linear blue component
+
+// === Working Variables ===
+variable xyz_d65: List = 0, 0, 0;
+
+// === Linear sRGB to XYZ-D65 Transformation ===
+// Source: sRGB specification, IEC 61966-2-1:1999
+// Matrix converts linear RGB values to CIE XYZ coordinates with D65 illuminant
+//
+// [X]   [0.41239079926595934  0.357584339383878   0.1804807884018343 ] [R]
+// [Y] = [0.21263900587151027  0.715168678767756   0.07219231536073371] [G]
+// [Z]   [0.01933081871559182  0.11919477979462598 0.9505321522496607 ] [B]
+
+variable x: Number = r * 0.41239079926595934 + g * 0.357584339383878 + b * 0.1804807884018343;
+variable y: Number = r * 0.21263900587151027 + g * 0.715168678767756 + b * 0.07219231536073371;
+variable z: Number = r * 0.01933081871559182 + g * 0.11919477979462598 + b * 0.9505321522496607;
+
+// Update XYZ list with calculated values
+xyz_d65.update(0, x);
+xyz_d65.update(1, y);
+xyz_d65.update(2, z);
+
+// === Output Construction ===
+variable output: Color.XYZD65;
+output.x = xyz_d65.get(0);
+output.y = xyz_d65.get(1);
+output.z = xyz_d65.get(2);
+
+return output;

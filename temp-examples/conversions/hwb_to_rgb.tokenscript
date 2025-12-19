@@ -1,0 +1,115 @@
+// @source: hwb
+// @target: srgb
+// @description: Converts HWB to RGB using standard algorithm with gray handling
+// @lossless: True
+// @end
+
+// === Input Processing ===
+variable hwb: List = {input}.h, {input}.w, {input}.b;
+variable H: Number = hwb.get(0);        // Hue: 0-360 degrees
+variable W: Number = hwb.get(1) / 100;  // Whiteness: 0-100% → 0-1
+variable B: Number = hwb.get(2) / 100;  // Blackness: 0-100% → 0-1
+
+// === Working Variables ===
+variable rgb: List = 0, 0, 0;
+
+// === HWB to RGB Conversion Algorithm ===
+// Based on: CSS Color Module Level 4 HWB specification
+// Reference: https://www.w3.org/TR/css-color-4/#hwb-to-rgb
+
+// Step 1: Handle special case where W + B >= 1
+variable sum_wb: Number = W + B;
+if (sum_wb >= 1) [
+    // === Over-constrained case (W + B ≥ 100%) ===
+    // When W + B >= 100%, result is gray with value W/(W+B)
+    variable gray_value: Number = W / sum_wb * 255;
+    rgb.update(0, gray_value);
+    rgb.update(1, gray_value);
+    rgb.update(2, gray_value);
+] else [
+    // === Normal case: Convert HWB to HSV, then HSV to RGB ===
+    
+    // Step 2: Convert HWB to HSV
+    variable V: Number = 1 - B;  // Value = 1 - Blackness
+    variable S: Number = 1 - W / V;  // Saturation = 1 - Whiteness/Value
+    
+    // Step 3: Convert HSV to RGB using standard algorithm
+    variable C: Number = V * S;  // Chroma
+    variable H_prime: Number = H / 60;  // Hue sector
+    
+    // Calculate intermediate value X using conditional logic for mod 2
+    variable H_mod: Number = H_prime;
+    if (H_prime >= 2) [
+        H_mod = H_prime - 2;
+    ];
+    if (H_prime >= 4) [
+        H_mod = H_prime - 4;
+    ];
+    variable X: Number = C * (1 - abs(H_mod - 1));
+    
+    // Step 4: Map (C, X, 0) to RGB' based on hue sector
+    variable R1: Number = 0;
+    variable G1: Number = 0;
+    variable B1: Number = 0;
+    
+    if (H_prime >= 0 && H_prime < 1) [      // Red-Yellow sector (0°-60°)
+        R1 = C;
+        G1 = X;
+        B1 = 0;
+    ] else [
+        if (H_prime >= 1 && H_prime < 2) [  // Yellow-Green sector (60°-120°)
+            R1 = X;
+            G1 = C;
+            B1 = 0;
+        ] else [
+            if (H_prime >= 2 && H_prime < 3) [  // Green-Cyan sector (120°-180°)
+                R1 = 0;
+                G1 = C;
+                B1 = X;
+            ] else [
+                if (H_prime >= 3 && H_prime < 4) [  // Cyan-Blue sector (180°-240°)
+                    R1 = 0;
+                    G1 = X;
+                    B1 = C;
+                ] else [
+                    if (H_prime >= 4 && H_prime < 5) [  // Blue-Magenta sector (240°-300°)
+                        R1 = X;
+                        G1 = 0;
+                        B1 = C;
+                    ] else [                             // Magenta-Red sector (300°-360°)
+                        R1 = C;
+                        G1 = 0;
+                        B1 = X;
+                    ];
+                ];
+            ];
+        ];
+    ];
+    
+    // Step 5: Calculate match value and final RGB
+    variable m: Number = V - C;
+    variable R: Number = (R1 + m) * 255;
+    variable G: Number = (G1 + m) * 255;
+    variable B_channel: Number = (B1 + m) * 255;
+    
+    // === Value Clamping ===
+    // Clamp RGB values to [0,255] range
+    if (R < 0) [ R = 0; ];
+    if (R > 255) [ R = 255; ];
+    if (G < 0) [ G = 0; ];
+    if (G > 255) [ G = 255; ];
+    if (B_channel < 0) [ B_channel = 0; ];
+    if (B_channel > 255) [ B_channel = 255; ];
+    
+    rgb.update(0, R);
+    rgb.update(1, G);
+    rgb.update(2, B_channel);
+];
+
+// === Output Construction ===
+variable output: Color.sRGB;
+output.r = rgb.get(0);
+output.g = rgb.get(1);
+output.b = rgb.get(2);
+
+return output;

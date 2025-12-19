@@ -1,0 +1,44 @@
+// @source: hsl
+// @target: hsv
+// @description: Converts HSL to HSV using direct mathematical transformation
+// @lossless: True
+// @end
+
+// === Input Processing ===
+variable hsl: List = {input}.h, {input}.s, {input}.l;
+variable H: Number = hsl.get(0);        // Hue: 0-360 degrees
+variable S_hsl: Number = hsl.get(1) / 100;  // Saturation: 0-100% → 0-1
+variable L: Number = hsl.get(2) / 100;      // Lightness: 0-100% → 0-1
+
+// === Working Variables ===
+variable hsv: List = 0, 0, 0;
+
+// === HSL to HSV Conversion Algorithm ===
+// Based on: Standard HSL ↔ HSV conversion formulas
+// Mathematical transformation between cylindrical coordinate systems
+
+// Step 1: Hue remains the same
+hsv.update(0, H);
+
+// Step 2: Convert Lightness and Saturation to Value and Saturation
+// V = L + S * min(L, 1-L)
+variable min_L: Number = min(L, 1 - L);
+variable V: Number = L + S_hsl * min_L;
+
+// S_hsv = 2 * (1 - L/V) if V > 0, else 0
+variable S_hsv: Number = 0;
+if (V > 0) [
+    S_hsv = 2 * (1 - L / V);
+];
+
+// Step 3: Convert back to percentage and store
+hsv.update(1, S_hsv * 100);
+hsv.update(2, V * 100);
+
+// === Output Construction ===
+variable output: Color.HSV;
+output.h = hsv.get(0);
+output.s = hsv.get(1);
+output.v = hsv.get(2);
+
+return output;

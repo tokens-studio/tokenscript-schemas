@@ -1,0 +1,20 @@
+// @source: rgba
+// @target: srgb
+// @description: Converts RGBA to sRGB by discarding alpha channel
+// @lossless: False
+// @end
+
+// === Input Processing ===
+variable rgba: List = {input}.r, {input}.g, {input}.b, {input}.a;
+
+// === RGB Extraction ===
+// Extract only RGB components, discarding alpha channel
+variable rgb: List = rgba.get(0), rgba.get(1), rgba.get(2);
+
+// === Output Construction ===
+variable output: Color.sRGB;
+output.r = rgb.get(0);
+output.g = rgb.get(1);
+output.b = rgb.get(2);
+
+return output;

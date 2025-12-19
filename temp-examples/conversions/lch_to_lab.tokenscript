@@ -1,0 +1,43 @@
+// @source: lch
+// @target: lab
+// @description: Converts CIE LCH to CIE Lab using Cartesian coordinate transformation
+// @lossless: True
+// @end
+
+// === Input Processing ===
+variable lch: List = {input}.l, {input}.c, {input}.h;
+variable L: Number = lch.get(0);  // Lightness component
+variable C: Number = lch.get(1);  // Chroma component
+variable H: Number = lch.get(2);  // Hue angle in degrees
+
+// === Working Variables ===
+variable lab: List = 0, 0, 0;
+
+// === LCH to Lab Conversion Algorithm ===
+// Based on: CIE colorimetry standards - Polar to Cartesian coordinate transformation
+// Reference: CIE 15:2004 "Colorimetry"
+
+// Step 1: Lightness remains unchanged
+variable L_lab: Number = L;
+
+// Step 2: Convert hue from degrees to radians
+variable H_rad: Number = H * 3.14159265359 / 180;
+
+// Step 3: Calculate a* and b* using trigonometric conversion
+// a* = C* × cos(h°)
+// b* = C* × sin(h°)
+variable a: Number = C * cos(H_rad);
+variable b: Number = C * sin(H_rad);
+
+// Step 4: Store final Lab values
+lab.update(0, L_lab);  // Lightness [0,100]
+lab.update(1, a);      // Green-Red axis [-128,127 typical range]
+lab.update(2, b);      // Blue-Yellow axis [-128,127 typical range]
+
+// === Output Construction ===
+variable output: Color.Lab;
+output.l = lab.get(0);
+output.a = lab.get(1);
+output.b = lab.get(2);
+
+return output;

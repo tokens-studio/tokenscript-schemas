@@ -1,0 +1,77 @@
+// @source: srgb
+// @target: hsv
+// @description: Converts RGB to HSV using standard algorithm
+// @lossless: True
+// @end
+
+// === Input Processing ===
+variable rgb: List = {input}.r, {input}.g, {input}.b;
+
+// === RGB Component Normalization ===
+// Extract RGB components and normalize to [0,1] range if needed
+variable r: Number = rgb.get(0);
+variable g: Number = rgb.get(1);
+variable b: Number = rgb.get(2);
+
+// If any component > 1, assume 0-255 range and normalize
+if (r > 1 || g > 1 || b > 1) [
+    r = r / 255;
+    g = g / 255;
+    b = b / 255;
+];
+
+// === Working Variables ===
+variable hsv: List = 0, 0, 0;
+
+// === RGB to HSV Conversion Algorithm ===
+// Based on: Computer Graphics: Principles and Practice, 2nd Edition
+// Algorithm: Standard RGB to HSV transformation
+
+// Step 1: Find min and max values
+variable max_val: Number = max(max(r, g), b);
+variable min_val: Number = min(min(r, g), b);
+variable delta: Number = max_val - min_val;
+
+// Step 2: Calculate Value (0-1, will convert to 0-100 later)
+variable value: Number = max_val;
+
+// Step 3: Calculate Saturation
+variable saturation: Number = 0;
+if (max_val > 0) [
+    saturation = delta / max_val;
+];
+
+// Step 4: Calculate Hue (in degrees)
+variable hue: Number = 0;
+if (delta > 0) [
+    if (max_val == r) [
+        variable hue_segment: Number = (g - b) / delta;
+        hue = 60 * hue_segment;
+    ] else [
+        if (max_val == g) [
+            hue = 60 * ((b - r) / delta + 2);
+        ] else [
+            hue = 60 * ((r - g) / delta + 4);
+        ];
+    ];
+];
+
+// === Hue Normalization ===
+// Ensure hue is in [0, 360) range
+if (hue < 0) [
+    hue = hue + 360;
+];
+
+// === Final Range Conversion ===
+// Convert to final ranges: H (0-360°), S (0-100%), V (0-100%)
+hsv.update(0, hue);
+hsv.update(1, saturation * 100);
+hsv.update(2, value * 100);
+
+// === Output Construction ===
+variable output: Color.HSV;
+output.h = hsv.get(0);
+output.s = hsv.get(1);
+output.v = hsv.get(2);
+
+return output;

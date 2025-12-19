@@ -1,0 +1,57 @@
+// @source: hsl
+// @target: srgb
+// @description: Converts HSL to sRGB using standard algorithm
+// @lossless: True
+// @end
+
+// === Input Processing ===
+variable hsl: List = {input}.h, {input}.s, {input}.l;
+variable hue: Number = hsl.get(0);
+variable sat: Number = hsl.get(1);
+variable light: Number = hsl.get(2);
+
+// === Working Variables ===
+variable srgb: List = 0, 0, 0;
+
+// === HSL to sRGB Conversion Algorithm ===
+// Based on: CSS Color Module Level 3 specification
+// Reference: https://www.w3.org/TR/css-color-3/#hsl-color
+
+// Step 1: Normalize hue to 0-360 range
+hue = mod(hue, 360);
+if (hue < 0) [
+    hue = hue + 360;
+];
+
+// Step 2: Convert sat and light from percentages to [0,1] range
+sat = sat / 100;
+light = light / 100;
+
+// Step 3: Calculate RGB using standard HSL to RGB conversion
+variable a: Number = sat * min(light, 1 - light);
+
+// Step 4: Helper function calculations for each RGB component
+// For red (n=0)
+variable k_r: Number = mod(0 + hue / 30, 12);
+variable r: Number = light - a * max(-1, min(k_r - 3, min(9 - k_r, 1)));
+
+// For green (n=8)  
+variable k_g: Number = mod(8 + hue / 30, 12);
+variable g: Number = light - a * max(-1, min(k_g - 3, min(9 - k_g, 1)));
+
+// For blue (n=4)
+variable k_b: Number = mod(4 + hue / 30, 12);
+variable b: Number = light - a * max(-1, min(k_b - 3, min(9 - k_b, 1)));
+
+// Step 5: Store final sRGB values
+srgb.update(0, r);
+srgb.update(1, g);
+srgb.update(2, b);
+
+// === Output Construction ===
+variable output: Color.sRGB;
+output.r = srgb.get(0);
+output.g = srgb.get(1);
+output.b = srgb.get(2);
+
+return output;

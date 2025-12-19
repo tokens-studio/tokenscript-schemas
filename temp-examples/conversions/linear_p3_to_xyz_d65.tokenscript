@@ -1,0 +1,39 @@
+// @source: linear-p3
+// @target: xyz-d65
+// @description: Converts Linear Display P3 to CIE XYZ D65 using P3 transformation matrix
+// @lossless: True
+// @end
+
+// === Input Processing ===
+variable linear_p3: List = {input}.r, {input}.g, {input}.b;
+variable r: Number = linear_p3.get(0);  // Linear red component
+variable g: Number = linear_p3.get(1);  // Linear green component
+variable b: Number = linear_p3.get(2);  // Linear blue component
+
+// === Working Variables ===
+variable xyz: List = 0, 0, 0;
+
+// === Linear Display P3 to XYZ D65 Conversion Algorithm ===
+// Based on: Apple Display P3 color space specification
+// Uses Display P3 transformation matrix for D65 illuminant
+
+// === Display P3 Transformation Matrix (Linear P3 → XYZ D65) ===
+// Matrix coefficients from Apple Display P3 specification
+// Reference: Apple Technical Note TN2257
+variable X: Number = 0.4865709486 * r + 0.2656676932 * g + 0.1982172852 * b;
+variable Y: Number = 0.2289745640 * r + 0.6917385218 * g + 0.0792869141 * b;
+variable Z: Number = 0.0000000000 * r + 0.0451133819 * g + 1.0439443689 * b;
+
+// === Value Storage ===
+// Store final XYZ D65 values
+xyz.update(0, X);  // X tristimulus value
+xyz.update(1, Y);  // Y tristimulus value (luminance)
+xyz.update(2, Z);  // Z tristimulus value
+
+// === Output Construction ===
+variable output: Color.XYZD65;
+output.x = xyz.get(0);
+output.y = xyz.get(1);
+output.z = xyz.get(2);
+
+return output;

@@ -1,0 +1,76 @@
+// @source: srgb
+// @target: hwb
+// @description: Converts sRGB to HWB using standard algorithm
+// @lossless: True
+// @end
+
+// === Input Processing ===
+variable rgb: List = {input}.r, {input}.g, {input}.b;
+variable r: Number = rgb.get(0) / 255;  // Normalize to [0,1]
+variable g: Number = rgb.get(1) / 255;  // Normalize to [0,1]
+variable b: Number = rgb.get(2) / 255;  // Normalize to [0,1]
+
+// === Working Variables ===
+variable hwb: List = 0, 0, 0;
+
+// === RGB to HWB Conversion Algorithm ===
+// Based on: CSS Color Module Level 4 HWB specification
+// Reference: https://www.w3.org/TR/css-color-4/#rgb-to-hwb
+
+// Step 1: Find min and max RGB values
+variable max_rgb: Number = max(r, g, b);  // Maximum RGB component
+variable min_rgb: Number = min(r, g, b);  // Minimum RGB component
+variable delta: Number = max_rgb - min_rgb;  // Chroma
+
+// Step 2: Calculate Whiteness and Blackness
+variable W: Number = min_rgb;        // Whiteness = minimum RGB value
+variable B: Number = 1 - max_rgb;    // Blackness = 1 - maximum RGB value
+
+// Step 3: Calculate Hue
+variable H: Number = 0;
+
+if (delta != 0) [
+    // === Hue Calculation Based on Dominant Color ===
+    if (max_rgb == r) [
+        // Red is dominant: H = 60° × ((g - b) / Δ)
+        variable hue_factor: Number = (g - b) / delta;
+        H = 60 * hue_factor;
+        
+        // Handle negative hue values
+        if (H < 0) [
+            H = H + 360;
+        ];
+    ] else [
+        if (max_rgb == g) [
+            // Green is dominant: H = 60° × (2 + (b - r) / Δ)
+            H = 60 * (2 + (b - r) / delta);
+        ] else [
+            // Blue is dominant: H = 60° × (4 + (r - g) / Δ)
+            H = 60 * (4 + (r - g) / delta);
+        ];
+    ];
+];
+
+// Step 4: Normalize hue to [0, 360) range
+H = mod(H, 360);
+if (H < 0) [
+    H = H + 360;
+];
+
+// === Value Scaling ===
+// Convert W and B from [0,1] to [0,100] percentage
+W = W * 100;
+B = B * 100;
+
+// Step 5: Store final HWB values
+hwb.update(0, H);   // Hue in degrees [0,360)
+hwb.update(1, W);   // Whiteness in percent [0,100]
+hwb.update(2, B);   // Blackness in percent [0,100]
+
+// === Output Construction ===
+variable output: Color.HWB;
+output.h = hwb.get(0);
+output.w = hwb.get(1);
+output.b = hwb.get(2);
+
+return output;

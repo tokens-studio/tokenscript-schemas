@@ -1,0 +1,136 @@
+// @source: lab
+// @target: srgb
+// @description: Converts CIE Lab to sRGB via XYZ D50 and chromatic adaptation
+// @lossless: True
+// @end
+
+// === Input Processing ===
+variable lab: List = {input}.l, {input}.a, {input}.b;
+variable L: Number = lab.get(0);  // Lightness component [0,100]
+variable a: Number = lab.get(1);  // Green-Red axis component
+variable b: Number = lab.get(2);  // Blue-Yellow axis component
+
+// === Working Variables ===
+variable srgb: List = 0, 0, 0;
+
+// === CIE Lab to sRGB Conversion Algorithm ===
+// Multi-step process: Lab → XYZ D50 → XYZ D65 → Linear sRGB → sRGB
+// Based on: CIE 15:2004 "Colorimetry" and sRGB specification
+
+// === Step 1: Lab to XYZ D50 Conversion ===
+// CIE Standard Illuminant D50 White Point
+variable Xn_d50: Number = 0.9642;   // D50 white point X
+variable Yn_d50: Number = 1.0000;   // D50 white point Y
+variable Zn_d50: Number = 0.8249;   // D50 white point Z
+
+// Calculate intermediate values from Lab components
+variable fy: Number = (L + 16) / 116;       // Y component transform
+variable fx: Number = a / 500 + fy;         // X component transform
+variable fz: Number = fy - b / 200;         // Z component transform
+
+// Constants for inverse Lab transformation
+variable delta: Number = 6.0 / 29.0;           // δ = 6/29
+variable delta_squared: Number = delta * delta; // δ²
+variable three_delta_squared: Number = 3.0 * delta_squared;  // 3δ²
+variable linear_offset: Number = 4.0 / 29.0;   // 4/29
+
+// Transform X component
+variable x_norm: Number = 0;
+if (fx > delta) [
+    x_norm = fx * fx * fx;  // Cubic transformation
+] else [
+    x_norm = three_delta_squared * (fx - linear_offset);  // Linear transformation
+];
+
+// Transform Y component
+variable y_norm: Number = 0;
+if (fy > delta) [
+    y_norm = fy * fy * fy;  // Cubic transformation
+] else [
+    y_norm = three_delta_squared * (fy - linear_offset);  // Linear transformation
+];
+
+// Transform Z component
+variable z_norm: Number = 0;
+if (fz > delta) [
+    z_norm = fz * fz * fz;  // Cubic transformation
+] else [
+    z_norm = three_delta_squared * (fz - linear_offset);  // Linear transformation
+];
+
+// Denormalize relative to D50 white point
+variable X_d50: Number = x_norm * Xn_d50;
+variable Y_d50: Number = y_norm * Yn_d50;
+variable Z_d50: Number = z_norm * Zn_d50;
+
+// === Step 2: Chromatic Adaptation D50 → D65 ===
+// Bradford transformation matrix for D50 → D65 adaptation
+variable X_d65: Number = 0.9555766 * X_d50 - 0.0230393 * Y_d50 + 0.0631636 * Z_d50;
+variable Y_d65: Number = -0.0282895 * X_d50 + 1.0099416 * Y_d50 + 0.0210077 * Z_d50;
+variable Z_d65: Number = 0.0122982 * X_d50 - 0.0204830 * Y_d50 + 1.3299098 * Z_d50;
+
+// === Step 3: XYZ D65 to Linear sRGB ===
+// sRGB transformation matrix (D65 illuminant)
+variable r_linear: Number = 3.2406 * X_d65 - 1.5372 * Y_d65 - 0.4986 * Z_d65;
+variable g_linear: Number = -0.9689 * X_d65 + 1.8758 * Y_d65 + 0.0415 * Z_d65;
+variable b_linear: Number = 0.0557 * X_d65 - 0.2040 * Y_d65 + 1.0570 * Z_d65;
+
+// === Step 4: Linear sRGB to sRGB (Gamma Correction) ===
+// sRGB gamma correction constants
+variable gamma_threshold: Number = 0.0031308;
+variable linear_coefficient: Number = 12.92;
+variable gamma_scale: Number = 1.055;
+variable gamma_exponent: Number = 2.4;
+variable gamma_offset: Number = 0.055;
+
+// Process red component
+variable r: Number = 0;
+if (r_linear <= gamma_threshold) [
+    r = r_linear * linear_coefficient;
+] else [
+    r = gamma_scale * pow(r_linear, 1 / gamma_exponent) - gamma_offset;
+];
+
+// Process green component
+variable g: Number = 0;
+if (g_linear <= gamma_threshold) [
+    g = g_linear * linear_coefficient;
+] else [
+    g = gamma_scale * pow(g_linear, 1 / gamma_exponent) - gamma_offset;
+];
+
+// Process blue component
+variable b_srgb: Number = 0;
+if (b_linear <= gamma_threshold) [
+    b_srgb = b_linear * linear_coefficient;
+] else [
+    b_srgb = gamma_scale * pow(b_linear, 1 / gamma_exponent) - gamma_offset;
+];
+
+// === Value Scaling and Clamping ===
+// Convert from [0,1] to [0,255] range
+variable rgb_max: Number = 255;
+r = r * rgb_max;
+g = g * rgb_max;
+b_srgb = b_srgb * rgb_max;
+
+// Clamp values to valid sRGB range [0, 255]
+if (r < 0) [ r = 0; ];
+if (r > rgb_max) [ r = rgb_max; ];
+if (g < 0) [ g = 0; ];
+if (g > rgb_max) [ g = rgb_max; ];
+if (b_srgb < 0) [ b_srgb = 0; ];
+if (b_srgb > rgb_max) [ b_srgb = rgb_max; ];
+
+// Store final sRGB values
+srgb.update(0, r);
+srgb.update(1, g);
+srgb.update(2, b_srgb);
+
+// === Output Construction ===
+variable output: Color.sRGB;
+output.r = srgb.get(0);
+output.g = srgb.get(1);
+output.b = srgb.get(2);
+
+return output;

@@ -1,0 +1,40 @@
+// @source: xyz-d50
+// @target: xyz-d65
+// @description: Converts XYZ-D50 to XYZ-D65 using inverse Bradford Chromatic Adaptation Transform
+// @lossless: True
+// @end
+
+// === Input Processing ===
+variable xyz_d50: List = {input}.x, {input}.y, {input}.z;
+variable x_d50: Number = xyz_d50.get(0);  // X component with D50 illuminant
+variable y_d50: Number = xyz_d50.get(1);  // Y component with D50 illuminant
+variable z_d50: Number = xyz_d50.get(2);  // Z component with D50 illuminant
+
+// === Working Variables ===
+variable xyz_d65: List = 0, 0, 0;
+
+// === Inverse Bradford Chromatic Adaptation Transform ===
+// Source: ICC.1:2010 specification
+// Converts XYZ with D50 illuminant to XYZ with D65 illuminant
+// This is the mathematical inverse of the D65 → D50 matrix
+//
+// [X_D65]   [0.9555766 -0.0230393  0.0631636] [X_D50]
+// [Y_D65] = [-0.0282895  1.0099416  0.0210077] [Y_D50]
+// [Z_D65]   [0.0122982 -0.0204830  1.3299098] [Z_D50]
+
+variable x_d65: Number = x_d50 * 0.9555766 + y_d50 * -0.0230393 + z_d50 * 0.0631636;
+variable y_d65: Number = x_d50 * -0.0282895 + y_d50 * 1.0099416 + z_d50 * 0.0210077;
+variable z_d65: Number = x_d50 * 0.0122982 + y_d50 * -0.0204830 + z_d50 * 1.3299098;
+
+// Update XYZ list with converted values
+xyz_d65.update(0, x_d65);
+xyz_d65.update(1, y_d65);
+xyz_d65.update(2, z_d65);
+
+// === Output Construction ===
+variable output: Color.XYZD65;
+output.x = xyz_d65.get(0);
+output.y = xyz_d65.get(1);
+output.z = xyz_d65.get(2);
+
+return output;

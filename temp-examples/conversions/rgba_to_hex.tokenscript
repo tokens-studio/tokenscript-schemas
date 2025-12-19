@@ -1,0 +1,58 @@
+// @source: rgba
+// @target: hex
+// @description: Converts RGBA to hexadecimal color code with alpha
+// @lossless: True
+// @end
+
+// === Input Processing ===
+variable rgba: List = {input}.r, {input}.g, {input}.b, {input}.a;
+variable hex: String = "#";
+
+// === RGBA Component Processing ===
+// Convert RGB components to hex, then alpha if not full opacity
+variable r: Number = rgba.get(0);
+variable g: Number = rgba.get(1);
+variable b: Number = rgba.get(2);
+variable a: Number = rgba.get(3);
+
+// === Value Clamping and Conversion ===
+// Clamp RGB values to [0, 255] range
+if (r < 0) [ r = 0; ];
+if (r > 255) [ r = 255; ];
+if (g < 0) [ g = 0; ];
+if (g > 255) [ g = 255; ];
+if (b < 0) [ b = 0; ];
+if (b > 255) [ b = 255; ];
+
+// === RGB Hex Conversion ===
+// Convert each RGB component to two-digit hex
+variable r_hex: String = r.toString(16);
+if (r < 16) [ hex = hex.concat("0"); ];
+hex = hex.concat(r_hex);
+
+variable g_hex: String = g.toString(16);
+if (g < 16) [ hex = hex.concat("0"); ];
+hex = hex.concat(g_hex);
+
+variable b_hex: String = b.toString(16);
+if (b < 16) [ hex = hex.concat("0"); ];
+hex = hex.concat(b_hex);
+
+// === Alpha Processing ===
+// Include alpha channel only if not full opacity
+if (a < 1.0) [
+    // Convert alpha from [0,1] to [0,255] range
+    variable alpha_255: Number = a * 255;
+    if (alpha_255 < 0) [ alpha_255 = 0; ];
+    if (alpha_255 > 255) [ alpha_255 = 255; ];
+    
+    variable a_hex: String = alpha_255.toString(16);
+    if (alpha_255 < 16) [ hex = hex.concat("0"); ];
+    hex = hex.concat(a_hex);
+];
+
+// === Output Construction ===
+variable output: Color.Hex;
+output.value = hex;
+
+return output;

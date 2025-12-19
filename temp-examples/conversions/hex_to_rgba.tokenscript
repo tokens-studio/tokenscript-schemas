@@ -1,0 +1,43 @@
+// @source: hex
+// @target: rgba
+// @description: Converts hexadecimal color code to RGBA
+// @lossless: True
+// @end
+
+// === Input Processing ===
+variable hex_string: String = {input}.value;
+variable rgba: List = 0, 0, 0, 1.0;
+
+// === Hex String Preprocessing ===
+// Remove # prefix if present and get length
+variable color_part: String = hex_string.split("#").get(1);
+variable hex_length: Number = color_part.length();
+
+// === RGBA Component Processing ===
+// Handle different hex formats: #RRGGBB (6 chars) and #RRGGBBAA (8 chars)
+if (hex_length == 6) [
+    // === 6-character hex format (RGB) ===
+    // Parse RGB components and set alpha to 1.0
+    rgba.update(0, parseInt(color_part.substring(0, 2), 16));
+    rgba.update(1, parseInt(color_part.substring(2, 4), 16));
+    rgba.update(2, parseInt(color_part.substring(4, 6), 16));
+    rgba.update(3, 1.0);  // Full opacity for RGB format
+] else [
+    if (hex_length == 8) [
+        // === 8-character hex format (RGBA) ===
+        // Parse RGBA components with alpha normalization
+        rgba.update(0, parseInt(color_part.substring(0, 2), 16));
+        rgba.update(1, parseInt(color_part.substring(2, 4), 16));
+        rgba.update(2, parseInt(color_part.substring(4, 6), 16));
+        rgba.update(3, parseInt(color_part.substring(6, 8), 16) / 255.0);
+    ];
+];
+
+// === Output Construction ===
+variable output: Color.RGBA;
+output.r = rgba.get(0);
+output.g = rgba.get(1);
+output.b = rgba.get(2);
+output.a = rgba.get(3);
+
+return output;

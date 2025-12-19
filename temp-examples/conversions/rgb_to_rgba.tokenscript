@@ -1,0 +1,21 @@
+// @source: srgb
+// @target: rgba
+// @description: Converts sRGB to RGBA by adding full opacity alpha channel
+// @lossless: True
+// @end
+
+// === Input Processing ===
+variable rgb: List = {input}.r, {input}.g, {input}.b;
+
+// === RGBA Construction ===
+// Add full opacity alpha channel (1.0) to RGB values
+variable rgba: List = rgb.get(0), rgb.get(1), rgb.get(2), 1.0;
+
+// === Output Construction ===
+variable output: Color.RGBA;
+output.r = rgba.get(0);
+output.g = rgba.get(1);
+output.b = rgba.get(2);
+output.a = rgba.get(3);
+
+return output;

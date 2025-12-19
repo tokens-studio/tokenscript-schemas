@@ -1,0 +1,38 @@
+// @source: linear-rec2020
+// @target: xyz-d65
+// @description: Converts Linear Rec2020 to CIE XYZ D65 using Rec2020 transformation matrix
+// @lossless: True
+// @end
+
+// === Input Processing ===
+variable linear_rec2020: List = {input}.r, {input}.g, {input}.b;
+variable r: Number = linear_rec2020.get(0);  // Linear red component
+variable g: Number = linear_rec2020.get(1);  // Linear green component
+variable b: Number = linear_rec2020.get(2);  // Linear blue component
+
+// === Working Variables ===
+variable xyz: List = 0, 0, 0;
+
+// === Linear Rec2020 to XYZ D65 Conversion Algorithm ===
+// Based on: ITU-R Recommendation BT.2020-2
+// Uses Rec2020 transformation matrix for D65 illuminant
+
+// === Rec2020 Transformation Matrix (Linear Rec2020 → XYZ D65) ===
+// Matrix coefficients from ITU-R BT.2020-2 specification
+variable X: Number = 0.6369580483 * r + 0.1446169036 * g + 0.1688809752 * b;
+variable Y: Number = 0.2627402905 * r + 0.6779980715 * g + 0.0593017164 * b;
+variable Z: Number = 0.0000000000 * r + 0.0280726930 * g + 1.0609850577 * b;
+
+// === Value Storage ===
+// Store final XYZ D65 values
+xyz.update(0, X);  // X tristimulus value
+xyz.update(1, Y);  // Y tristimulus value (luminance)
+xyz.update(2, Z);  // Z tristimulus value
+
+// === Output Construction ===
+variable output: Color.XYZD65;
+output.x = xyz.get(0);
+output.y = xyz.get(1);
+output.z = xyz.get(2);
+
+return output;

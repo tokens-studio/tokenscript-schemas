@@ -1,0 +1,39 @@
+// @source: xyz-d65
+// @target: linear-p3
+// @description: Converts CIE XYZ D65 to Linear Display P3 using inverse P3 transformation matrix
+// @lossless: True
+// @end
+
+// === Input Processing ===
+variable xyz: List = {input}.x, {input}.y, {input}.z;
+variable X: Number = xyz.get(0);  // X tristimulus value
+variable Y: Number = xyz.get(1);  // Y tristimulus value (luminance)
+variable Z: Number = xyz.get(2);  // Z tristimulus value
+
+// === Working Variables ===
+variable linear_p3: List = 0, 0, 0;
+
+// === XYZ D65 to Linear Display P3 Conversion Algorithm ===
+// Based on: Apple Display P3 color space specification
+// Uses inverse Display P3 transformation matrix for D65 illuminant
+
+// === Display P3 Transformation Matrix (XYZ D65 → Linear P3) ===
+// Inverse matrix coefficients from Apple Display P3 specification
+// Reference: Apple Technical Note TN2257
+variable r: Number = 2.4934969119 * X - 0.9313836179 * Y - 0.4027107845 * Z;
+variable g: Number = -0.8294889696 * X + 1.7626640603 * Y + 0.0236246858 * Z;
+variable b: Number = 0.0358458302 * X - 0.0761723893 * Y + 0.9568845240 * Z;
+
+// === Value Storage ===
+// Store final Linear Display P3 values
+linear_p3.update(0, r);  // Linear red component
+linear_p3.update(1, g);  // Linear green component
+linear_p3.update(2, b);  // Linear blue component
+
+// === Output Construction ===
+variable output: Color.LinearDisplayP3;
+output.r = linear_p3.get(0);
+output.g = linear_p3.get(1);
+output.b = linear_p3.get(2);
+
+return output;
