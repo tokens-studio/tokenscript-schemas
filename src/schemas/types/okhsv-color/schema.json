@@ -1,7 +1,7 @@
 {
   "name": "OKHSV",
   "type": "color",
-  "description": "OKHSV color space by Björn Ottosson - a perceptually uniform HSV based on OKLab. H is hue (0-360), S is saturation (0-1), V is value (0-1). Reference: https://bottosson.github.io/posts/colorpicker/. Note: This implementation uses a simplified cusp approximation; full ColorJS parity requires proper gamut boundary computation.",
+  "description": "OKHSV color space by Björn Ottosson - a perceptually uniform HSV based on OKLab. H is hue (0-360), S is saturation (0-1), V is value (0-1). Reference: https://bottosson.github.io/posts/colorpicker/",
   "schema": {
     "type": "object",
     "properties": {
@@ -37,8 +37,8 @@
     {
       "source": "/api/v1/core/oklab-color/0/",
       "target": "$self",
-      "description": "Converts OKLab to OKHSV. Uses simplified cusp approximation for sRGB gamut boundary.",
-      "lossless": false,
+      "description": "Converts OKLab to OKHSV using Ottosson's algorithm with Halley's method refinement for gamut boundary",
+      "lossless": true,
       "script": {
         "type": "/api/v1/core/tokenscript/0/",
         "script": "./from-oklab.tokenscript"
