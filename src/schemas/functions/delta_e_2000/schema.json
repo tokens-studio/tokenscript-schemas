@@ -1,0 +1,37 @@
+{
+  "name": "Delta E 2000",
+  "type": "function",
+  "description": "Calculates perceptual color difference using CIEDE2000 (ΔE00), the CIE-recommended color difference formula. More accurate than CIE76 for small differences. Industry standard for color quality control. Uses parametric weighting factors kL, kC, kH (all default to 1).",
+  "keyword": "delta_e_2000",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color1": {
+        "type": "color",
+        "description": "First color (reference)"
+      },
+      "color2": {
+        "type": "color",
+        "description": "Second color (sample)"
+      },
+      "kL": {
+        "type": "number",
+        "description": "Lightness weight (default 1)"
+      },
+      "kC": {
+        "type": "number",
+        "description": "Chroma weight (default 1)"
+      },
+      "kH": {
+        "type": "number",
+        "description": "Hue weight (default 1)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./delta-e-2000.tokenscript"
+  },
+  "requirements": ["/api/v1/core/lab-color/0/", "/api/v1/core/lch-color/0/"]
+}
+

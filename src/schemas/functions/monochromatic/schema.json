@@ -1,0 +1,25 @@
+{
+  "name": "Monochromatic",
+  "type": "function",
+  "description": "Generates a monochromatic color palette - variations of a single hue with different lightness and chroma. Useful for creating cohesive single-color schemes. Preserves hue, varies lightness from light to dark.",
+  "keyword": "monochromatic",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "Base color"
+      },
+      "count": {
+        "type": "number",
+        "description": "Number of colors to generate (default: 5)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./monochromatic.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/", "/api/v1/core/srgb-color/0/"]
+}
+

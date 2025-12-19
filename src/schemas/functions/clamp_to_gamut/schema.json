@@ -1,0 +1,21 @@
+{
+  "name": "Clamp to Gamut",
+  "type": "function",
+  "description": "Clips a color to the sRGB gamut by clamping each RGB channel to [0,1]. This is a simple but lossy approach - for perceptually better results, consider using gamut mapping algorithms that reduce chroma first.",
+  "keyword": "clamp_to_gamut",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "Color to clamp"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./clamp-to-gamut.tokenscript"
+  },
+  "requirements": ["/api/v1/core/srgb-color/0/"]
+}
+

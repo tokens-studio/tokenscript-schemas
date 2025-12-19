@@ -1,0 +1,25 @@
+{
+  "name": "Hue Difference",
+  "type": "function",
+  "description": "Calculates the angular difference between two color hues. Returns the shortest path around the hue circle (0-180°). Useful for determining how different two colors are in terms of hue alone, ignoring lightness and chroma.",
+  "keyword": "hue_difference",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color1": {
+        "type": "color",
+        "description": "First color"
+      },
+      "color2": {
+        "type": "color",
+        "description": "Second color"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./hue-difference.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/"]
+}
+

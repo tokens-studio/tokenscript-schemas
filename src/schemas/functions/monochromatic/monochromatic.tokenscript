@@ -1,0 +1,72 @@
+// Monochromatic Color Palette
+// Generates variations of a single hue with different lightness
+//
+// A monochromatic scheme uses:
+// - Same hue throughout
+// - Varying lightness (from light tints to dark shades)
+// - Varying chroma (reduced at extremes for natural appearance)
+//
+// This creates harmonious, cohesive palettes ideal for:
+// - UI background/foreground variations
+// - Data visualization with single-variable emphasis
+// - Brand color systems
+
+variable input: List = {input};
+variable base: Color.OKLCH = input.get(0).to.oklch();
+
+// Default count is 5
+variable count: Number = 5;
+if (input.length() > 1) [
+    count = input.get(1);
+];
+
+// Preserve the hue
+variable base_h: Number = base.h;
+variable base_c: Number = base.c;
+
+// Define lightness range (from light to dark)
+variable light_start: Number = 0.9;
+variable light_end: Number = 0.3;
+
+variable result: List;
+variable i: Number = 0;
+variable t: Number = 0;
+variable step_l: Number = 0;
+variable l_factor: Number = 0;
+variable step_c: Number = 0;
+variable color: Color.OKLCH;
+
+while (i < count) [
+    // Calculate interpolation factor
+    if (count > 1) [
+        t = i / (count - 1);
+    ] else [
+        t = 0.5;
+    ];
+    
+    // Interpolate lightness
+    step_l = light_start + (light_end - light_start) * t;
+    
+    // Scale chroma - reduce at extremes for natural appearance
+    // Peak chroma around middle lightness (0.6)
+    l_factor = step_l - 0.6;
+    if (l_factor < 0) [ l_factor = 0 - l_factor; ];
+    l_factor = 1 - l_factor * 1.5;
+    if (l_factor < 0.3) [ l_factor = 0.3; ];
+    if (l_factor > 1) [ l_factor = 1; ];
+    
+    step_c = base_c * l_factor;
+    
+    // Clamp chroma to avoid out-of-gamut
+    if (step_c > 0.35) [ step_c = 0.35; ];
+    
+    color.l = step_l;
+    color.c = step_c;
+    color.h = base_h;
+    
+    result = result, color.to.srgb();
+    i = i + 1;
+];
+
+return result;
+

@@ -1,0 +1,62 @@
+// Is Warm Color
+// Determines if a color is perceptually warm or cool
+//
+// Color Temperature Psychology:
+// - Warm colors: Red, orange, yellow (associated with fire, sun)
+// - Cool colors: Blue, green, purple (associated with water, ice)
+//
+// Hue ranges (in OKLCH/HSL degrees):
+// - Warm: roughly 0-90° (red through yellow) and 330-360° (red-magenta)
+// - Cool: roughly 90-330° (yellow-green through purple)
+//
+// Achromatic colors (low chroma) are considered neutral
+// and return false (lean towards cool for safety in accessibility)
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+
+// Get hue and chroma
+variable h: Number = color.h;
+variable c: Number = color.c;
+
+// Achromatic colors (very low chroma) are neutral
+// Return false (cool) for these
+if (c < 0.02) [
+    return false;
+];
+
+// Normalize hue to 0-360
+if (h < 0) [ h = h + 360; ];
+if (h >= 360) [ h = h - 360; ];
+
+// OKLCH Warm hue ranges:
+// In OKLCH, hue angles differ from HSL:
+// - Red: ~29°
+// - Orange: ~53°
+// - Yellow: ~110°
+// - Yellow-green: ~130°
+// - Green: ~145°
+// - Cyan: ~195°
+// - Blue: ~265°
+// - Purple: ~300°
+// - Magenta: ~330°
+//
+// Warm colors: 0-130° (red through yellow-green) and 320-360° (magenta-red)
+variable is_warm: Boolean = false;
+
+// Check 0-130 range (red through yellow to yellow-green)
+if (h >= 0) [
+    if (h <= 130) [
+        is_warm = true;
+    ];
+];
+
+// Check 320-360 range (magenta-red)
+if (h >= 320) [
+    if (h <= 360) [
+        is_warm = true;
+    ];
+];
+
+return is_warm;
+

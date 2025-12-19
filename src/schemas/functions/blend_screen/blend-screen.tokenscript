@@ -1,0 +1,36 @@
+// Blend Screen
+// Reference: W3C Compositing and Blending Level 1
+// Reference: https://www.w3.org/TR/compositing-1/#blendingscreen
+//
+// Formula: C = 1 - (1-A) × (1-B)
+// Equivalent to: C = A + B - A×B
+//
+// Properties:
+// - Result is always ≥ both inputs (lighter)
+// - Screening with black (0) leaves color unchanged
+// - Screening with white (1) produces white
+// - Opposite of multiply
+//
+// Use cases:
+// - Creating highlights and glow effects
+// - Lightening images
+// - Simulating light sources
+
+variable input: List = {input};
+variable base: Color.SRGB = input.get(0).to.srgb();
+variable blend: Color.SRGB = input.get(1).to.srgb();
+
+// Screen formula: 1 - (1-A) × (1-B)
+// Simplified: A + B - A×B
+variable r: Number = base.r + blend.r - base.r * blend.r;
+variable g: Number = base.g + blend.g - base.g * blend.g;
+variable b: Number = base.b + blend.b - base.b * blend.b;
+
+// Create result
+variable result: Color.SRGB;
+result.r = r;
+result.g = g;
+result.b = b;
+
+return result;
+

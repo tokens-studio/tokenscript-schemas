@@ -1,0 +1,21 @@
+{
+  "name": "Is Cool",
+  "type": "function",
+  "description": "Checks if a color is perceptually cool. Cool colors have hues in the green-blue-purple range (roughly 130-320° in OKLCH). Returns true for cool colors (green, cyan, blue, purple), false for warm colors. Achromatic colors are considered neutral/cool.",
+  "keyword": "is_cool",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "Color to check"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./is-cool.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/"]
+}
+

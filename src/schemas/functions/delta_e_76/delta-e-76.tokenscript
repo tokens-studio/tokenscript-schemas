@@ -1,0 +1,45 @@
+// Delta E 76 (CIE76 Color Difference)
+// Reference: CIE Publication 15.2 (1986)
+// Reference: ASTM E308 Standard
+//
+// The original CIE color difference formula from 1976.
+// Simple Euclidean distance in CIE Lab space.
+//
+// Formula: ΔE*ab = sqrt((L1-L2)² + (a1-a2)² + (b1-b2)²)
+//
+// Interpretation:
+//   0 - 1:     Not perceptible by human eye
+//   1 - 2:     Perceptible through close observation
+//   2 - 10:    Perceptible at a glance
+//   11 - 49:   Colors are more similar than opposite
+//   100+:      Colors are exact opposite
+//
+// Limitations:
+// - Lab is not perfectly perceptually uniform
+// - Overestimates differences for saturated colors
+// - Use Delta E 2000 for critical color matching
+
+variable input: List = {input};
+variable color1: Color.Lab = input.get(0).to.lab();
+variable color2: Color.Lab = input.get(1).to.lab();
+
+// Get Lab components
+variable l1: Number = color1.l;
+variable a1: Number = color1.a;
+variable b1: Number = color1.b;
+
+variable l2: Number = color2.l;
+variable a2: Number = color2.a;
+variable b2: Number = color2.b;
+
+// Calculate differences
+variable delta_l: Number = l1 - l2;
+variable delta_a: Number = a1 - a2;
+variable delta_b: Number = b1 - b2;
+
+// Euclidean distance
+variable sum_squares: Number = delta_l * delta_l + delta_a * delta_a + delta_b * delta_b;
+variable result: Number = sqrt(sum_squares);
+
+return result;
+

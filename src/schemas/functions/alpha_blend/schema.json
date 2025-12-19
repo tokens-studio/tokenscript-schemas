@@ -1,0 +1,29 @@
+{
+  "name": "Alpha Blend",
+  "type": "function",
+  "description": "Performs Porter-Duff 'over' compositing to blend a foreground color over a background color using the foreground's alpha. Formula: result = fg × α + bg × (1-α). Standard alpha compositing used in CSS and graphics software.",
+  "keyword": "alpha_blend",
+  "input": {
+    "type": "object",
+    "properties": {
+      "foreground": {
+        "type": "color",
+        "description": "Foreground (top) color"
+      },
+      "background": {
+        "type": "color",
+        "description": "Background (bottom) color"
+      },
+      "alpha": {
+        "type": "number",
+        "description": "Opacity of foreground (0-1, default: 0.5)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./alpha-blend.tokenscript"
+  },
+  "requirements": ["/api/v1/core/srgb-color/0/"]
+}
+

@@ -1,0 +1,25 @@
+{
+  "name": "Blend Overlay",
+  "type": "function",
+  "description": "Overlay blend mode - combines multiply and screen. Darkens darks and lightens lights. Formula: if base < 0.5: 2×base×blend, else: 1 - 2×(1-base)×(1-blend). Increases contrast while preserving base color character.",
+  "keyword": "blend_overlay",
+  "input": {
+    "type": "object",
+    "properties": {
+      "base": {
+        "type": "color",
+        "description": "Base/bottom color"
+      },
+      "blend": {
+        "type": "color",
+        "description": "Blend/top color"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./blend-overlay.tokenscript"
+  },
+  "requirements": ["/api/v1/core/srgb-color/0/"]
+}
+

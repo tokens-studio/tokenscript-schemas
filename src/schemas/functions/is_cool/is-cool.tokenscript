@@ -1,0 +1,41 @@
+// Is Cool Color
+// Determines if a color is perceptually cool
+//
+// Cool colors are associated with:
+// - Water, ice, sky
+// - Calm, professional, trustworthy feelings
+// - Receding visual perception (appear further away)
+//
+// OKLCH hue ranges:
+// - Cool: 130-320° (yellow-green through purple)
+// - Includes: green, cyan, blue, purple
+//
+// Achromatic colors (low chroma) are considered cool/neutral
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+
+// Get hue and chroma
+variable h: Number = color.h;
+variable c: Number = color.c;
+
+// Achromatic colors (very low chroma) are considered cool/neutral
+if (c < 0.02) [
+    return true;
+];
+
+// Normalize hue to 0-360
+if (h < 0) [ h = h + 360; ];
+if (h >= 360) [ h = h - 360; ];
+
+// Cool hue range: 130-320° (green through purple)
+variable is_cool: Boolean = false;
+
+if (h > 130) [
+    if (h < 320) [
+        is_cool = true;
+    ];
+];
+
+return is_cool;
+
