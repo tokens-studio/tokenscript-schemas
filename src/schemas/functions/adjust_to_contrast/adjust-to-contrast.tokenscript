@@ -12,6 +12,10 @@
 //   target_ratio - Minimum contrast ratio (default: 4.5 for WCAG AA)
 //
 // Uses binary search in OKLCH lightness for convergence.
+//
+// Input:  Any color space (converted to OKLCH internally)
+// Output: OKLCH (working space)
+// To get sRGB: adjust_to_contrast(fg, bg, 4.5).to.srgb()
 
 variable input: List = {input};
 variable foreground: Color.OKLCH = input.get(0).to.oklch();
@@ -45,9 +49,9 @@ if (l2 > l1) [
 ];
 variable current_ratio: Number = (l1 + 0.05) / (l2 + 0.05);
 
-// If already meets target, return as-is
+// If already meets target, return as-is (in OKLCH working space)
 if (current_ratio >= target_ratio) [
-    return foreground.to.srgb();
+    return foreground;
 ];
 
 // Determine direction: if background is dark, we need lighter foreground and vice versa
@@ -118,10 +122,10 @@ while (diff > epsilon) [
     diff = search_max - search_min;
 ];
 
-// Apply best lightness found
+// Apply best lightness found, return in OKLCH working space
 variable result: Color.OKLCH;
 result.l = best_l;
 result.c = foreground.c;
 result.h = foreground.h;
 
-return result.to.srgb();
+return result;

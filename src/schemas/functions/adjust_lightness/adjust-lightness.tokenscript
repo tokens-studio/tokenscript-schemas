@@ -4,8 +4,11 @@
 // amount. Positive values lighten, negative values darken.
 // Result is clamped to [0, 1].
 //
-// Uses OKLCH for perceptually uniform results.
 // Preserves hue and chroma.
+//
+// Input:  Any color space (converted to OKLCH internally)
+// Output: OKLCH (working space)
+// To get sRGB: adjust_lightness(color, 0.2).to.srgb()
 
 variable input: List = {input};
 variable color: Color.OKLCH = input.get(0).to.oklch();
@@ -24,5 +27,5 @@ result.l = new_l;
 result.c = color.c;
 result.h = color.h;
 
-return result.to.srgb();
+return result;
 

@@ -23,5 +23,5 @@ result.l = color.l;
 result.c = new_c;
 result.h = color.h;
 
-return result.to.srgb();
+return result;
 

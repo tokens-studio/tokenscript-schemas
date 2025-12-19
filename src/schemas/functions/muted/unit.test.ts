@@ -28,7 +28,7 @@ describe("muted function", () => {
         `
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
-        muted(red)
+        muted(red).to.srgb()
         `
       );
 
@@ -46,7 +46,7 @@ describe("muted function", () => {
         `
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
-        muted(red, 1)
+        muted(red, 1).to.srgb()
         `
       );
 
@@ -66,7 +66,7 @@ describe("muted function", () => {
         `
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
-        muted(red, 0)
+        muted(red, 0).to.srgb()
         `
       );
 
@@ -87,7 +87,7 @@ describe("muted function", () => {
         `
         variable gray: Color.SRGB;
         gray.r = 0.5; gray.g = 0.5; gray.b = 0.5;
-        muted(gray)
+        muted(gray).to.srgb()
         `
       );
 

@@ -14,5 +14,5 @@ result.l = color.l;
 result.c = color.c;
 result.h = target_h;
 
-return result.to.srgb();
+return result;
 

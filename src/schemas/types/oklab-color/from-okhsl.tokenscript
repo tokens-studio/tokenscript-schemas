@@ -1,0 +1,97 @@
+// OKHSL to OKLab Conversion
+// Reference: Björn Ottosson - "A perceptual color picker: OKHSL and OKHSV"
+// URL: https://bottosson.github.io/posts/colorpicker/
+// Reference: https://github.com/color-js/color.js/blob/main/src/spaces/okhsl.js
+//
+// Converts OKHSL (perceptually uniform HSL) back to OKLab coordinates.
+//
+// Algorithm overview:
+// 1. Apply inverse toe function: L = toe_inv(l) to get OKLab lightness
+// 2. Find maximum chroma C_max at this hue and lightness
+// 3. Compute actual chroma: C = S * C_max
+// 4. Convert polar (L, C, H) to cartesian (L, a, b)
+//
+// Input: Color.OKHSL with h (0-360), s (0-1), l (0-1)
+// Output: Color.OKLab with l (0-1), a, b coordinates
+
+variable h: Number = input.h;
+variable s: Number = input.s;
+variable l: Number = input.l;
+
+// Use native PI constant
+variable pi: Number = pi();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Step 1: Apply inverse toe function to lightness
+// Reference: Ottosson's inverse toe function
+//
+// toe_inv(x) = (x^2 + k1*x) / (k3*(x + k2))
+// where k1 = 0.206, k2 = 0.03, k3 = (1+k1)/(1+k2)
+// ═══════════════════════════════════════════════════════════════════════════
+variable k1: Number = 0.206;
+variable k2: Number = 0.03;
+variable k3: Number = 1.17009708737864;  // (1 + k1) / (1 + k2)
+
+variable lab_l: Number = l;
+if (l > 0.0001 && l < 0.9999) [
+  // Apply inverse toe function
+  lab_l = (l * l + k1 * l) / (k3 * (l + k2));
+];
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Step 2: Convert hue to radians and compute unit direction
+// ═══════════════════════════════════════════════════════════════════════════
+variable h_rad: Number = h * pi / 180;
+variable cos_h: Number = cos(h_rad);
+variable sin_h: Number = sin(h_rad);
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Step 3: Find maximum chroma at this hue and lightness
+// (Same approximation as in from-oklab.tokenscript)
+//
+// TODO: Implement proper cusp finding as per Ottosson's reference code
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Approximate cusp location varies by hue
+variable cusp_l: Number = 0.65;
+variable cusp_c: Number = 0.37;
+
+// Adjust cusp based on hue
+if (h > 80 && h < 140) [
+  cusp_l = 0.92;
+  cusp_c = 0.25;
+];
+if (h > 200 && h < 300) [
+  cusp_l = 0.35;
+  cusp_c = 0.32;
+];
+
+// Compute C_max at current lightness
+variable c_max: Number = 0;
+if (lab_l <= cusp_l && cusp_l > 0.001) [
+  c_max = cusp_c * (lab_l / cusp_l);
+] else [
+  if (cusp_l < 0.999) [
+    c_max = cusp_c * ((1 - lab_l) / (1 - cusp_l));
+  ];
+];
+
+if (c_max < 0.0001) [
+  c_max = 0.0001;
+];
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Step 4: Compute actual chroma and convert to cartesian
+// ═══════════════════════════════════════════════════════════════════════════
+variable c: Number = s * c_max;
+variable lab_a: Number = c * cos_h;
+variable lab_b: Number = c * sin_h;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Output: OKLab color
+// ═══════════════════════════════════════════════════════════════════════════
+variable output: Color.OKLab;
+output.l = lab_l;
+output.a = lab_a;
+output.b = lab_b;
+output

@@ -26,7 +26,7 @@ describe("Complement Function", () => {
         `
         variable red: Color.SRGB;
         red.r = 0.9; red.g = 0.2; red.b = 0.2;
-        complement(red)
+        complement(red).to.srgb()
         `,
       );
 
@@ -46,8 +46,7 @@ describe("Complement Function", () => {
         `
         variable blue: Color.SRGB;
         blue.r = 0.2; blue.g = 0.3; blue.b = 0.8;
-        variable comp: Color.SRGB = complement(blue);
-        complement(comp)
+        complement(complement(blue)).to.srgb()
         `,
       );
 
@@ -65,7 +64,7 @@ describe("Complement Function", () => {
         `
         variable light: Color.SRGB;
         light.r = 0.9; light.g = 0.85; light.b = 0.5;
-        complement(light)
+        complement(light).to.srgb()
         `,
       );
 

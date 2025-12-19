@@ -28,7 +28,7 @@ describe("Mix Function", () => {
         red.r = 1; red.g = 0; red.b = 0;
         variable blue: Color.SRGB;
         blue.r = 0; blue.g = 0; blue.b = 1;
-        mix(red, blue, 0.5)
+        mix(red, blue, 0.5).to.srgb()
         `,
       );
 
@@ -49,7 +49,7 @@ describe("Mix Function", () => {
         white.r = 1; white.g = 1; white.b = 1;
         variable black: Color.SRGB;
         black.r = 0; black.g = 0; black.b = 0;
-        mix(white, black, 0)
+        mix(white, black, 0).to.srgb()
         `,
       );
 
@@ -67,7 +67,7 @@ describe("Mix Function", () => {
         white.r = 1; white.g = 1; white.b = 1;
         variable black: Color.SRGB;
         black.r = 0; black.g = 0; black.b = 0;
-        mix(white, black, 1)
+        mix(white, black, 1).to.srgb()
         `,
       );
 
@@ -85,7 +85,7 @@ describe("Mix Function", () => {
         c1.r = 0.8; c1.g = 0.2; c1.b = 0.2;
         variable c2: Color.SRGB;
         c2.r = 0.2; c2.g = 0.8; c2.b = 0.2;
-        mix(c1, c2)
+        mix(c1, c2).to.srgb()
         `,
       );
 

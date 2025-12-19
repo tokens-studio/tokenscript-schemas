@@ -33,7 +33,7 @@ describe("Darken Function", () => {
         `
         variable light: Color.SRGB;
         light.r = 0.8; light.g = 0.8; light.b = 0.9;
-        darken(light, 0.2)
+        darken(light, 0.2).to.srgb()
         `,
       );
 
@@ -53,7 +53,7 @@ describe("Darken Function", () => {
         `
         variable color: Color.SRGB;
         color.r = 0.7; color.g = 0.7; color.b = 0.7;
-        darken(color)
+        darken(color).to.srgb()
         `,
       );
 
@@ -69,7 +69,7 @@ describe("Darken Function", () => {
         `
         variable dark: Color.SRGB;
         dark.r = 0.1; dark.g = 0.1; dark.b = 0.1;
-        darken(dark, 0.5)
+        darken(dark, 0.5).to.srgb()
         `,
       );
 
@@ -89,7 +89,7 @@ describe("Darken Function", () => {
         `
         variable blue: Color.SRGB;
         blue.r = 0.3; blue.g = 0.5; blue.b = 0.9;
-        darken(blue, 0.15)
+        darken(blue, 0.15).to.srgb()
         `,
       );
 

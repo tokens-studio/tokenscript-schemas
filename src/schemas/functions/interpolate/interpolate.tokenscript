@@ -9,6 +9,10 @@
 //   start - First color (t=0)
 //   end   - Second color (t=1)
 //   t     - Interpolation factor [0, 1], default 0.5
+//
+// Input:  Any color space (converted to OKLCH internally)
+// Output: OKLCH (working space)
+// To get sRGB: interpolate(start, end, 0.5).to.srgb()
 
 variable input: List = {input};
 variable start: Color.OKLCH = input.get(0).to.oklch();
@@ -53,5 +57,5 @@ result.l = result_l;
 result.c = result_c;
 result.h = result_h;
 
-return result.to.srgb();
+return result;
 

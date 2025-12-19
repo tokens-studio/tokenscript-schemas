@@ -30,7 +30,7 @@ describe("harmonize function", () => {
         color.r = 1; color.g = 0; color.b = 0;
         variable source: Color.SRGB;
         source.r = 0; source.g = 0; source.b = 1;
-        harmonize(color, source, 0.5)
+        harmonize(color, source, 0.5).to.srgb()
         `
       );
 
@@ -47,7 +47,7 @@ describe("harmonize function", () => {
         color.r = 1; color.g = 0; color.b = 0;
         variable source: Color.SRGB;
         source.r = 0; source.g = 0; source.b = 1;
-        harmonize(color, source, 0)
+        harmonize(color, source, 0).to.srgb()
         `
       );
 

@@ -26,7 +26,7 @@ describe("Saturate Function", () => {
         `
         variable muted: Color.SRGB;
         muted.r = 0.5; muted.g = 0.4; muted.b = 0.45;
-        saturate(muted, 0.05)
+        saturate(muted, 0.05).to.srgb()
         `,
       );
 
@@ -49,7 +49,7 @@ describe("Saturate Function", () => {
         `
         variable color: Color.SRGB;
         color.r = 0.6; color.g = 0.5; color.b = 0.5;
-        saturate(color)
+        saturate(color).to.srgb()
         `,
       );
 

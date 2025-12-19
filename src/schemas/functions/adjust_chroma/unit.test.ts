@@ -28,7 +28,7 @@ describe("adjust_chroma function", () => {
         `
         variable color: Color.SRGB;
         color.r = 0.5; color.g = 0.4; color.b = 0.4;
-        adjust_chroma(color, 0.1)
+        adjust_chroma(color, 0.1).to.srgb()
         `
       );
 
@@ -46,7 +46,7 @@ describe("adjust_chroma function", () => {
         `
         variable orange: Color.SRGB;
         orange.r = 1; orange.g = 0.4; orange.b = 0;
-        adjust_chroma(orange, -0.1)
+        adjust_chroma(orange, -0.1).to.srgb()
         `
       );
 
@@ -63,7 +63,7 @@ describe("adjust_chroma function", () => {
         `
         variable gray: Color.SRGB;
         gray.r = 0.5; gray.g = 0.5; gray.b = 0.5;
-        adjust_chroma(gray, -1)
+        adjust_chroma(gray, -1).to.srgb()
         `
       );
 

@@ -30,7 +30,7 @@ describe("adjust_to_contrast function", () => {
         black.r = 0; black.g = 0; black.b = 0;
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
-        adjust_to_contrast(black, white, 4.5)
+        adjust_to_contrast(black, white, 4.5).to.srgb()
         `
       );
 
@@ -49,7 +49,7 @@ describe("adjust_to_contrast function", () => {
         light_gray.r = 0.8; light_gray.g = 0.8; light_gray.b = 0.8;
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
-        adjust_to_contrast(light_gray, white, 4.5)
+        adjust_to_contrast(light_gray, white, 4.5).to.srgb()
         `
       );
 
@@ -68,7 +68,7 @@ describe("adjust_to_contrast function", () => {
         dark_gray.r = 0.2; dark_gray.g = 0.2; dark_gray.b = 0.2;
         variable black: Color.SRGB;
         black.r = 0; black.g = 0; black.b = 0;
-        adjust_to_contrast(dark_gray, black, 4.5)
+        adjust_to_contrast(dark_gray, black, 4.5).to.srgb()
         `
       );
 

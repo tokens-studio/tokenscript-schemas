@@ -1,0 +1,137 @@
+// OKLab to OKHSV Conversion
+// Reference: Björn Ottosson - "A perceptual color picker: OKHSL and OKHSV"
+// URL: https://bottosson.github.io/posts/colorpicker/
+// Reference: https://github.com/color-js/color.js/blob/main/src/spaces/okhsv.js
+//
+// OKHSV is a perceptually uniform HSV model based on OKLab. Unlike regular HSV:
+// - At S=1 and any V, the color is on the sRGB gamut boundary
+// - At V=1 and S=1, the color is the most saturated for that hue
+// - The model maintains OKLab's perceptual uniformity properties
+//
+// Key difference from OKHSL:
+// - In HSV, V=1 means maximum brightness (white at S=0, pure hue at S=1)
+// - In HSL, L=1 means white regardless of saturation
+// - HSV is more intuitive for picking saturated colors
+//
+// Algorithm overview:
+// 1. Convert OKLab (L, a, b) to polar form (L, C, H)
+// 2. Find the cusp (L_cusp, C_cusp) for this hue
+// 3. Compute S and V based on position relative to cusp
+//
+// Input: Color.OKLab with l (0-1), a, b coordinates
+// Output: Color.OKHSV with h (0-360), s (0-1), v (0-1)
+
+variable lab_l: Number = input.l;
+variable lab_a: Number = input.a;
+variable lab_b: Number = input.b;
+
+// Use native PI constant
+variable pi: Number = pi();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Step 1: Convert to polar coordinates (L, C, H)
+// ═══════════════════════════════════════════════════════════════════════════
+variable c: Number = sqrt(lab_a * lab_a + lab_b * lab_b);
+variable h: Number = 0;
+
+if (c > 0.00001) [
+  h = atan2(lab_b, lab_a) * 180 / pi;
+  if (h < 0) [
+    h = h + 360;
+  ];
+];
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Step 2: Find cusp parameters for this hue
+//
+// The cusp is the point on the gamut boundary with maximum chroma.
+// In OKHSV, the cusp defines the S=1, V=1 point.
+//
+// Full algorithm requires finding where OKLab-to-sRGB conversion clips.
+// This is a simplified approximation with documented limitations.
+//
+// TODO: Implement proper cusp finding as per Ottosson's reference code
+// ═══════════════════════════════════════════════════════════════════════════
+variable h_rad: Number = h * pi / 180;
+
+// Approximate cusp varies by hue
+variable cusp_l: Number = 0.65;
+variable cusp_c: Number = 0.37;
+
+// Adjust for hue-specific variation
+if (h > 80 && h < 140) [
+  // Yellow region has high cusp lightness
+  cusp_l = 0.92;
+  cusp_c = 0.25;
+];
+if (h > 200 && h < 300) [
+  // Blue region has low cusp lightness
+  cusp_l = 0.35;
+  cusp_c = 0.32;
+];
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Step 3: Calculate V (value/brightness)
+//
+// In OKHSV, V is defined such that:
+// - V=0 is black (L=0, C=0)
+// - V=1 at S=0 is white (L=1, C=0)
+// - V=1 at S=1 is the cusp color (L=cusp_l, C=cusp_c)
+//
+// The relationship is: V = L + C * S_0
+// where S_0 = C_cusp / L_cusp is the slope of the line from origin to cusp
+// ═══════════════════════════════════════════════════════════════════════════
+variable s_0: Number = cusp_c / cusp_l;  // Slope from black to cusp
+
+// Calculate V = L + C/S_0 (position along the V=1 boundary line)
+variable v: Number = lab_l + c / s_0;
+if (v > 1) [
+  v = 1;
+];
+if (v < 0) [
+  v = 0;
+];
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Step 4: Calculate S (saturation)
+//
+// S is the ratio of actual chroma to maximum chroma at this V level.
+// At S=1, the color is on the gamut boundary.
+//
+// For a given V, the maximum chroma forms a line from (0,0) to (cusp_l, cusp_c)
+// and from (cusp_l, cusp_c) to (1, 0).
+// ═══════════════════════════════════════════════════════════════════════════
+variable s: Number = 0;
+
+if (v > 0.0001) [
+  // Maximum chroma at this V level
+  variable c_max: Number = 0;
+  
+  // Below the cusp lightness
+  if (v <= cusp_l / (cusp_l + cusp_c / s_0)) [
+    c_max = v * s_0;
+  ] else [
+    // Above the cusp - line from cusp to white
+    variable t: Number = (v - cusp_l) / (1 - cusp_l);
+    c_max = cusp_c * (1 - t);
+    if (c_max < 0) [
+      c_max = 0;
+    ];
+  ];
+  
+  if (c_max > 0.0001) [
+    s = c / c_max;
+    if (s > 1) [
+      s = 1;
+    ];
+  ];
+];
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Output: OKHSV color
+// ═══════════════════════════════════════════════════════════════════════════
+variable output: Color.OKHSV;
+output.h = h;
+output.s = s;
+output.v = v;
+output

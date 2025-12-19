@@ -26,7 +26,7 @@ describe("Desaturate Function", () => {
         `
         variable vivid: Color.SRGB;
         vivid.r = 0.9; vivid.g = 0.2; vivid.b = 0.2;
-        desaturate(vivid, 0.1)
+        desaturate(vivid, 0.1).to.srgb()
         `,
       );
 
@@ -44,7 +44,7 @@ describe("Desaturate Function", () => {
         `
         variable color: Color.SRGB;
         color.r = 0.8; color.g = 0.3; color.b = 0.3;
-        desaturate(color)
+        desaturate(color).to.srgb()
         `,
       );
 

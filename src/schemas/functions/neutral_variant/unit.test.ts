@@ -28,7 +28,7 @@ describe("neutral_variant function", () => {
         `
         variable blue: Color.SRGB;
         blue.r = 0; blue.g = 0.4; blue.b = 0.8;
-        neutral_variant(blue)
+        neutral_variant(blue).to.srgb()
         `
       );
 
@@ -48,7 +48,7 @@ describe("neutral_variant function", () => {
         `
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
-        neutral_variant(red, 0.5)
+        neutral_variant(red, 0.5).to.srgb()
         `
       );
 
@@ -66,7 +66,7 @@ describe("neutral_variant function", () => {
         `
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
-        neutral_variant(white)
+        neutral_variant(white).to.srgb()
         `
       );
 
@@ -86,7 +86,7 @@ describe("neutral_variant function", () => {
         `
         variable black: Color.SRGB;
         black.r = 0; black.g = 0; black.b = 0;
-        neutral_variant(black)
+        neutral_variant(black).to.srgb()
         `
       );
 

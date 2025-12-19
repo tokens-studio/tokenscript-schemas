@@ -28,7 +28,7 @@ describe("cooler function", () => {
         `
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
-        cooler(red, 0.5)
+        cooler(red, 0.5).to.srgb()
         `
       );
 
@@ -45,7 +45,7 @@ describe("cooler function", () => {
         `
         variable yellow: Color.SRGB;
         yellow.r = 1; yellow.g = 1; yellow.b = 0;
-        cooler(yellow, 0.5)
+        cooler(yellow, 0.5).to.srgb()
         `
       );
 
@@ -62,7 +62,7 @@ describe("cooler function", () => {
         `
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
-        cooler(red)
+        cooler(red).to.srgb()
         `
       );
 

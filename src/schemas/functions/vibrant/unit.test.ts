@@ -28,7 +28,7 @@ describe("vibrant function", () => {
         `
         variable muted_blue: Color.SRGB;
         muted_blue.r = 0.4; muted_blue.g = 0.5; muted_blue.b = 0.6;
-        vibrant(muted_blue)
+        vibrant(muted_blue).to.srgb()
         `
       );
 
@@ -43,7 +43,7 @@ describe("vibrant function", () => {
         `
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
-        vibrant(red, 0.5)
+        vibrant(red, 0.5).to.srgb()
         `
       );
 

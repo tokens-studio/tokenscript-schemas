@@ -26,7 +26,7 @@ describe("Set Hue Function", () => {
         `
         variable blue: Color.SRGB;
         blue.r = 0.2; blue.g = 0.3; blue.b = 0.9;
-        set_hue(blue, 30)
+        set_hue(blue, 30).to.srgb()
         `,
       );
 
@@ -44,7 +44,7 @@ describe("Set Hue Function", () => {
         `
         variable red: Color.SRGB;
         red.r = 0.9; red.g = 0.2; red.b = 0.2;
-        set_hue(red, 140)
+        set_hue(red, 140).to.srgb()
         `,
       );
 
@@ -62,7 +62,7 @@ describe("Set Hue Function", () => {
         `
         variable green: Color.SRGB;
         green.r = 0.2; green.g = 0.8; green.b = 0.3;
-        set_hue(green, 260)
+        set_hue(green, 260).to.srgb()
         `,
       );
 
@@ -80,7 +80,7 @@ describe("Set Hue Function", () => {
         `
         variable color: Color.SRGB;
         color.r = 0.7; color.g = 0.3; color.b = 0.5;
-        set_hue(color, 180)
+        set_hue(color, 180).to.srgb()
         `,
       );
 

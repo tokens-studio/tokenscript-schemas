@@ -26,7 +26,7 @@ describe("Rotate Hue Function", () => {
         `
         variable red: Color.SRGB;
         red.r = 0.9; red.g = 0.2; red.b = 0.2;
-        rotate_hue(red, 120)
+        rotate_hue(red, 120).to.srgb()
         `,
       );
 
@@ -44,7 +44,7 @@ describe("Rotate Hue Function", () => {
         `
         variable blue: Color.SRGB;
         blue.r = 0.2; blue.g = 0.3; blue.b = 0.9;
-        rotate_hue(blue, 360)
+        rotate_hue(blue, 360).to.srgb()
         `,
       );
 
@@ -62,7 +62,7 @@ describe("Rotate Hue Function", () => {
         `
         variable green: Color.SRGB;
         green.r = 0.2; green.g = 0.8; green.b = 0.3;
-        rotate_hue(green, -60)
+        rotate_hue(green, -60).to.srgb()
         `,
       );
 
@@ -76,7 +76,7 @@ describe("Rotate Hue Function", () => {
         `
         variable color: Color.SRGB;
         color.r = 0.6; color.g = 0.4; color.b = 0.8;
-        rotate_hue(color, 45)
+        rotate_hue(color, 45).to.srgb()
         `,
       );
 

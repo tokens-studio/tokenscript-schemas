@@ -26,7 +26,7 @@ describe("Set Chroma Function", () => {
         `
         variable red: Color.SRGB;
         red.r = 0.9; red.g = 0.2; red.b = 0.2;
-        set_chroma(red, 0)
+        set_chroma(red, 0).to.srgb()
         `,
       );
 
@@ -46,7 +46,7 @@ describe("Set Chroma Function", () => {
         `
         variable muted: Color.SRGB;
         muted.r = 0.5; muted.g = 0.45; muted.b = 0.48;
-        set_chroma(muted, 0.15)
+        set_chroma(muted, 0.15).to.srgb()
         `,
       );
 
@@ -64,7 +64,7 @@ describe("Set Chroma Function", () => {
         `
         variable bright: Color.SRGB;
         bright.r = 0.9; bright.g = 0.85; bright.b = 0.5;
-        set_chroma(bright, 0.1)
+        set_chroma(bright, 0.1).to.srgb()
         `,
       );
 

@@ -30,7 +30,7 @@ describe("interpolate function", () => {
         black.r = 0; black.g = 0; black.b = 0;
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
-        interpolate(black, white, 0)
+        interpolate(black, white, 0).to.srgb()
         `
       );
 
@@ -48,7 +48,7 @@ describe("interpolate function", () => {
         black.r = 0; black.g = 0; black.b = 0;
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
-        interpolate(black, white, 1)
+        interpolate(black, white, 1).to.srgb()
         `
       );
 
@@ -66,7 +66,7 @@ describe("interpolate function", () => {
         black.r = 0; black.g = 0; black.b = 0;
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
-        interpolate(black, white, 0.5)
+        interpolate(black, white, 0.5).to.srgb()
         `
       );
 
@@ -86,7 +86,7 @@ describe("interpolate function", () => {
         black.r = 0; black.g = 0; black.b = 0;
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
-        interpolate(black, white)
+        interpolate(black, white).to.srgb()
         `
       );
 

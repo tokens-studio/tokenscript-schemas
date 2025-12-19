@@ -28,7 +28,7 @@ describe("clamp_chroma function", () => {
         `
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
-        clamp_chroma(red, 0, 0.1)
+        clamp_chroma(red, 0, 0.1).to.srgb()
         `
       );
 
@@ -47,7 +47,7 @@ describe("clamp_chroma function", () => {
         `
         variable gray: Color.SRGB;
         gray.r = 0.5; gray.g = 0.5; gray.b = 0.5;
-        clamp_chroma(gray, 0, 0.3)
+        clamp_chroma(gray, 0, 0.3).to.srgb()
         `
       );
 

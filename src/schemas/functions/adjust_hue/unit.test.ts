@@ -28,7 +28,7 @@ describe("adjust_hue function", () => {
         `
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
-        adjust_hue(red, 90)
+        adjust_hue(red, 90).to.srgb()
         `
       );
 
@@ -43,7 +43,7 @@ describe("adjust_hue function", () => {
         `
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
-        adjust_hue(red, -90)
+        adjust_hue(red, -90).to.srgb()
         `
       );
 
@@ -58,7 +58,7 @@ describe("adjust_hue function", () => {
         `
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
-        adjust_hue(red, 360)
+        adjust_hue(red, 360).to.srgb()
         `
       );
 

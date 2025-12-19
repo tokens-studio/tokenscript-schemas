@@ -1,0 +1,103 @@
+// OKHSV to OKLab Conversion
+// Reference: Björn Ottosson - "A perceptual color picker: OKHSL and OKHSV"
+// URL: https://bottosson.github.io/posts/colorpicker/
+// Reference: https://github.com/color-js/color.js/blob/main/src/spaces/okhsv.js
+//
+// Converts OKHSV (perceptually uniform HSV) back to OKLab coordinates.
+//
+// Algorithm overview:
+// 1. Find the cusp (L_cusp, C_cusp) for this hue
+// 2. Calculate maximum chroma C_max at the given V
+// 3. Compute actual chroma: C = S * C_max
+// 4. Calculate L from V and C
+// 5. Convert polar (L, C, H) to cartesian (L, a, b)
+//
+// Input: Color.OKHSV with h (0-360), s (0-1), v (0-1)
+// Output: Color.OKLab with l (0-1), a, b coordinates
+
+variable h: Number = input.h;
+variable s: Number = input.s;
+variable v: Number = input.v;
+
+// Use native PI constant
+variable pi: Number = pi();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Step 1: Convert hue to radians
+// ═══════════════════════════════════════════════════════════════════════════
+variable h_rad: Number = h * pi / 180;
+variable cos_h: Number = cos(h_rad);
+variable sin_h: Number = sin(h_rad);
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Step 2: Find cusp parameters for this hue
+// (Same approximation as in from-oklab.tokenscript)
+//
+// TODO: Implement proper cusp finding as per Ottosson's reference code
+// ═══════════════════════════════════════════════════════════════════════════
+variable cusp_l: Number = 0.65;
+variable cusp_c: Number = 0.37;
+
+if (h > 80 && h < 140) [
+  cusp_l = 0.92;
+  cusp_c = 0.25;
+];
+if (h > 200 && h < 300) [
+  cusp_l = 0.35;
+  cusp_c = 0.32;
+];
+
+variable s_0: Number = cusp_c / cusp_l;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Step 3: Calculate maximum chroma at this V
+// ═══════════════════════════════════════════════════════════════════════════
+variable c_max: Number = 0;
+
+// Determine which side of the cusp we're on
+variable v_cusp: Number = cusp_l / (cusp_l + cusp_c / s_0);
+
+if (v <= v_cusp) [
+  // Below the cusp - line from black to cusp
+  c_max = v * s_0;
+] else [
+  // Above the cusp - line from cusp to white
+  variable t: Number = (v - cusp_l) / (1 - cusp_l);
+  c_max = cusp_c * (1 - t);
+  if (c_max < 0) [
+    c_max = 0;
+  ];
+];
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Step 4: Compute actual chroma
+// ═══════════════════════════════════════════════════════════════════════════
+variable c: Number = s * c_max;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Step 5: Compute L from V and C
+// Inverse of: V = L + C/S_0
+// Therefore: L = V - C/S_0
+// ═══════════════════════════════════════════════════════════════════════════
+variable lab_l: Number = v - c / s_0;
+if (lab_l < 0) [
+  lab_l = 0;
+];
+if (lab_l > 1) [
+  lab_l = 1;
+];
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Step 6: Convert polar to cartesian
+// ═══════════════════════════════════════════════════════════════════════════
+variable lab_a: Number = c * cos_h;
+variable lab_b: Number = c * sin_h;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Output: OKLab color
+// ═══════════════════════════════════════════════════════════════════════════
+variable output: Color.OKLab;
+output.l = lab_l;
+output.a = lab_a;
+output.b = lab_b;
+output

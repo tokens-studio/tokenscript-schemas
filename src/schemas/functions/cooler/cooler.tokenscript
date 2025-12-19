@@ -41,5 +41,5 @@ result.l = color.l;
 result.c = color.c;
 result.h = new_hue;
 
-return result.to.srgb();
+return result;
 

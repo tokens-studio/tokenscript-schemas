@@ -28,7 +28,7 @@ describe("warmer function", () => {
         `
         variable blue: Color.SRGB;
         blue.r = 0; blue.g = 0; blue.b = 1;
-        warmer(blue, 0.5)
+        warmer(blue, 0.5).to.srgb()
         `
       );
 
@@ -45,7 +45,7 @@ describe("warmer function", () => {
         `
         variable green: Color.SRGB;
         green.r = 0; green.g = 1; green.b = 0;
-        warmer(green, 0.5)
+        warmer(green, 0.5).to.srgb()
         `
       );
 
@@ -62,7 +62,7 @@ describe("warmer function", () => {
         `
         variable blue: Color.SRGB;
         blue.r = 0; blue.g = 0; blue.b = 1;
-        warmer(blue)
+        warmer(blue).to.srgb()
         `
       );
 

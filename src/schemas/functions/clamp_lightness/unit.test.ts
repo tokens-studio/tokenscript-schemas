@@ -28,7 +28,7 @@ describe("clamp_lightness function", () => {
         `
         variable dark: Color.SRGB;
         dark.r = 0.1; dark.g = 0.1; dark.b = 0.1;
-        clamp_lightness(dark, 0.5, 0.9)
+        clamp_lightness(dark, 0.5, 0.9).to.srgb()
         `
       );
 
@@ -45,7 +45,7 @@ describe("clamp_lightness function", () => {
         `
         variable light: Color.SRGB;
         light.r = 1; light.g = 1; light.b = 1;
-        clamp_lightness(light, 0.1, 0.5)
+        clamp_lightness(light, 0.1, 0.5).to.srgb()
         `
       );
 
@@ -62,7 +62,7 @@ describe("clamp_lightness function", () => {
         `
         variable mid: Color.SRGB;
         mid.r = 0.5; mid.g = 0.5; mid.b = 0.5;
-        clamp_lightness(mid, 0.1, 0.9)
+        clamp_lightness(mid, 0.1, 0.9).to.srgb()
         `
       );
 

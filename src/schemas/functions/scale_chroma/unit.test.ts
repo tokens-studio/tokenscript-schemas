@@ -28,7 +28,7 @@ describe("scale_chroma function", () => {
         `
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
-        scale_chroma(red, 0.5)
+        scale_chroma(red, 0.5).to.srgb()
         `
       );
 
@@ -46,7 +46,7 @@ describe("scale_chroma function", () => {
         `
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
-        scale_chroma(red, 0)
+        scale_chroma(red, 0).to.srgb()
         `
       );
 
@@ -66,7 +66,7 @@ describe("scale_chroma function", () => {
         `
         variable gray: Color.SRGB;
         gray.r = 0.5; gray.g = 0.5; gray.b = 0.5;
-        scale_chroma(gray, 2)
+        scale_chroma(gray, 2).to.srgb()
         `
       );
 
