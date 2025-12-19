@@ -317,36 +317,63 @@ async function runDemo(demo: FunctionDemo): Promise<{ colors: string[]; values: 
       return { colors, values };
     }
     
-    // Handle list of colors or single color
-    const items = Array.isArray(result) ? result : 
-                  result?.value && Array.isArray(result.value) ? result.value :
-                  [result];
+    // Helper to extract color from ColorSymbol
+    function extractColor(c: any): string | null {
+      if (!c) return null;
+      const v = c.value || c;
+      const subType = c.subType || '';
+      
+      // Check if it's RGB (0-255) or sRGB (0-1) based on subType
+      const isRgb255 = subType === 'Rgb' || subType === 'RGB';
+      
+      let r = v.r?.value ?? v.r ?? 0;
+      let g = v.g?.value ?? v.g ?? 0;
+      let b = v.b?.value ?? v.b ?? 0;
+      
+      // If it's sRGB (0-1), multiply by 255
+      if (!isRgb255) {
+        r = Math.round(r * 255);
+        g = Math.round(g * 255);
+        b = Math.round(b * 255);
+      } else {
+        r = Math.round(r);
+        g = Math.round(g);
+        b = Math.round(b);
+      }
+      
+      // Clamp values
+      r = Math.max(0, Math.min(255, r));
+      g = Math.max(0, Math.min(255, g));
+      b = Math.max(0, Math.min(255, b));
+      
+      return `rgb(${r}, ${g}, ${b})`;
+    }
     
-    for (const item of items) {
-      if (item?.constructor?.name === 'ColorSymbol' || item?.value?.r !== undefined) {
-        const c = item.value || item;
-        const r = Math.round((c.r?.value ?? c.r ?? 0) * 255);
-        const g = Math.round((c.g?.value ?? c.g ?? 0) * 255);
-        const b = Math.round((c.b?.value ?? c.b ?? 0) * 255);
-        colors.push(`rgb(${r}, ${g}, ${b})`);
+    // Recursive function to flatten nested lists and extract colors
+    function flattenAndExtract(item: any): void {
+      if (!item) return;
+      
+      if (item?.constructor?.name === 'ColorSymbol' || 
+          (item?.value && (item.value.r !== undefined || item.value.g !== undefined))) {
+        const color = extractColor(item);
+        if (color) colors.push(color);
       } else if (typeof item === 'number' || item?.constructor?.name === 'NumberSymbol') {
         values.push(item?.value ?? item);
       } else if (typeof item === 'boolean' || item?.constructor?.name === 'BooleanSymbol') {
         values.push(item?.value ?? item);
-      } else if (item?.constructor?.name === 'ListSymbol' || Array.isArray(item?.value)) {
-        // Nested list - flatten colors
+      } else if (item?.constructor?.name === 'ListSymbol' || Array.isArray(item?.value) || Array.isArray(item)) {
+        // Recursively flatten
         const nested = item?.value || item;
-        for (const subItem of nested) {
-          if (subItem?.value?.r !== undefined || subItem?.r !== undefined) {
-            const c = subItem.value || subItem;
-            const r = Math.round((c.r?.value ?? c.r ?? 0) * 255);
-            const g = Math.round((c.g?.value ?? c.g ?? 0) * 255);
-            const b = Math.round((c.b?.value ?? c.b ?? 0) * 255);
-            colors.push(`rgb(${r}, ${g}, ${b})`);
+        if (Array.isArray(nested)) {
+          for (const subItem of nested) {
+            flattenAndExtract(subItem);
           }
         }
       }
     }
+    
+    // Start extraction
+    flattenAndExtract(result);
     
     return { colors, values };
   } catch (e: any) {

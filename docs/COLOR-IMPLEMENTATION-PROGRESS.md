@@ -355,3 +355,75 @@ Status: ✅ PASS / ❌ FAIL
 
 ---
 
+## Color Functions (32 Total)
+
+All functions use OKLCH for perceptually uniform results.
+
+### Basic Adjustments (8)
+| Function | Description | Status |
+|----------|-------------|--------|
+| `lighten(color, amount)` | Increase OKLab lightness | ✅ |
+| `darken(color, amount)` | Decrease OKLab lightness | ✅ |
+| `saturate(color, amount)` | Increase OKLCH chroma | ✅ |
+| `desaturate(color, amount)` | Decrease OKLCH chroma | ✅ |
+| `grayscale(color)` | Set chroma to 0 | ✅ |
+| `invert(color)` | RGB channel inversion | ✅ |
+| `complement(color)` | Hue + 180° | ✅ |
+| `mix(c1, c2, amount)` | Blend in OKLCH | ✅ |
+
+### Color Harmonies (5)
+| Function | Description | Status |
+|----------|-------------|--------|
+| `analogous(color, count, spread)` | Adjacent hues | ✅ |
+| `triadic(color)` | 3 colors, 120° apart | ✅ |
+| `tetradic(color)` | 4 colors, 90° apart | ✅ |
+| `split_complement(color, angle)` | Base + 2 near-complements | ✅ |
+| `steps(c1, c2, count)` | Gradient interpolation | ✅ |
+
+### Design Token Scales (6)
+| Function | Description | Status |
+|----------|-------------|--------|
+| `shade_scale(color, count)` | 50-900 like Tailwind | ✅ |
+| `tint_scale(color, count)` | Sequential single-hue | ✅ |
+| `diverging(c1, c2, count)` | Two-sided heatmap | ✅ |
+| `distributed(count)` | Categorical colors | ✅ |
+| `alpha_scale(color, count)` | Transparency variants | ✅ |
+
+### Interactive States (4)
+| Function | Description | Status |
+|----------|-------------|--------|
+| `hover_state(color)` | Subtle hover feedback | ✅ |
+| `active_state(color)` | Pressed state | ✅ |
+| `disabled_state(color)` | Muted disabled | ✅ |
+| `focus_ring(background)` | Accessible focus indicator | ✅ |
+
+### Accessibility (4)
+| Function | Description | Status |
+|----------|-------------|--------|
+| `contrast_ratio(c1, c2)` | WCAG 2.1 ratio | ✅ |
+| `best_contrast(bg, [colors])` | Pick most readable | ✅ |
+| `surface_pair(color)` | Auto bg + text | ✅ |
+| `luminance(color)` | Relative luminance | ✅ |
+
+### Direct Manipulation (5)
+| Function | Description | Status |
+|----------|-------------|--------|
+| `rotate_hue(color, degrees)` | Shift hue angle | ✅ |
+| `set_hue(color, angle)` | Set exact H | ✅ |
+| `set_lightness(color, L)` | Set exact L | ✅ |
+| `set_chroma(color, C)` | Set exact C | ✅ |
+| `is_light(color)` / `is_dark(color)` | Lightness check | ✅ |
+
+---
+
+### Visual Playground
+
+Demo page available at: `demo/functions-playground.html`
+
+Shows all 32 functions with:
+- Color swatches for output
+- Interactive code examples
+- Pass/fail status for each function
+
+---
+
