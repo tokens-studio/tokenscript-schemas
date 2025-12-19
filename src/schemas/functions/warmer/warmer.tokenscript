@@ -1,0 +1,36 @@
+// warmer: Shift hue towards warm colors (orange ~60° in OKLCH)
+// Interpolates hue towards warm via the shortest path
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+variable amount: Number = 0.25;
+
+if (input.length() > 1) [
+    amount = input.get(1);
+];
+
+// Warm hue target (orange in OKLCH is around 60°)
+variable warm_hue: Number = 60;
+
+// Calculate shortest path hue difference
+variable hue_diff: Number = warm_hue - color.h;
+
+// Wrap to shortest path
+if (hue_diff > 180) [ hue_diff = hue_diff - 360; ];
+if (hue_diff < -180) [ hue_diff = hue_diff + 360; ];
+
+// Apply interpolation
+variable new_hue: Number = color.h + (hue_diff * amount);
+
+// Normalize to 0-360
+if (new_hue < 0) [ new_hue = new_hue + 360; ];
+if (new_hue >= 360) [ new_hue = new_hue - 360; ];
+
+// Create result
+variable result: Color.OKLCH;
+result.l = color.l;
+result.c = color.c;
+result.h = new_hue;
+
+return result.to.srgb();
+

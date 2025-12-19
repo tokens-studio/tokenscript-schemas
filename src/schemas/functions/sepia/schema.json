@@ -1,0 +1,49 @@
+{
+  "name": "sepia",
+  "type": "function",
+  "description": "Applies a sepia tone to a color, simulating the warm brownish tint of aged photographs. Uses the standard sepia matrix transformation. Amount parameter controls intensity from 0 (no effect) to 1 (full sepia).",
+  "keyword": "sepia",
+  "requirements": ["/api/v1/core/srgb-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Color to transform",
+            "type": "color"
+          },
+          {
+            "description": "Sepia intensity (0-1), default 1",
+            "type": "number"
+          }
+        ],
+        "minItems": 1,
+        "maxItems": 2
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "color",
+    "description": "Color with sepia tone applied"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./sepia.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Full sepia",
+      "input": ["#808080", 1],
+      "output": "Warm brownish gray"
+    },
+    {
+      "description": "Partial sepia",
+      "input": ["#808080", 0.5],
+      "output": "Subtly warm gray"
+    }
+  ]
+}
+

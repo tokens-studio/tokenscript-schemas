@@ -1,0 +1,45 @@
+// sepia: Apply sepia tone transformation
+// Uses standard sepia matrix from CSS filter specification
+
+variable input: List = {input};
+variable color: Color.SRGB = input.get(0).to.srgb();
+variable amount: Number = 1;
+
+if (input.length() > 1) [
+    amount = input.get(1);
+];
+
+// Clamp amount
+if (amount < 0) [ amount = 0; ];
+if (amount > 1) [ amount = 1; ];
+
+variable r: Number = color.r;
+variable g: Number = color.g;
+variable b: Number = color.b;
+
+// Standard sepia matrix transformation (CSS filter spec)
+// R' = 0.393R + 0.769G + 0.189B
+// G' = 0.349R + 0.686G + 0.168B
+// B' = 0.272R + 0.534G + 0.131B
+variable sepia_r: Number = (r * 0.393) + (g * 0.769) + (b * 0.189);
+variable sepia_g: Number = (r * 0.349) + (g * 0.686) + (b * 0.168);
+variable sepia_b: Number = (r * 0.272) + (g * 0.534) + (b * 0.131);
+
+// Clamp sepia values to valid range
+if (sepia_r > 1) [ sepia_r = 1; ];
+if (sepia_g > 1) [ sepia_g = 1; ];
+if (sepia_b > 1) [ sepia_b = 1; ];
+
+// Interpolate between original and sepia based on amount
+variable new_r: Number = r + (sepia_r - r) * amount;
+variable new_g: Number = g + (sepia_g - g) * amount;
+variable new_b: Number = b + (sepia_b - b) * amount;
+
+// Create result
+variable result: Color.SRGB;
+result.r = new_r;
+result.g = new_g;
+result.b = new_b;
+
+return result;
+
