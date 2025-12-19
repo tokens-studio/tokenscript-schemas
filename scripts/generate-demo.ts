@@ -200,7 +200,7 @@ async function runConversion(
   space: (typeof colorSpaces)[0],
 ): Promise<ConversionResult> {
   const [r, g, b] = rgb;
-  const srgb = [r / 255, g / 255, b / 255];
+  const srgb: [number, number, number] = [r / 255, g / 255, b / 255];
 
   let tsCoords: number[] = [NaN, NaN, NaN];
   let cjCoords: number[] = [NaN, NaN, NaN];

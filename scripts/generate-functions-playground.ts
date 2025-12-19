@@ -6,8 +6,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { executeWithSchema, setupColorManagerWithSchemas } from "../tests/helpers/schema-test-utils";
-import { Config } from "@tokens-studio/tokenscript-interpreter";
+import { executeWithSchema } from "../tests/helpers/schema-test-utils";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

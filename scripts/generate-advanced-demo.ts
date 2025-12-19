@@ -29,7 +29,11 @@ const testCases: TestResult[] = [];
 // ============================================
 // 1. WIDE GAMUT COLORS (Outside sRGB)
 // ============================================
-const wideGamutColors = [
+const wideGamutColors: Array<{
+  name: string;
+  description: string;
+  p3: [number, number, number];
+}> = [
   {
     name: "P3 Electric Green",
     description: "P3's most saturated green - impossible in sRGB",
@@ -80,7 +84,7 @@ for (const color of wideGamutColors) {
 // ============================================
 // 2. ROUND-TRIP TESTS
 // ============================================
-const roundTripColors = [
+const roundTripColors: Array<{ name: string; srgb: [number, number, number] }> = [
   { name: "Pure Red", srgb: [1, 0, 0] },
   { name: "Pure Green", srgb: [0, 1, 0] },
   { name: "Pure Blue", srgb: [0, 0, 1] },
@@ -123,7 +127,11 @@ for (const color of roundTripColors) {
 // ============================================
 // 3. PROBLEMATIC COLORS (Hue Shifts)
 // ============================================
-const problematicColors = [
+const problematicColors: Array<{
+  name: string;
+  description: string;
+  oklch: [number, number, number];
+}> = [
   {
     name: "Blue-Violet Boundary",
     description: "Hue often shifts in this region",
@@ -238,7 +246,11 @@ for (const L of grayLevels) {
 // ============================================
 // 6. EDGE CASES
 // ============================================
-const edgeCases = [
+const edgeCases: Array<{
+  name: string;
+  description: string;
+  srgb: [number, number, number];
+}> = [
   {
     name: "Absolute Black",
     description: "RGB (0,0,0) - all channels at minimum",
@@ -482,4 +494,5 @@ for (const cat of categories) {
   const count = testCases.filter((t) => t.category === cat).length;
   console.log(`   • ${cat}: ${count} tests`);
 }
+
 

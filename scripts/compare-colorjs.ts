@@ -253,7 +253,7 @@ function testRoundTrip(colorInput: string): void {
   }
 
   const srgb = color.to("srgb");
-  const original = [...srgb.coords];
+  const original: [number, number, number] = [srgb.coords[0], srgb.coords[1], srgb.coords[2]];
 
   console.log(`🎨 Original sRGB: ${formatCoordsShort(original)}\n`);
 
@@ -381,4 +381,5 @@ Examples:
   npx tsx scripts/compare-colorjs.ts matrix
 `);
 }
+
 

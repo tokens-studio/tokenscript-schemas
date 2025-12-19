@@ -83,7 +83,7 @@ async function runConversion(
   color: typeof testColors[0]
 ): Promise<PathResult> {
   const [r, g, b] = color.rgb;
-  const srgb = [r/255, g/255, b/255];
+  const srgb: [number, number, number] = [r/255, g/255, b/255];
   
   // Get starting values for the source space
   const startValues = getStartValues(fromSpace, srgb);
@@ -124,7 +124,7 @@ ${buildConversionChain(pathSpaces.slice(0, i + 1), colorSpaces)}
     const interpreter = new Interpreter(parser, { config });
     const result = interpreter.interpret();
     
-    const tsCoords = spaceInfo.coords.map(c => result?.value?.[c]?.value ?? 0);
+    const tsCoords = spaceInfo.coords.map(c => (result as any)?.value?.[c]?.value ?? 0);
     
     // === ColorJS execution ===
     cjColor = cjColor.to(spaceId);
@@ -170,7 +170,7 @@ start.to.${toSpace.id.replace(/-/g, '')}()
   };
 }
 
-function getStartValues(space: ColorSpaceInfo, srgb: number[]): number[] {
+function getStartValues(space: ColorSpaceInfo, srgb: [number, number, number]): number[] {
   if (space.id === "srgb") return srgb;
   if (space.id === "hsl") {
     const hslColor = new Color("srgb", srgb).to("hsl");
@@ -178,7 +178,7 @@ function getStartValues(space: ColorSpaceInfo, srgb: number[]): number[] {
   }
   if (space.id === "oklch") {
     const oklchColor = new Color("srgb", srgb).to("oklch");
-    return oklchColor.coords;
+    return [...oklchColor.coords];
   }
   return srgb;
 }
