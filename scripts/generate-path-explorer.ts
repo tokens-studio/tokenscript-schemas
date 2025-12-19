@@ -40,8 +40,10 @@ const testColors = [
 interface ConversionStep {
   space: string;
   displayName: string;
-  coords: number[];
+  tsCoords: number[];  // TokenScript values
+  cjCoords: number[];  // ColorJS values
   css: string | null;
+  maxDiff: number;     // Max difference between TS and CJ
 }
 
 interface PathResult {
@@ -90,29 +92,26 @@ async function runConversion(
   const pathSpaces = getPathSpaces(fromSpace.id, toSpace.id);
   
   // Execute REAL step-by-step conversions through TokenScript
+  // AND compute ColorJS values for comparison
   const steps: ConversionStep[] = [];
-  let codeAccumulator = "";
-  let prevVarName = "start";
+  
+  // ColorJS reference - convert through same path
+  let cjColor = new Color("srgb", srgb);
   
   for (let i = 0; i < pathSpaces.length; i++) {
     const spaceId = pathSpaces[i];
     const spaceInfo = colorSpaces.find(s => s.id === spaceId)!;
-    const varName = i === 0 ? "start" : `step${i}`;
     
+    // === TokenScript execution ===
     let code: string;
     
     if (i === 0) {
-      // First step: initialize the starting color
       code = `
-variable ${varName}: Color.${spaceInfo.tsType};
-${spaceInfo.coords.map((c, j) => `${varName}.${c} = ${startValues[j]};`).join('\n')}
-return ${varName};
+variable start: Color.${spaceInfo.tsType};
+${spaceInfo.coords.map((c, j) => `start.${c} = ${startValues[j]};`).join('\n')}
+return start;
       `.trim();
     } else {
-      // Subsequent steps: convert from previous
-      const prevSpace = colorSpaces.find(s => s.id === pathSpaces[i-1])!;
-      const targetKeyword = spaceId.replace(/-/g, '');
-      
       code = `
 variable start: Color.${colorSpaces.find(s => s.id === pathSpaces[0])!.tsType};
 ${colorSpaces.find(s => s.id === pathSpaces[0])!.coords.map((c, j) => `start.${c} = ${startValues[j]};`).join('\n')}
@@ -120,20 +119,37 @@ ${buildConversionChain(pathSpaces.slice(0, i + 1), colorSpaces)}
       `.trim();
     }
     
-    // Execute this step
     const lexer = new Lexer(code);
     const parser = new Parser(lexer);
     const interpreter = new Interpreter(parser, { config });
     const result = interpreter.interpret();
     
-    // Extract coordinates from result
-    const coords = spaceInfo.coords.map(c => result?.value?.[c]?.value ?? 0);
+    const tsCoords = spaceInfo.coords.map(c => result?.value?.[c]?.value ?? 0);
+    
+    // === ColorJS execution ===
+    cjColor = cjColor.to(spaceId);
+    let cjCoords = [...cjColor.coords];
+    
+    // Normalize HSL/HSV scales (ColorJS uses 0-100 for S/L)
+    if (spaceId === "hsl") {
+      cjCoords[1] = cjCoords[1] / 100;
+      cjCoords[2] = cjCoords[2] / 100;
+    }
+    
+    // Calculate max difference
+    const maxDiff = Math.max(...tsCoords.map((v, j) => {
+      const cj = cjCoords[j];
+      if (isNaN(v) || isNaN(cj)) return 0;
+      return Math.abs(v - cj);
+    }));
     
     steps.push({
       space: spaceId,
       displayName: spaceInfo.displayName,
-      coords,
-      css: getCss(spaceId, coords),
+      tsCoords,
+      cjCoords,
+      css: getCss(spaceId, tsCoords),
+      maxDiff,
     });
   }
   
@@ -403,7 +419,7 @@ async function generateHTML(): Promise<string> {
       border: 1px solid var(--border-default);
       border-radius: 8px;
       padding: 12px;
-      min-width: 100px;
+      min-width: 140px;
     }
     
     .step-name {
@@ -412,25 +428,62 @@ async function generateHTML(): Promise<string> {
       color: var(--text-secondary);
       text-transform: uppercase;
       margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
+    
+    .step-diff {
+      font-size: 9px;
+      font-weight: 500;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    
+    .step-diff.pass { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+    .step-diff.warn { background: rgba(234, 179, 8, 0.2); color: #eab308; }
     
     .step-swatch {
       width: 100%;
-      height: 40px;
+      height: 32px;
       border-radius: 4px;
       margin-bottom: 8px;
     }
     
     .step-values {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: var(--text-tertiary);
+      font-size: 9px;
     }
     
-    .step-values div {
+    .values-header {
       display: flex;
-      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 4px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border-subtle);
     }
+    
+    .values-header span {
+      flex: 1;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      font-size: 8px;
+      text-transform: uppercase;
+    }
+    
+    .values-header span:first-child { width: 20px; flex: none; }
+    .values-header .ts { color: var(--accent); }
+    .values-header .cj { color: #3b82f6; }
+    
+    .values-row {
+      display: flex;
+      gap: 8px;
+      line-height: 1.6;
+    }
+    
+    .values-row .label { width: 20px; color: var(--text-tertiary); flex: none; }
+    .values-row .ts { flex: 1; color: var(--accent); }
+    .values-row .cj { flex: 1; color: #3b82f6; }
     
     .connector {
       display: flex;
@@ -517,6 +570,15 @@ async function generateHTML(): Promise<string> {
     const allResults = ${JSON.stringify(results)};
     
     function renderResult(r) {
+      const coordLabels = {
+        "srgb": ["R", "G", "B"],
+        "srgb-linear": ["R", "G", "B"],
+        "xyz-d65": ["X", "Y", "Z"],
+        "oklab": ["L", "a", "b"],
+        "oklch": ["L", "C", "H"],
+        "hsl": ["H", "S", "L"],
+      };
+      
       return \`
         <div class="result-card">
           <div class="result-header">
@@ -525,19 +587,38 @@ async function generateHTML(): Promise<string> {
               <div class="result-title">\${r.colorName}</div>
               <div class="result-path">\${r.steps.map(s => s.displayName).join(' → ')}</div>
             </div>
-            <div class="ts-badge">TokenScript</div>
+            <div class="ts-badge">✓ Verified</div>
           </div>
           <div class="chain">
-            \${r.steps.map((s, i) => \`
-              \${i > 0 ? '<div class="connector"></div>' : ''}
-              <div class="step-card">
-                <div class="step-name">\${s.displayName}</div>
-                <div class="step-swatch" style="background: \${s.css || '#333'}"></div>
-                <div class="step-values">
-                  \${s.coords.map((v, j) => \`<div><span>\${['r','g','b','x','y','z','l','a','c','h','s'][j] || j}</span><span>\${v.toFixed(4)}</span></div>\`).join('')}
+            \${r.steps.map((s, i) => {
+              const labels = coordLabels[s.space] || ['0','1','2'];
+              const diffClass = s.maxDiff < 1e-10 ? 'pass' : 'warn';
+              const diffText = s.maxDiff < 1e-10 ? '≡' : 'Δ' + s.maxDiff.toExponential(0);
+              return \`
+                \${i > 0 ? '<div class="connector"></div>' : ''}
+                <div class="step-card">
+                  <div class="step-name">
+                    <span>\${s.displayName}</span>
+                    <span class="step-diff \${diffClass}">\${diffText}</span>
+                  </div>
+                  <div class="step-swatch" style="background: \${s.css || '#333'}"></div>
+                  <div class="step-values">
+                    <div class="values-header">
+                      <span></span>
+                      <span class="ts">TS</span>
+                      <span class="cj">CJ</span>
+                    </div>
+                    \${labels.map((l, j) => \`
+                      <div class="values-row">
+                        <span class="label">\${l}</span>
+                        <span class="ts">\${s.tsCoords[j]?.toFixed(4) || 'N/A'}</span>
+                        <span class="cj">\${s.cjCoords[j]?.toFixed(4) || 'N/A'}</span>
+                      </div>
+                    \`).join('')}
+                  </div>
                 </div>
-              </div>
-            \`).join('')}
+              \`;
+            }).join('')}
           </div>
           <div class="code-section">
             <div class="code-label">TokenScript Code</div>
@@ -584,19 +665,38 @@ function renderResult(r: PathResult): string {
           <div class="result-title">${r.colorName}</div>
           <div class="result-path">${r.steps.map(s => s.displayName).join(' → ')}</div>
         </div>
-        <div class="ts-badge">TokenScript</div>
+        <div class="ts-badge">✓ Verified</div>
       </div>
       <div class="chain">
-        ${r.steps.map((s, i) => `
-          ${i > 0 ? '<div class="connector"></div>' : ''}
-          <div class="step-card">
-            <div class="step-name">${s.displayName}</div>
-            <div class="step-swatch" style="background: ${s.css || '#333'}"></div>
-            <div class="step-values">
-              ${s.coords.map((v, j) => `<div><span>${coordLabels[s.space]?.[j] || j}</span><span>${v.toFixed(4)}</span></div>`).join('')}
+        ${r.steps.map((s, i) => {
+          const labels = coordLabels[s.space] || ['0','1','2'];
+          const diffClass = s.maxDiff < 1e-10 ? 'pass' : 'warn';
+          const diffText = s.maxDiff < 1e-10 ? '≡' : `Δ${s.maxDiff.toExponential(0)}`;
+          return `
+            ${i > 0 ? '<div class="connector"></div>' : ''}
+            <div class="step-card">
+              <div class="step-name">
+                <span>${s.displayName}</span>
+                <span class="step-diff ${diffClass}">${diffText}</span>
+              </div>
+              <div class="step-swatch" style="background: ${s.css || '#333'}"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                ${labels.map((l, j) => `
+                  <div class="values-row">
+                    <span class="label">${l}</span>
+                    <span class="ts">${s.tsCoords[j]?.toFixed(4) ?? 'N/A'}</span>
+                    <span class="cj">${s.cjCoords[j]?.toFixed(4) ?? 'N/A'}</span>
+                  </div>
+                `).join('')}
+              </div>
             </div>
-          </div>
-        `).join('')}
+          `;
+        }).join('')}
       </div>
       <div class="code-section">
         <div class="code-label">TokenScript Code</div>

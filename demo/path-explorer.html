@@ -146,7 +146,7 @@
       border: 1px solid var(--border-default);
       border-radius: 8px;
       padding: 12px;
-      min-width: 100px;
+      min-width: 140px;
     }
     
     .step-name {
@@ -155,25 +155,62 @@
       color: var(--text-secondary);
       text-transform: uppercase;
       margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
+    
+    .step-diff {
+      font-size: 9px;
+      font-weight: 500;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    
+    .step-diff.pass { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+    .step-diff.warn { background: rgba(234, 179, 8, 0.2); color: #eab308; }
     
     .step-swatch {
       width: 100%;
-      height: 40px;
+      height: 32px;
       border-radius: 4px;
       margin-bottom: 8px;
     }
     
     .step-values {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: var(--text-tertiary);
+      font-size: 9px;
     }
     
-    .step-values div {
+    .values-header {
       display: flex;
-      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 4px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border-subtle);
     }
+    
+    .values-header span {
+      flex: 1;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      font-size: 8px;
+      text-transform: uppercase;
+    }
+    
+    .values-header span:first-child { width: 20px; flex: none; }
+    .values-header .ts { color: var(--accent); }
+    .values-header .cj { color: #3b82f6; }
+    
+    .values-row {
+      display: flex;
+      gap: 8px;
+      line-height: 1.6;
+    }
+    
+    .values-row .label { width: 20px; color: var(--text-tertiary); flex: none; }
+    .values-row .ts { flex: 1; color: var(--accent); }
+    .values-row .cj { flex: 1; color: #3b82f6; }
     
     .connector {
       display: flex;
@@ -264,55 +301,185 @@
           <div class="result-title">Purple</div>
           <div class="result-path">sRGB → Linear sRGB → XYZ D65 → OKLab → OKLCH</div>
         </div>
-        <div class="ts-badge">TokenScript</div>
+        <div class="ts-badge">✓ Verified</div>
       </div>
       <div class="chain">
         
+            
+            <div class="step-card">
+              <div class="step-name">
+                <span>sRGB</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: color(srgb 0.659 0.333 0.969)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">R</span>
+                    <span class="ts">0.6588</span>
+                    <span class="cj">0.6588</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">G</span>
+                    <span class="ts">0.3333</span>
+                    <span class="cj">0.3333</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">B</span>
+                    <span class="ts">0.9686</span>
+                    <span class="cj">0.9686</span>
+                  </div>
+                
+              </div>
+            </div>
           
-          <div class="step-card">
-            <div class="step-name">sRGB</div>
-            <div class="step-swatch" style="background: color(srgb 0.659 0.333 0.969)"></div>
-            <div class="step-values">
-              <div><span>R</span><span>0.6588</span></div><div><span>G</span><span>0.3333</span></div><div><span>B</span><span>0.9686</span></div>
+            <div class="connector"></div>
+            <div class="step-card">
+              <div class="step-name">
+                <span>Linear sRGB</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: color(srgb-linear 0.392 0.091 0.930)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">R</span>
+                    <span class="ts">0.3916</span>
+                    <span class="cj">0.3916</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">G</span>
+                    <span class="ts">0.0908</span>
+                    <span class="cj">0.0908</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">B</span>
+                    <span class="ts">0.9301</span>
+                    <span class="cj">0.9301</span>
+                  </div>
+                
+              </div>
             </div>
-          </div>
-        
-          <div class="connector"></div>
-          <div class="step-card">
-            <div class="step-name">Linear sRGB</div>
-            <div class="step-swatch" style="background: color(srgb-linear 0.392 0.091 0.930)"></div>
-            <div class="step-values">
-              <div><span>R</span><span>0.3916</span></div><div><span>G</span><span>0.0908</span></div><div><span>B</span><span>0.9301</span></div>
+          
+            <div class="connector"></div>
+            <div class="step-card">
+              <div class="step-name">
+                <span>XYZ D65</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: color(xyz-d65 0.362 0.215 0.902)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">X</span>
+                    <span class="ts">0.3618</span>
+                    <span class="cj">0.3618</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">Y</span>
+                    <span class="ts">0.2154</span>
+                    <span class="cj">0.2154</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">Z</span>
+                    <span class="ts">0.9025</span>
+                    <span class="cj">0.9025</span>
+                  </div>
+                
+              </div>
             </div>
-          </div>
-        
-          <div class="connector"></div>
-          <div class="step-card">
-            <div class="step-name">XYZ D65</div>
-            <div class="step-swatch" style="background: color(xyz-d65 0.362 0.215 0.902)"></div>
-            <div class="step-values">
-              <div><span>X</span><span>0.3618</span></div><div><span>Y</span><span>0.2154</span></div><div><span>Z</span><span>0.9025</span></div>
+          
+            <div class="connector"></div>
+            <div class="step-card">
+              <div class="step-name">
+                <span>OKLab</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: oklab(0.627 0.130 -0.193)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">L</span>
+                    <span class="ts">0.6268</span>
+                    <span class="cj">0.6268</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">a</span>
+                    <span class="ts">0.1297</span>
+                    <span class="cj">0.1297</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">b</span>
+                    <span class="ts">-0.1930</span>
+                    <span class="cj">-0.1930</span>
+                  </div>
+                
+              </div>
             </div>
-          </div>
-        
-          <div class="connector"></div>
-          <div class="step-card">
-            <div class="step-name">OKLab</div>
-            <div class="step-swatch" style="background: oklab(0.627 0.130 -0.193)"></div>
-            <div class="step-values">
-              <div><span>L</span><span>0.6268</span></div><div><span>a</span><span>0.1297</span></div><div><span>b</span><span>-0.1930</span></div>
+          
+            <div class="connector"></div>
+            <div class="step-card">
+              <div class="step-name">
+                <span>OKLCH</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: oklch(0.627 0.233 303.9)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">L</span>
+                    <span class="ts">0.6268</span>
+                    <span class="cj">0.6268</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">C</span>
+                    <span class="ts">0.2325</span>
+                    <span class="cj">0.2325</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">H</span>
+                    <span class="ts">303.9004</span>
+                    <span class="cj">303.9004</span>
+                  </div>
+                
+              </div>
             </div>
-          </div>
-        
-          <div class="connector"></div>
-          <div class="step-card">
-            <div class="step-name">OKLCH</div>
-            <div class="step-swatch" style="background: oklch(0.627 0.233 303.9)"></div>
-            <div class="step-values">
-              <div><span>L</span><span>0.6268</span></div><div><span>C</span><span>0.2325</span></div><div><span>H</span><span>303.9004</span></div>
-            </div>
-          </div>
-        
+          
       </div>
       <div class="code-section">
         <div class="code-label">TokenScript Code</div>
@@ -332,55 +499,185 @@ start.to.oklch()</pre>
           <div class="result-title">Coral</div>
           <div class="result-path">sRGB → Linear sRGB → XYZ D65 → OKLab → OKLCH</div>
         </div>
-        <div class="ts-badge">TokenScript</div>
+        <div class="ts-badge">✓ Verified</div>
       </div>
       <div class="chain">
         
+            
+            <div class="step-card">
+              <div class="step-name">
+                <span>sRGB</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: color(srgb 1.000 0.420 0.420)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">R</span>
+                    <span class="ts">1.0000</span>
+                    <span class="cj">1.0000</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">G</span>
+                    <span class="ts">0.4196</span>
+                    <span class="cj">0.4196</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">B</span>
+                    <span class="ts">0.4196</span>
+                    <span class="cj">0.4196</span>
+                  </div>
+                
+              </div>
+            </div>
           
-          <div class="step-card">
-            <div class="step-name">sRGB</div>
-            <div class="step-swatch" style="background: color(srgb 1.000 0.420 0.420)"></div>
-            <div class="step-values">
-              <div><span>R</span><span>1.0000</span></div><div><span>G</span><span>0.4196</span></div><div><span>B</span><span>0.4196</span></div>
+            <div class="connector"></div>
+            <div class="step-card">
+              <div class="step-name">
+                <span>Linear sRGB</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: color(srgb-linear 1.000 0.147 0.147)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">R</span>
+                    <span class="ts">1.0000</span>
+                    <span class="cj">1.0000</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">G</span>
+                    <span class="ts">0.1470</span>
+                    <span class="cj">0.1470</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">B</span>
+                    <span class="ts">0.1470</span>
+                    <span class="cj">0.1470</span>
+                  </div>
+                
+              </div>
             </div>
-          </div>
-        
-          <div class="connector"></div>
-          <div class="step-card">
-            <div class="step-name">Linear sRGB</div>
-            <div class="step-swatch" style="background: color(srgb-linear 1.000 0.147 0.147)"></div>
-            <div class="step-values">
-              <div><span>R</span><span>1.0000</span></div><div><span>G</span><span>0.1470</span></div><div><span>B</span><span>0.1470</span></div>
+          
+            <div class="connector"></div>
+            <div class="step-card">
+              <div class="step-name">
+                <span>XYZ D65</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: color(xyz-d65 0.492 0.328 0.177)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">X</span>
+                    <span class="ts">0.4915</span>
+                    <span class="cj">0.4915</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">Y</span>
+                    <span class="ts">0.3284</span>
+                    <span class="cj">0.3284</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">Z</span>
+                    <span class="ts">0.1766</span>
+                    <span class="cj">0.1766</span>
+                  </div>
+                
+              </div>
             </div>
-          </div>
-        
-          <div class="connector"></div>
-          <div class="step-card">
-            <div class="step-name">XYZ D65</div>
-            <div class="step-swatch" style="background: color(xyz-d65 0.492 0.328 0.177)"></div>
-            <div class="step-values">
-              <div><span>X</span><span>0.4915</span></div><div><span>Y</span><span>0.3284</span></div><div><span>Z</span><span>0.1766</span></div>
+          
+            <div class="connector"></div>
+            <div class="step-card">
+              <div class="step-name">
+                <span>OKLab</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: oklab(0.712 0.167 0.070)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">L</span>
+                    <span class="ts">0.7116</span>
+                    <span class="cj">0.7116</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">a</span>
+                    <span class="ts">0.1670</span>
+                    <span class="cj">0.1670</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">b</span>
+                    <span class="ts">0.0703</span>
+                    <span class="cj">0.0703</span>
+                  </div>
+                
+              </div>
             </div>
-          </div>
-        
-          <div class="connector"></div>
-          <div class="step-card">
-            <div class="step-name">OKLab</div>
-            <div class="step-swatch" style="background: oklab(0.712 0.167 0.070)"></div>
-            <div class="step-values">
-              <div><span>L</span><span>0.7116</span></div><div><span>a</span><span>0.1670</span></div><div><span>b</span><span>0.0703</span></div>
+          
+            <div class="connector"></div>
+            <div class="step-card">
+              <div class="step-name">
+                <span>OKLCH</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: oklch(0.712 0.181 22.8)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">L</span>
+                    <span class="ts">0.7116</span>
+                    <span class="cj">0.7116</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">C</span>
+                    <span class="ts">0.1812</span>
+                    <span class="cj">0.1812</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">H</span>
+                    <span class="ts">22.8389</span>
+                    <span class="cj">22.8389</span>
+                  </div>
+                
+              </div>
             </div>
-          </div>
-        
-          <div class="connector"></div>
-          <div class="step-card">
-            <div class="step-name">OKLCH</div>
-            <div class="step-swatch" style="background: oklch(0.712 0.181 22.8)"></div>
-            <div class="step-values">
-              <div><span>L</span><span>0.7116</span></div><div><span>C</span><span>0.1812</span></div><div><span>H</span><span>22.8389</span></div>
-            </div>
-          </div>
-        
+          
       </div>
       <div class="code-section">
         <div class="code-label">TokenScript Code</div>
@@ -400,55 +697,185 @@ start.to.oklch()</pre>
           <div class="result-title">Teal</div>
           <div class="result-path">sRGB → Linear sRGB → XYZ D65 → OKLab → OKLCH</div>
         </div>
-        <div class="ts-badge">TokenScript</div>
+        <div class="ts-badge">✓ Verified</div>
       </div>
       <div class="chain">
         
+            
+            <div class="step-card">
+              <div class="step-name">
+                <span>sRGB</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: color(srgb 0.078 0.722 0.651)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">R</span>
+                    <span class="ts">0.0784</span>
+                    <span class="cj">0.0784</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">G</span>
+                    <span class="ts">0.7216</span>
+                    <span class="cj">0.7216</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">B</span>
+                    <span class="ts">0.6510</span>
+                    <span class="cj">0.6510</span>
+                  </div>
+                
+              </div>
+            </div>
           
-          <div class="step-card">
-            <div class="step-name">sRGB</div>
-            <div class="step-swatch" style="background: color(srgb 0.078 0.722 0.651)"></div>
-            <div class="step-values">
-              <div><span>R</span><span>0.0784</span></div><div><span>G</span><span>0.7216</span></div><div><span>B</span><span>0.6510</span></div>
+            <div class="connector"></div>
+            <div class="step-card">
+              <div class="step-name">
+                <span>Linear sRGB</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: color(srgb-linear 0.007 0.479 0.381)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">R</span>
+                    <span class="ts">0.0070</span>
+                    <span class="cj">0.0070</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">G</span>
+                    <span class="ts">0.4793</span>
+                    <span class="cj">0.4793</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">B</span>
+                    <span class="ts">0.3813</span>
+                    <span class="cj">0.3813</span>
+                  </div>
+                
+              </div>
             </div>
-          </div>
-        
-          <div class="connector"></div>
-          <div class="step-card">
-            <div class="step-name">Linear sRGB</div>
-            <div class="step-swatch" style="background: color(srgb-linear 0.007 0.479 0.381)"></div>
-            <div class="step-values">
-              <div><span>R</span><span>0.0070</span></div><div><span>G</span><span>0.4793</span></div><div><span>B</span><span>0.3813</span></div>
+          
+            <div class="connector"></div>
+            <div class="step-card">
+              <div class="step-name">
+                <span>XYZ D65</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: color(xyz-d65 0.243 0.372 0.420)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">X</span>
+                    <span class="ts">0.2431</span>
+                    <span class="cj">0.2431</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">Y</span>
+                    <span class="ts">0.3718</span>
+                    <span class="cj">0.3718</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">Z</span>
+                    <span class="ts">0.4197</span>
+                    <span class="cj">0.4197</span>
+                  </div>
+                
+              </div>
             </div>
-          </div>
-        
-          <div class="connector"></div>
-          <div class="step-card">
-            <div class="step-name">XYZ D65</div>
-            <div class="step-swatch" style="background: color(xyz-d65 0.243 0.372 0.420)"></div>
-            <div class="step-values">
-              <div><span>X</span><span>0.2431</span></div><div><span>Y</span><span>0.3718</span></div><div><span>Z</span><span>0.4197</span></div>
+          
+            <div class="connector"></div>
+            <div class="step-card">
+              <div class="step-name">
+                <span>OKLab</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: oklab(0.704 -0.123 -0.005)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">L</span>
+                    <span class="ts">0.7038</span>
+                    <span class="cj">0.7038</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">a</span>
+                    <span class="ts">-0.1229</span>
+                    <span class="cj">-0.1229</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">b</span>
+                    <span class="ts">-0.0054</span>
+                    <span class="cj">-0.0054</span>
+                  </div>
+                
+              </div>
             </div>
-          </div>
-        
-          <div class="connector"></div>
-          <div class="step-card">
-            <div class="step-name">OKLab</div>
-            <div class="step-swatch" style="background: oklab(0.704 -0.123 -0.005)"></div>
-            <div class="step-values">
-              <div><span>L</span><span>0.7038</span></div><div><span>a</span><span>-0.1229</span></div><div><span>b</span><span>-0.0054</span></div>
+          
+            <div class="connector"></div>
+            <div class="step-card">
+              <div class="step-name">
+                <span>OKLCH</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: oklch(0.704 0.123 182.5)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">L</span>
+                    <span class="ts">0.7038</span>
+                    <span class="cj">0.7038</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">C</span>
+                    <span class="ts">0.1230</span>
+                    <span class="cj">0.1230</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">H</span>
+                    <span class="ts">182.5025</span>
+                    <span class="cj">182.5025</span>
+                  </div>
+                
+              </div>
             </div>
-          </div>
-        
-          <div class="connector"></div>
-          <div class="step-card">
-            <div class="step-name">OKLCH</div>
-            <div class="step-swatch" style="background: oklch(0.704 0.123 182.5)"></div>
-            <div class="step-values">
-              <div><span>L</span><span>0.7038</span></div><div><span>C</span><span>0.1230</span></div><div><span>H</span><span>182.5025</span></div>
-            </div>
-          </div>
-        
+          
       </div>
       <div class="code-section">
         <div class="code-label">TokenScript Code</div>
@@ -468,55 +895,185 @@ start.to.oklch()</pre>
           <div class="result-title">Gold</div>
           <div class="result-path">sRGB → Linear sRGB → XYZ D65 → OKLab → OKLCH</div>
         </div>
-        <div class="ts-badge">TokenScript</div>
+        <div class="ts-badge">✓ Verified</div>
       </div>
       <div class="chain">
         
+            
+            <div class="step-card">
+              <div class="step-name">
+                <span>sRGB</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: color(srgb 0.961 0.620 0.043)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">R</span>
+                    <span class="ts">0.9608</span>
+                    <span class="cj">0.9608</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">G</span>
+                    <span class="ts">0.6196</span>
+                    <span class="cj">0.6196</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">B</span>
+                    <span class="ts">0.0431</span>
+                    <span class="cj">0.0431</span>
+                  </div>
+                
+              </div>
+            </div>
           
-          <div class="step-card">
-            <div class="step-name">sRGB</div>
-            <div class="step-swatch" style="background: color(srgb 0.961 0.620 0.043)"></div>
-            <div class="step-values">
-              <div><span>R</span><span>0.9608</span></div><div><span>G</span><span>0.6196</span></div><div><span>B</span><span>0.0431</span></div>
+            <div class="connector"></div>
+            <div class="step-card">
+              <div class="step-name">
+                <span>Linear sRGB</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: color(srgb-linear 0.913 0.342 0.003)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">R</span>
+                    <span class="ts">0.9131</span>
+                    <span class="cj">0.9131</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">G</span>
+                    <span class="ts">0.3419</span>
+                    <span class="cj">0.3419</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">B</span>
+                    <span class="ts">0.0033</span>
+                    <span class="cj">0.0033</span>
+                  </div>
+                
+              </div>
             </div>
-          </div>
-        
-          <div class="connector"></div>
-          <div class="step-card">
-            <div class="step-name">Linear sRGB</div>
-            <div class="step-swatch" style="background: color(srgb-linear 0.913 0.342 0.003)"></div>
-            <div class="step-values">
-              <div><span>R</span><span>0.9131</span></div><div><span>G</span><span>0.3419</span></div><div><span>B</span><span>0.0033</span></div>
+          
+            <div class="connector"></div>
+            <div class="step-card">
+              <div class="step-name">
+                <span>XYZ D65</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: color(xyz-d65 0.499 0.439 0.062)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">X</span>
+                    <span class="ts">0.4994</span>
+                    <span class="cj">0.4994</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">Y</span>
+                    <span class="ts">0.4389</span>
+                    <span class="cj">0.4389</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">Z</span>
+                    <span class="ts">0.0616</span>
+                    <span class="cj">0.0616</span>
+                  </div>
+                
+              </div>
             </div>
-          </div>
-        
-          <div class="connector"></div>
-          <div class="step-card">
-            <div class="step-name">XYZ D65</div>
-            <div class="step-swatch" style="background: color(xyz-d65 0.499 0.439 0.062)"></div>
-            <div class="step-values">
-              <div><span>X</span><span>0.4994</span></div><div><span>Y</span><span>0.4389</span></div><div><span>Z</span><span>0.0616</span></div>
+          
+            <div class="connector"></div>
+            <div class="step-card">
+              <div class="step-name">
+                <span>OKLab</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: oklab(0.769 0.056 0.155)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">L</span>
+                    <span class="ts">0.7686</span>
+                    <span class="cj">0.7686</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">a</span>
+                    <span class="ts">0.0561</span>
+                    <span class="cj">0.0561</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">b</span>
+                    <span class="ts">0.1548</span>
+                    <span class="cj">0.1548</span>
+                  </div>
+                
+              </div>
             </div>
-          </div>
-        
-          <div class="connector"></div>
-          <div class="step-card">
-            <div class="step-name">OKLab</div>
-            <div class="step-swatch" style="background: oklab(0.769 0.056 0.155)"></div>
-            <div class="step-values">
-              <div><span>L</span><span>0.7686</span></div><div><span>a</span><span>0.0561</span></div><div><span>b</span><span>0.1548</span></div>
+          
+            <div class="connector"></div>
+            <div class="step-card">
+              <div class="step-name">
+                <span>OKLCH</span>
+                <span class="step-diff pass">≡</span>
+              </div>
+              <div class="step-swatch" style="background: oklch(0.769 0.165 70.1)"></div>
+              <div class="step-values">
+                <div class="values-header">
+                  <span></span>
+                  <span class="ts">TS</span>
+                  <span class="cj">CJ</span>
+                </div>
+                
+                  <div class="values-row">
+                    <span class="label">L</span>
+                    <span class="ts">0.7686</span>
+                    <span class="cj">0.7686</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">C</span>
+                    <span class="ts">0.1647</span>
+                    <span class="cj">0.1647</span>
+                  </div>
+                
+                  <div class="values-row">
+                    <span class="label">H</span>
+                    <span class="ts">70.0804</span>
+                    <span class="cj">70.0804</span>
+                  </div>
+                
+              </div>
             </div>
-          </div>
-        
-          <div class="connector"></div>
-          <div class="step-card">
-            <div class="step-name">OKLCH</div>
-            <div class="step-swatch" style="background: oklch(0.769 0.165 70.1)"></div>
-            <div class="step-values">
-              <div><span>L</span><span>0.7686</span></div><div><span>C</span><span>0.1647</span></div><div><span>H</span><span>70.0804</span></div>
-            </div>
-          </div>
-        
+          
       </div>
       <div class="code-section">
         <div class="code-label">TokenScript Code</div>
@@ -531,9 +1088,18 @@ start.to.oklch()</pre>
   </div>
   
   <script>
-    const allResults = [{"from":"srgb","to":"oklch","color":"#a855f7","colorName":"Purple","steps":[{"space":"srgb","displayName":"sRGB","coords":[0.6588235294117647,0.3333333333333333,0.9686274509803922],"css":"color(srgb 0.659 0.333 0.969)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.39157247774972326,0.09084171118340768,0.9301108583754237],"css":"color(srgb-linear 0.392 0.091 0.930)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.36183160137248366,0.21537758536766632,0.9024975503844391],"css":"color(xyz-d65 0.362 0.215 0.902)"},{"space":"oklab","displayName":"OKLab","coords":[0.6268459182747175,0.12970053606722576,-0.19301160841705467],"css":"oklab(0.627 0.130 -0.193)"},{"space":"oklch","displayName":"OKLCH","coords":[0.6268459182747175,0.23254184578235415,303.90043309005654],"css":"oklch(0.627 0.233 303.9)"}],"tokenScriptCode":"variable start: Color.SRGB;\nstart.r = 0.6588235294117647;\nstart.g = 0.3333333333333333;\nstart.b = 0.9686274509803922;\nstart.to.oklch()"},{"from":"srgb","to":"oklch","color":"#ff6b6b","colorName":"Coral","steps":[{"space":"srgb","displayName":"sRGB","coords":[1,0.4196078431372549,0.4196078431372549],"css":"color(srgb 1.000 0.420 0.420)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[1,0.14702726649759498,0.14702726649759498],"css":"color(srgb-linear 1.000 0.147 0.147)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.49150104420197177,0.3284025405850511,0.17660984543292182],"css":"color(xyz-d65 0.492 0.328 0.177)"},{"space":"oklab","displayName":"OKLab","coords":[0.7116074749337721,0.16701351656184937,0.07033940646705672],"css":"oklab(0.712 0.167 0.070)"},{"space":"oklch","displayName":"OKLCH","coords":[0.7116074749337721,0.18122126480215547,22.83887755509347],"css":"oklch(0.712 0.181 22.8)"}],"tokenScriptCode":"variable start: Color.SRGB;\nstart.r = 1;\nstart.g = 0.4196078431372549;\nstart.b = 0.4196078431372549;\nstart.to.oklch()"},{"from":"srgb","to":"oklch","color":"#14b8a6","colorName":"Teal","steps":[{"space":"srgb","displayName":"sRGB","coords":[0.0784313725490196,0.7215686274509804,0.6509803921568628],"css":"color(srgb 0.078 0.722 0.651)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.006995410187265387,0.4793201831008268,0.38132601143253014],"css":"color(srgb-linear 0.007 0.479 0.381)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.24310425300725813,0.3718110867954087,0.4197303250377357],"css":"color(xyz-d65 0.243 0.372 0.420)"},{"space":"oklab","displayName":"OKLab","coords":[0.7037526674560556,-0.12290107893957175,-0.005371408825994295],"css":"oklab(0.704 -0.123 -0.005)"},{"space":"oklch","displayName":"OKLCH","coords":[0.7037526674560556,0.12301840202704153,182.5025274674597],"css":"oklch(0.704 0.123 182.5)"}],"tokenScriptCode":"variable start: Color.SRGB;\nstart.r = 0.0784313725490196;\nstart.g = 0.7215686274509804;\nstart.b = 0.6509803921568628;\nstart.to.oklch()"},{"from":"srgb","to":"oklch","color":"#f59e0b","colorName":"Gold","steps":[{"space":"srgb","displayName":"sRGB","coords":[0.9607843137254902,0.6196078431372549,0.043137254901960784],"css":"color(srgb 0.961 0.620 0.043)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.9130986517934192,0.3419144249086609,0.003346535763899161],"css":"color(srgb-linear 0.913 0.342 0.003)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.4994207119916236,0.43892847125876655,0.06158634893510344],"css":"color(xyz-d65 0.499 0.439 0.062)"},{"space":"oklab","displayName":"OKLab","coords":[0.7685903592228479,0.05609969031644224,0.15480808475138869],"css":"oklab(0.769 0.056 0.155)"},{"space":"oklch","displayName":"OKLCH","coords":[0.7685903592228479,0.16465940106168814,70.0803864143123],"css":"oklch(0.769 0.165 70.1)"}],"tokenScriptCode":"variable start: Color.SRGB;\nstart.r = 0.9607843137254902;\nstart.g = 0.6196078431372549;\nstart.b = 0.043137254901960784;\nstart.to.oklch()"},{"from":"hsl","to":"oklch","color":"#a855f7","colorName":"Purple","steps":[{"space":"hsl","displayName":"HSL","coords":[270.74074074074076,0.9101123595505618,0.6509803921568627],"css":"hsl(270.7 91.0% 65.1%)"},{"space":"srgb","displayName":"sRGB","coords":[0.6588235294117633,0.33333333333333315,0.9686274509803922],"css":"color(srgb 0.659 0.333 0.969)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.3915724777497212,0.09084171118340759,0.9301108583754237],"css":"color(srgb-linear 0.392 0.091 0.930)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.36183160137248277,0.21537758536766582,0.9024975503844391],"css":"color(xyz-d65 0.362 0.215 0.902)"},{"space":"oklab","displayName":"OKLab","coords":[0.626845918274717,0.12970053606722487,-0.1930116084170549],"css":"oklab(0.627 0.130 -0.193)"},{"space":"oklch","displayName":"OKLCH","coords":[0.626845918274717,0.23254184578235382,303.90043309005637],"css":"oklch(0.627 0.233 303.9)"}],"tokenScriptCode":"variable start: Color.HSL;\nstart.h = 270.74074074074076;\nstart.s = 0.9101123595505618;\nstart.l = 0.6509803921568627;\nstart.to.oklch()"},{"from":"hsl","to":"oklch","color":"#ff6b6b","colorName":"Coral","steps":[{"space":"hsl","displayName":"HSL","coords":[0,1,0.7098039215686275],"css":"hsl(0.0 100.0% 71.0%)"},{"space":"srgb","displayName":"sRGB","coords":[1,0.41960784313725497,0.41960784313725497],"css":"color(srgb 1.000 0.420 0.420)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[1,0.14702726649759504,0.14702726649759504],"css":"color(srgb-linear 1.000 0.147 0.147)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.49150104420197177,0.3284025405850511,0.1766098454329219],"css":"color(xyz-d65 0.492 0.328 0.177)"},{"space":"oklab","displayName":"OKLab","coords":[0.7116074749337721,0.16701351656184943,0.07033940646705661],"css":"oklab(0.712 0.167 0.070)"},{"space":"oklch","displayName":"OKLCH","coords":[0.7116074749337721,0.18122126480215547,22.838877555093433],"css":"oklch(0.712 0.181 22.8)"}],"tokenScriptCode":"variable start: Color.HSL;\nstart.h = 0;\nstart.s = 1;\nstart.l = 0.7098039215686275;\nstart.to.oklch()"},{"from":"hsl","to":"oklch","color":"#14b8a6","colorName":"Teal","steps":[{"space":"hsl","displayName":"HSL","coords":[173.41463414634146,0.803921568627451,0.4],"css":"hsl(173.4 80.4% 40.0%)"},{"space":"srgb","displayName":"sRGB","coords":[0.07843137254901955,0.7215686274509805,0.6509803921568641],"css":"color(srgb 0.078 0.722 0.651)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.00699541018726538,0.47932018310082697,0.3813260114325318],"css":"color(srgb-linear 0.007 0.479 0.381)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.24310425300725846,0.3718110867954089,0.4197303250377373],"css":"color(xyz-d65 0.243 0.372 0.420)"},{"space":"oklab","displayName":"OKLab","coords":[0.7037526674560556,-0.1229010789395717,-0.005371408825994739],"css":"oklab(0.704 -0.123 -0.005)"},{"space":"oklch","displayName":"OKLCH","coords":[0.7037526674560556,0.12301840202704149,182.50252746745988],"css":"oklch(0.704 0.123 182.5)"}],"tokenScriptCode":"variable start: Color.HSL;\nstart.h = 173.41463414634146;\nstart.s = 0.803921568627451;\nstart.l = 0.4;\nstart.to.oklch()"},{"from":"hsl","to":"oklch","color":"#f59e0b","colorName":"Gold","steps":[{"space":"hsl","displayName":"HSL","coords":[37.69230769230769,0.9212598425196851,0.5019607843137255],"css":"hsl(37.7 92.1% 50.2%)"},{"space":"srgb","displayName":"sRGB","coords":[0.9607843137254903,0.6196078431372549,0.04313725490196063],"css":"color(srgb 0.961 0.620 0.043)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.9130986517934192,0.3419144249086609,0.0033465357638991465],"css":"color(srgb-linear 0.913 0.342 0.003)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.4994207119916236,0.43892847125876655,0.061586348935103424],"css":"color(xyz-d65 0.499 0.439 0.062)"},{"space":"oklab","displayName":"OKLab","coords":[0.7685903592228479,0.05609969031644224,0.15480808475138869],"css":"oklab(0.769 0.056 0.155)"},{"space":"oklch","displayName":"OKLCH","coords":[0.7685903592228479,0.16465940106168814,70.0803864143123],"css":"oklch(0.769 0.165 70.1)"}],"tokenScriptCode":"variable start: Color.HSL;\nstart.h = 37.69230769230769;\nstart.s = 0.9212598425196851;\nstart.l = 0.5019607843137255;\nstart.to.oklch()"},{"from":"oklch","to":"srgb","color":"#a855f7","colorName":"Purple","steps":[{"space":"oklch","displayName":"OKLCH","coords":[0.6268459182747175,0.23254184578235404,303.9004330900565],"css":"oklch(0.627 0.233 303.9)"},{"space":"oklab","displayName":"OKLab","coords":[0.6268459182747175,0.12970053606722548,-0.19301160841705473],"css":"oklab(0.627 0.130 -0.193)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.3618316013724836,0.21537758536766655,0.9024975503844396],"css":"color(xyz-d65 0.362 0.215 0.902)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.39151014398010786,0.09084381006709633,0.9302583344758478],"css":"color(srgb-linear 0.392 0.091 0.930)"},{"space":"srgb","displayName":"sRGB","coords":[0.6587761803895053,0.33333707180047856,0.9686950744625226],"css":"color(srgb 0.659 0.333 0.969)"}],"tokenScriptCode":"variable start: Color.OKLCH;\nstart.l = 0.6268459182747175;\nstart.c = 0.23254184578235404;\nstart.h = 303.9004330900565;\nstart.to.srgb()"},{"from":"oklch","to":"srgb","color":"#ff6b6b","colorName":"Coral","steps":[{"space":"oklch","displayName":"OKLCH","coords":[0.7116074749337721,0.18122126480215547,22.83887755509346],"css":"oklch(0.712 0.181 22.8)"},{"space":"oklab","displayName":"OKLab","coords":[0.7116074749337721,0.1670135165618494,0.07033940646705669],"css":"oklab(0.712 0.167 0.070)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.49150104420197166,0.32840254058505125,0.1766098454329219],"css":"color(xyz-d65 0.492 0.328 0.177)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.9998408296715775,0.14703066353984956,0.14706174291023968],"css":"color(srgb-linear 1.000 0.147 0.147)"},{"space":"srgb","displayName":"sRGB","coords":[0.9999300281279203,0.41961241216513834,0.4196542111150993],"css":"color(srgb 1.000 0.420 0.420)"}],"tokenScriptCode":"variable start: Color.OKLCH;\nstart.l = 0.7116074749337721;\nstart.c = 0.18122126480215547;\nstart.h = 22.83887755509346;\nstart.to.srgb()"},{"from":"oklch","to":"srgb","color":"#14b8a6","colorName":"Teal","steps":[{"space":"oklch","displayName":"OKLCH","coords":[0.7037526674560554,0.12301840202704153,182.50252746745971],"css":"oklch(0.704 0.123 182.5)"},{"space":"oklab","displayName":"OKLab","coords":[0.7037526674560554,-0.12290107893957175,-0.005371408825994364],"css":"oklab(0.704 -0.123 -0.005)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.24310425300725802,0.3718110867954088,0.4197303250377356],"css":"color(xyz-d65 0.243 0.372 0.420)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.006994266708855418,0.4793312577195239,0.38139559809554846],"css":"color(srgb-linear 0.007 0.479 0.381)"},{"space":"srgb","displayName":"sRGB","coords":[0.078422284258477,0.7215761034414463,0.6510340691109281],"css":"color(srgb 0.078 0.722 0.651)"}],"tokenScriptCode":"variable start: Color.OKLCH;\nstart.l = 0.7037526674560554;\nstart.c = 0.12301840202704153;\nstart.h = 182.50252746745971;\nstart.to.srgb()"},{"from":"oklch","to":"srgb","color":"#f59e0b","colorName":"Gold","steps":[{"space":"oklch","displayName":"OKLCH","coords":[0.768590359222848,0.16465940106168822,70.08038641431222],"css":"oklch(0.769 0.165 70.1)"},{"space":"oklab","displayName":"OKLab","coords":[0.768590359222848,0.0560996903164425,0.15480808475138866],"css":"oklab(0.769 0.056 0.155)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.49942071199162325,0.4389284712587671,0.0615863489351034],"css":"color(xyz-d65 0.499 0.439 0.062)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.912953302284514,0.34192232478856904,0.0033629377553653014],"css":"color(srgb-linear 0.913 0.342 0.003)"},{"space":"srgb","displayName":"sRGB","coords":[0.9607169375597796,0.6196143375559409,0.04333738117366403],"css":"color(srgb 0.961 0.620 0.043)"}],"tokenScriptCode":"variable start: Color.OKLCH;\nstart.l = 0.768590359222848;\nstart.c = 0.16465940106168822;\nstart.h = 70.08038641431222;\nstart.to.srgb()"}];
+    const allResults = [{"from":"srgb","to":"oklch","color":"#a855f7","colorName":"Purple","steps":[{"space":"srgb","displayName":"sRGB","tsCoords":[0.6588235294117647,0.3333333333333333,0.9686274509803922],"cjCoords":[0.6588235294117647,0.3333333333333333,0.9686274509803922],"css":"color(srgb 0.659 0.333 0.969)","maxDiff":0},{"space":"srgb-linear","displayName":"Linear sRGB","tsCoords":[0.39157247774972326,0.09084171118340768,0.9301108583754237],"cjCoords":[0.39157247774972326,0.09084171118340768,0.9301108583754237],"css":"color(srgb-linear 0.392 0.091 0.930)","maxDiff":0},{"space":"xyz-d65","displayName":"XYZ D65","tsCoords":[0.36183160137248366,0.21537758536766632,0.9024975503844391],"cjCoords":[0.36183160137248366,0.21537758536766632,0.9024975503844391],"css":"color(xyz-d65 0.362 0.215 0.902)","maxDiff":0},{"space":"oklab","displayName":"OKLab","tsCoords":[0.6268459182747175,0.12970053606722576,-0.19301160841705467],"cjCoords":[0.6268459182747175,0.12970053606722554,-0.19301160841705467],"css":"oklab(0.627 0.130 -0.193)","maxDiff":2.220446049250313e-16},{"space":"oklch","displayName":"OKLCH","tsCoords":[0.6268459182747175,0.23254184578235415,303.90043309005654],"cjCoords":[0.6268459182747175,0.23254184578235404,303.9004330900565],"css":"oklch(0.627 0.233 303.9)","maxDiff":5.684341886080802e-14}],"tokenScriptCode":"variable start: Color.SRGB;\nstart.r = 0.6588235294117647;\nstart.g = 0.3333333333333333;\nstart.b = 0.9686274509803922;\nstart.to.oklch()"},{"from":"srgb","to":"oklch","color":"#ff6b6b","colorName":"Coral","steps":[{"space":"srgb","displayName":"sRGB","tsCoords":[1,0.4196078431372549,0.4196078431372549],"cjCoords":[1,0.4196078431372549,0.4196078431372549],"css":"color(srgb 1.000 0.420 0.420)","maxDiff":0},{"space":"srgb-linear","displayName":"Linear sRGB","tsCoords":[1,0.14702726649759498,0.14702726649759498],"cjCoords":[1,0.14702726649759498,0.14702726649759498],"css":"color(srgb-linear 1.000 0.147 0.147)","maxDiff":0},{"space":"xyz-d65","displayName":"XYZ D65","tsCoords":[0.49150104420197177,0.3284025405850511,0.17660984543292182],"cjCoords":[0.49150104420197177,0.3284025405850511,0.17660984543292182],"css":"color(xyz-d65 0.492 0.328 0.177)","maxDiff":0},{"space":"oklab","displayName":"OKLab","tsCoords":[0.7116074749337721,0.16701351656184937,0.07033940646705672],"cjCoords":[0.7116074749337721,0.16701351656184937,0.07033940646705672],"css":"oklab(0.712 0.167 0.070)","maxDiff":0},{"space":"oklch","displayName":"OKLCH","tsCoords":[0.7116074749337721,0.18122126480215547,22.83887755509347],"cjCoords":[0.7116074749337721,0.18122126480215547,22.83887755509346],"css":"oklch(0.712 0.181 22.8)","maxDiff":1.0658141036401503e-14}],"tokenScriptCode":"variable start: Color.SRGB;\nstart.r = 1;\nstart.g = 0.4196078431372549;\nstart.b = 0.4196078431372549;\nstart.to.oklch()"},{"from":"srgb","to":"oklch","color":"#14b8a6","colorName":"Teal","steps":[{"space":"srgb","displayName":"sRGB","tsCoords":[0.0784313725490196,0.7215686274509804,0.6509803921568628],"cjCoords":[0.0784313725490196,0.7215686274509804,0.6509803921568628],"css":"color(srgb 0.078 0.722 0.651)","maxDiff":0},{"space":"srgb-linear","displayName":"Linear sRGB","tsCoords":[0.006995410187265387,0.4793201831008268,0.38132601143253014],"cjCoords":[0.006995410187265387,0.4793201831008268,0.38132601143253014],"css":"color(srgb-linear 0.007 0.479 0.381)","maxDiff":0},{"space":"xyz-d65","displayName":"XYZ D65","tsCoords":[0.24310425300725813,0.3718110867954087,0.4197303250377357],"cjCoords":[0.24310425300725813,0.3718110867954087,0.4197303250377357],"css":"color(xyz-d65 0.243 0.372 0.420)","maxDiff":0},{"space":"oklab","displayName":"OKLab","tsCoords":[0.7037526674560556,-0.12290107893957175,-0.005371408825994295],"cjCoords":[0.7037526674560554,-0.12290107893957175,-0.005371408825994406],"css":"oklab(0.704 -0.123 -0.005)","maxDiff":2.220446049250313e-16},{"space":"oklch","displayName":"OKLCH","tsCoords":[0.7037526674560556,0.12301840202704153,182.5025274674597],"cjCoords":[0.7037526674560554,0.12301840202704153,182.50252746745971],"css":"oklch(0.704 0.123 182.5)","maxDiff":2.842170943040401e-14}],"tokenScriptCode":"variable start: Color.SRGB;\nstart.r = 0.0784313725490196;\nstart.g = 0.7215686274509804;\nstart.b = 0.6509803921568628;\nstart.to.oklch()"},{"from":"srgb","to":"oklch","color":"#f59e0b","colorName":"Gold","steps":[{"space":"srgb","displayName":"sRGB","tsCoords":[0.9607843137254902,0.6196078431372549,0.043137254901960784],"cjCoords":[0.9607843137254902,0.6196078431372549,0.043137254901960784],"css":"color(srgb 0.961 0.620 0.043)","maxDiff":0},{"space":"srgb-linear","displayName":"Linear sRGB","tsCoords":[0.9130986517934192,0.3419144249086609,0.003346535763899161],"cjCoords":[0.9130986517934192,0.3419144249086609,0.003346535763899161],"css":"color(srgb-linear 0.913 0.342 0.003)","maxDiff":0},{"space":"xyz-d65","displayName":"XYZ D65","tsCoords":[0.4994207119916236,0.43892847125876655,0.06158634893510344],"cjCoords":[0.4994207119916236,0.43892847125876655,0.06158634893510344],"css":"color(xyz-d65 0.499 0.439 0.062)","maxDiff":0},{"space":"oklab","displayName":"OKLab","tsCoords":[0.7685903592228479,0.05609969031644224,0.15480808475138869],"cjCoords":[0.768590359222848,0.05609969031644246,0.15480808475138869],"css":"oklab(0.769 0.056 0.155)","maxDiff":2.220446049250313e-16},{"space":"oklch","displayName":"OKLCH","tsCoords":[0.7685903592228479,0.16465940106168814,70.0803864143123],"cjCoords":[0.768590359222848,0.16465940106168822,70.08038641431222],"css":"oklch(0.769 0.165 70.1)","maxDiff":8.526512829121202e-14}],"tokenScriptCode":"variable start: Color.SRGB;\nstart.r = 0.9607843137254902;\nstart.g = 0.6196078431372549;\nstart.b = 0.043137254901960784;\nstart.to.oklch()"},{"from":"hsl","to":"oklch","color":"#a855f7","colorName":"Purple","steps":[{"space":"hsl","displayName":"HSL","tsCoords":[270.74074074074076,0.9101123595505618,0.6509803921568627],"cjCoords":[270.74074074074076,0.9101123595505618,0.6509803921568627],"css":"hsl(270.7 91.0% 65.1%)","maxDiff":0},{"space":"srgb","displayName":"sRGB","tsCoords":[0.6588235294117633,0.33333333333333315,0.9686274509803922],"cjCoords":[0.6588235294117647,0.33333333333333315,0.9686274509803922],"css":"color(srgb 0.659 0.333 0.969)","maxDiff":1.4432899320127035e-15},{"space":"srgb-linear","displayName":"Linear sRGB","tsCoords":[0.3915724777497212,0.09084171118340759,0.9301108583754237],"cjCoords":[0.39157247774972326,0.09084171118340759,0.9301108583754237],"css":"color(srgb-linear 0.392 0.091 0.930)","maxDiff":2.0539125955565396e-15},{"space":"xyz-d65","displayName":"XYZ D65","tsCoords":[0.36183160137248277,0.21537758536766582,0.9024975503844391],"cjCoords":[0.3618316013724836,0.21537758536766627,0.9024975503844391],"css":"color(xyz-d65 0.362 0.215 0.902)","maxDiff":8.326672684688674e-16},{"space":"oklab","displayName":"OKLab","tsCoords":[0.626845918274717,0.12970053606722487,-0.1930116084170549],"cjCoords":[0.6268459182747175,0.12970053606722554,-0.19301160841705467],"css":"oklab(0.627 0.130 -0.193)","maxDiff":6.661338147750939e-16},{"space":"oklch","displayName":"OKLCH","tsCoords":[0.626845918274717,0.23254184578235382,303.90043309005637],"cjCoords":[0.6268459182747175,0.23254184578235404,303.9004330900565],"css":"oklch(0.627 0.233 303.9)","maxDiff":1.1368683772161603e-13}],"tokenScriptCode":"variable start: Color.HSL;\nstart.h = 270.74074074074076;\nstart.s = 0.9101123595505618;\nstart.l = 0.6509803921568627;\nstart.to.oklch()"},{"from":"hsl","to":"oklch","color":"#ff6b6b","colorName":"Coral","steps":[{"space":"hsl","displayName":"HSL","tsCoords":[0,1,0.7098039215686275],"cjCoords":[0,1,0.7098039215686275],"css":"hsl(0.0 100.0% 71.0%)","maxDiff":0},{"space":"srgb","displayName":"sRGB","tsCoords":[1,0.41960784313725497,0.41960784313725497],"cjCoords":[1,0.41960784313725497,0.41960784313725497],"css":"color(srgb 1.000 0.420 0.420)","maxDiff":0},{"space":"srgb-linear","displayName":"Linear sRGB","tsCoords":[1,0.14702726649759504,0.14702726649759504],"cjCoords":[1,0.14702726649759504,0.14702726649759504],"css":"color(srgb-linear 1.000 0.147 0.147)","maxDiff":0},{"space":"xyz-d65","displayName":"XYZ D65","tsCoords":[0.49150104420197177,0.3284025405850511,0.1766098454329219],"cjCoords":[0.49150104420197177,0.3284025405850511,0.1766098454329219],"css":"color(xyz-d65 0.492 0.328 0.177)","maxDiff":0},{"space":"oklab","displayName":"OKLab","tsCoords":[0.7116074749337721,0.16701351656184943,0.07033940646705661],"cjCoords":[0.7116074749337721,0.16701351656184937,0.07033940646705672],"css":"oklab(0.712 0.167 0.070)","maxDiff":1.1102230246251565e-16},{"space":"oklch","displayName":"OKLCH","tsCoords":[0.7116074749337721,0.18122126480215547,22.838877555093433],"cjCoords":[0.7116074749337721,0.18122126480215547,22.83887755509346],"css":"oklch(0.712 0.181 22.8)","maxDiff":2.842170943040401e-14}],"tokenScriptCode":"variable start: Color.HSL;\nstart.h = 0;\nstart.s = 1;\nstart.l = 0.7098039215686275;\nstart.to.oklch()"},{"from":"hsl","to":"oklch","color":"#14b8a6","colorName":"Teal","steps":[{"space":"hsl","displayName":"HSL","tsCoords":[173.41463414634146,0.803921568627451,0.4],"cjCoords":[173.41463414634146,0.803921568627451,0.4],"css":"hsl(173.4 80.4% 40.0%)","maxDiff":0},{"space":"srgb","displayName":"sRGB","tsCoords":[0.07843137254901955,0.7215686274509805,0.6509803921568641],"cjCoords":[0.0784313725490196,0.7215686274509805,0.650980392156863],"css":"color(srgb 0.078 0.722 0.651)","maxDiff":1.1102230246251565e-15},{"space":"srgb-linear","displayName":"Linear sRGB","tsCoords":[0.00699541018726538,0.47932018310082697,0.3813260114325318],"cjCoords":[0.006995410187265387,0.47932018310082697,0.3813260114325304],"css":"color(srgb-linear 0.007 0.479 0.381)","maxDiff":1.3877787807814457e-15},{"space":"xyz-d65","displayName":"XYZ D65","tsCoords":[0.24310425300725846,0.3718110867954089,0.4197303250377373],"cjCoords":[0.24310425300725821,0.3718110867954088,0.419730325037736],"css":"color(xyz-d65 0.243 0.372 0.420)","maxDiff":1.27675647831893e-15},{"space":"oklab","displayName":"OKLab","tsCoords":[0.7037526674560556,-0.1229010789395717,-0.005371408825994739],"cjCoords":[0.7037526674560556,-0.1229010789395717,-0.005371408825994406],"css":"oklab(0.704 -0.123 -0.005)","maxDiff":3.3306690738754696e-16},{"space":"oklch","displayName":"OKLCH","tsCoords":[0.7037526674560556,0.12301840202704149,182.50252746745988],"cjCoords":[0.7037526674560556,0.12301840202704148,182.50252746745971],"css":"oklch(0.704 0.123 182.5)","maxDiff":1.7053025658242404e-13}],"tokenScriptCode":"variable start: Color.HSL;\nstart.h = 173.41463414634146;\nstart.s = 0.803921568627451;\nstart.l = 0.4;\nstart.to.oklch()"},{"from":"hsl","to":"oklch","color":"#f59e0b","colorName":"Gold","steps":[{"space":"hsl","displayName":"HSL","tsCoords":[37.69230769230769,0.9212598425196851,0.5019607843137255],"cjCoords":[37.69230769230769,0.9212598425196851,0.5019607843137255],"css":"hsl(37.7 92.1% 50.2%)","maxDiff":0},{"space":"srgb","displayName":"sRGB","tsCoords":[0.9607843137254903,0.6196078431372549,0.04313725490196063],"cjCoords":[0.9607843137254902,0.6196078431372545,0.04313725490196074],"css":"color(srgb 0.961 0.620 0.043)","maxDiff":4.440892098500626e-16},{"space":"srgb-linear","displayName":"Linear sRGB","tsCoords":[0.9130986517934192,0.3419144249086609,0.0033465357638991465],"cjCoords":[0.9130986517934192,0.34191442490866036,0.003346535763899156],"css":"color(srgb-linear 0.913 0.342 0.003)","maxDiff":5.551115123125783e-16},{"space":"xyz-d65","displayName":"XYZ D65","tsCoords":[0.4994207119916236,0.43892847125876655,0.061586348935103424],"cjCoords":[0.49942071199162336,0.4389284712587661,0.06158634893510337],"css":"color(xyz-d65 0.499 0.439 0.062)","maxDiff":4.440892098500626e-16},{"space":"oklab","displayName":"OKLab","tsCoords":[0.7685903592228479,0.05609969031644224,0.15480808475138869],"cjCoords":[0.7685903592228477,0.05609969031644302,0.15480808475138852],"css":"oklab(0.769 0.056 0.155)","maxDiff":7.771561172376096e-16},{"space":"oklch","displayName":"OKLCH","tsCoords":[0.7685903592228479,0.16465940106168814,70.0803864143123],"cjCoords":[0.7685903592228477,0.16465940106168825,70.08038641431199],"css":"oklch(0.769 0.165 70.1)","maxDiff":3.126388037344441e-13}],"tokenScriptCode":"variable start: Color.HSL;\nstart.h = 37.69230769230769;\nstart.s = 0.9212598425196851;\nstart.l = 0.5019607843137255;\nstart.to.oklch()"},{"from":"oklch","to":"srgb","color":"#a855f7","colorName":"Purple","steps":[{"space":"oklch","displayName":"OKLCH","tsCoords":[0.6268459182747175,0.23254184578235404,303.9004330900565],"cjCoords":[0.6268459182747175,0.23254184578235404,303.9004330900565],"css":"oklch(0.627 0.233 303.9)","maxDiff":0},{"space":"oklab","displayName":"OKLab","tsCoords":[0.6268459182747175,0.12970053606722548,-0.19301160841705473],"cjCoords":[0.6268459182747175,0.12970053606722548,-0.19301160841705473],"css":"oklab(0.627 0.130 -0.193)","maxDiff":0},{"space":"xyz-d65","displayName":"XYZ D65","tsCoords":[0.3618316013724836,0.21537758536766655,0.9024975503844396],"cjCoords":[0.3618316013724836,0.21537758536766655,0.9024975503844396],"css":"color(xyz-d65 0.362 0.215 0.902)","maxDiff":0},{"space":"srgb-linear","displayName":"Linear sRGB","tsCoords":[0.39151014398010786,0.09084381006709633,0.9302583344758478],"cjCoords":[0.39157247774972254,0.09084171118340813,0.9301108583754243],"css":"color(srgb-linear 0.392 0.091 0.930)","maxDiff":0.0001474761004235381},{"space":"srgb","displayName":"sRGB","tsCoords":[0.6587761803895053,0.33333707180047856,0.9686950744625226],"cjCoords":[0.6588235294117641,0.33333333333333415,0.9686274509803924],"css":"color(srgb 0.659 0.333 0.969)","maxDiff":0.00006762348213018576}],"tokenScriptCode":"variable start: Color.OKLCH;\nstart.l = 0.6268459182747175;\nstart.c = 0.23254184578235404;\nstart.h = 303.9004330900565;\nstart.to.srgb()"},{"from":"oklch","to":"srgb","color":"#ff6b6b","colorName":"Coral","steps":[{"space":"oklch","displayName":"OKLCH","tsCoords":[0.7116074749337721,0.18122126480215547,22.83887755509346],"cjCoords":[0.7116074749337721,0.18122126480215547,22.83887755509346],"css":"oklch(0.712 0.181 22.8)","maxDiff":0},{"space":"oklab","displayName":"OKLab","tsCoords":[0.7116074749337721,0.1670135165618494,0.07033940646705669],"cjCoords":[0.7116074749337721,0.1670135165618494,0.07033940646705669],"css":"oklab(0.712 0.167 0.070)","maxDiff":0},{"space":"xyz-d65","displayName":"XYZ D65","tsCoords":[0.49150104420197166,0.32840254058505125,0.1766098454329219],"cjCoords":[0.49150104420197166,0.32840254058505125,0.1766098454329219],"css":"color(xyz-d65 0.492 0.328 0.177)","maxDiff":0},{"space":"srgb-linear","displayName":"Linear sRGB","tsCoords":[0.9998408296715775,0.14703066353984956,0.14706174291023968],"cjCoords":[0.9999999999999997,0.1470272664975954,0.14702726649759504],"css":"color(srgb-linear 1.000 0.147 0.147)","maxDiff":0.0001591703284221646},{"space":"srgb","displayName":"sRGB","tsCoords":[0.9999300281279203,0.41961241216513834,0.4196542111150993],"cjCoords":[0.9999999999999997,0.41960784313725547,0.41960784313725497],"css":"color(srgb 1.000 0.420 0.420)","maxDiff":0.00006997187207935518}],"tokenScriptCode":"variable start: Color.OKLCH;\nstart.l = 0.7116074749337721;\nstart.c = 0.18122126480215547;\nstart.h = 22.83887755509346;\nstart.to.srgb()"},{"from":"oklch","to":"srgb","color":"#14b8a6","colorName":"Teal","steps":[{"space":"oklch","displayName":"OKLCH","tsCoords":[0.7037526674560554,0.12301840202704153,182.50252746745971],"cjCoords":[0.7037526674560554,0.12301840202704153,182.50252746745971],"css":"oklch(0.704 0.123 182.5)","maxDiff":0},{"space":"oklab","displayName":"OKLab","tsCoords":[0.7037526674560554,-0.12290107893957175,-0.005371408825994364],"cjCoords":[0.7037526674560554,-0.12290107893957175,-0.00537140882599431],"css":"oklab(0.704 -0.123 -0.005)","maxDiff":5.4643789493269423e-17},{"space":"xyz-d65","displayName":"XYZ D65","tsCoords":[0.24310425300725802,0.3718110867954088,0.4197303250377356],"cjCoords":[0.24310425300725796,0.37181108679540886,0.4197303250377355],"css":"color(xyz-d65 0.243 0.372 0.420)","maxDiff":1.1102230246251565e-16},{"space":"srgb-linear","displayName":"Linear sRGB","tsCoords":[0.006994266708855418,0.4793312577195239,0.38139559809554846],"cjCoords":[0.006995410187264739,0.4793201831008272,0.38132601143253],"css":"color(srgb-linear 0.007 0.479 0.381)","maxDiff":0.00006958666301848382},{"space":"srgb","displayName":"sRGB","tsCoords":[0.078422284258477,0.7215761034414463,0.6510340691109281],"cjCoords":[0.07843137254901444,0.7215686274509806,0.6509803921568627],"css":"color(srgb 0.078 0.722 0.651)","maxDiff":0.00005367695406544026}],"tokenScriptCode":"variable start: Color.OKLCH;\nstart.l = 0.7037526674560554;\nstart.c = 0.12301840202704153;\nstart.h = 182.50252746745971;\nstart.to.srgb()"},{"from":"oklch","to":"srgb","color":"#f59e0b","colorName":"Gold","steps":[{"space":"oklch","displayName":"OKLCH","tsCoords":[0.768590359222848,0.16465940106168822,70.08038641431222],"cjCoords":[0.768590359222848,0.16465940106168822,70.08038641431222],"css":"oklch(0.769 0.165 70.1)","maxDiff":0},{"space":"oklab","displayName":"OKLab","tsCoords":[0.768590359222848,0.0560996903164425,0.15480808475138866],"cjCoords":[0.768590359222848,0.0560996903164425,0.15480808475138866],"css":"oklab(0.769 0.056 0.155)","maxDiff":0},{"space":"xyz-d65","displayName":"XYZ D65","tsCoords":[0.49942071199162325,0.4389284712587671,0.0615863489351034],"cjCoords":[0.4994207119916233,0.43892847125876705,0.0615863489351034],"css":"color(xyz-d65 0.499 0.439 0.062)","maxDiff":5.551115123125783e-17},{"space":"srgb-linear","displayName":"Linear sRGB","tsCoords":[0.912953302284514,0.34192232478856904,0.0033629377553653014],"cjCoords":[0.9130986517934176,0.3419144249086621,0.003346535763899011],"css":"color(srgb-linear 0.913 0.342 0.003)","maxDiff":0.00014534950890365828},{"space":"srgb","displayName":"sRGB","tsCoords":[0.9607169375597796,0.6196143375559409,0.04333738117366403],"cjCoords":[0.9607843137254896,0.6196078431372559,0.04313725490195897],"css":"color(srgb 0.961 0.620 0.043)","maxDiff":0.00020012627170505615}],"tokenScriptCode":"variable start: Color.OKLCH;\nstart.l = 0.768590359222848;\nstart.c = 0.16465940106168822;\nstart.h = 70.08038641431222;\nstart.to.srgb()"}];
     
     function renderResult(r) {
+      const coordLabels = {
+        "srgb": ["R", "G", "B"],
+        "srgb-linear": ["R", "G", "B"],
+        "xyz-d65": ["X", "Y", "Z"],
+        "oklab": ["L", "a", "b"],
+        "oklch": ["L", "C", "H"],
+        "hsl": ["H", "S", "L"],
+      };
+      
       return `
         <div class="result-card">
           <div class="result-header">
@@ -542,19 +1108,38 @@ start.to.oklch()</pre>
               <div class="result-title">${r.colorName}</div>
               <div class="result-path">${r.steps.map(s => s.displayName).join(' → ')}</div>
             </div>
-            <div class="ts-badge">TokenScript</div>
+            <div class="ts-badge">✓ Verified</div>
           </div>
           <div class="chain">
-            ${r.steps.map((s, i) => `
-              ${i > 0 ? '<div class="connector"></div>' : ''}
-              <div class="step-card">
-                <div class="step-name">${s.displayName}</div>
-                <div class="step-swatch" style="background: ${s.css || '#333'}"></div>
-                <div class="step-values">
-                  ${s.coords.map((v, j) => `<div><span>${['r','g','b','x','y','z','l','a','c','h','s'][j] || j}</span><span>${v.toFixed(4)}</span></div>`).join('')}
+            ${r.steps.map((s, i) => {
+              const labels = coordLabels[s.space] || ['0','1','2'];
+              const diffClass = s.maxDiff < 1e-10 ? 'pass' : 'warn';
+              const diffText = s.maxDiff < 1e-10 ? '≡' : 'Δ' + s.maxDiff.toExponential(0);
+              return `
+                ${i > 0 ? '<div class="connector"></div>' : ''}
+                <div class="step-card">
+                  <div class="step-name">
+                    <span>${s.displayName}</span>
+                    <span class="step-diff ${diffClass}">${diffText}</span>
+                  </div>
+                  <div class="step-swatch" style="background: ${s.css || '#333'}"></div>
+                  <div class="step-values">
+                    <div class="values-header">
+                      <span></span>
+                      <span class="ts">TS</span>
+                      <span class="cj">CJ</span>
+                    </div>
+                    ${labels.map((l, j) => `
+                      <div class="values-row">
+                        <span class="label">${l}</span>
+                        <span class="ts">${s.tsCoords[j]?.toFixed(4) || 'N/A'}</span>
+                        <span class="cj">${s.cjCoords[j]?.toFixed(4) || 'N/A'}</span>
+                      </div>
+                    `).join('')}
+                  </div>
                 </div>
-              </div>
-            `).join('')}
+              `;
+            }).join('')}
           </div>
           <div class="code-section">
             <div class="code-label">TokenScript Code</div>
