@@ -1,0 +1,61 @@
+// Select the most contrasting color from a list of candidates
+// Uses WCAG 2.1 contrast ratio based on relative luminance
+//
+// Algorithm:
+// 1. Calculate relative luminance: L = 0.2126*R + 0.7152*G + 0.0722*B (linear RGB)
+// 2. Contrast ratio: (L_lighter + 0.05) / (L_darker + 0.05)
+// 3. Return candidate with highest contrast ratio
+//
+// Default candidates: black (#000) and white (#fff)
+
+variable input: List = {input};
+variable bg: Color.LinearSRGB = input.get(0).to.linearsrgb();
+
+// Calculate background luminance
+variable bg_lum: Number = 0.2126 * bg.r + 0.7152 * bg.g + 0.0722 * bg.b;
+
+// Get candidates list, default to black and white
+variable candidates: List = ;
+if (input.length() > 1) [
+    candidates = input.get(1);
+] else [
+    // Default: black and white
+    variable black: Color.SRGB;
+    black.r = 0; black.g = 0; black.b = 0;
+    variable white: Color.SRGB;
+    white.r = 1; white.g = 1; white.b = 1;
+    candidates = black, white;
+];
+
+// Find candidate with highest contrast
+variable best_color: Color.SRGB = candidates.get(0).to.srgb();
+variable best_contrast: Number = 0;
+
+variable i: Number = 0;
+while (i < candidates.length()) [
+    variable candidate: Color.LinearSRGB = candidates.get(i).to.linearsrgb();
+    
+    // Calculate candidate luminance
+    variable cand_lum: Number = 0.2126 * candidate.r + 0.7152 * candidate.g + 0.0722 * candidate.b;
+    
+    // Calculate contrast ratio (lighter / darker)
+    variable lighter: Number = bg_lum;
+    variable darker: Number = cand_lum;
+    if (cand_lum > bg_lum) [
+        lighter = cand_lum;
+        darker = bg_lum;
+    ];
+    
+    variable contrast: Number = (lighter + 0.05) / (darker + 0.05);
+    
+    // Track best
+    if (contrast > best_contrast) [
+        best_contrast = contrast;
+        best_color = candidates.get(i).to.srgb();
+    ];
+    
+    i = i + 1;
+];
+
+return best_color;
+

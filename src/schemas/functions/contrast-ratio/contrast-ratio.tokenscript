@@ -1,0 +1,36 @@
+// Calculate WCAG 2.1 contrast ratio between two colors
+//
+// Returns: 1.0 (identical) to 21.0 (black vs white)
+//
+// WCAG Guidelines:
+//   - AA Normal text: ≥ 4.5:1
+//   - AA Large text:  ≥ 3.0:1
+//   - AAA Normal text: ≥ 7.0:1
+//   - AAA Large text:  ≥ 4.5:1
+//
+// Algorithm:
+// 1. Convert to linear RGB
+// 2. Calculate relative luminance: L = 0.2126*R + 0.7152*G + 0.0722*B
+// 3. Contrast ratio: (L_lighter + 0.05) / (L_darker + 0.05)
+
+variable input: List = {input};
+variable color1: Color.LinearSRGB = input.get(0).to.linearsrgb();
+variable color2: Color.LinearSRGB = input.get(1).to.linearsrgb();
+
+// Calculate relative luminance for each color
+variable lum1: Number = 0.2126 * color1.r + 0.7152 * color1.g + 0.0722 * color1.b;
+variable lum2: Number = 0.2126 * color2.r + 0.7152 * color2.g + 0.0722 * color2.b;
+
+// Determine lighter and darker
+variable lighter: Number = lum1;
+variable darker: Number = lum2;
+if (lum2 > lum1) [
+    lighter = lum2;
+    darker = lum1;
+];
+
+// Calculate contrast ratio
+variable ratio: Number = (lighter + 0.05) / (darker + 0.05);
+
+return ratio;
+

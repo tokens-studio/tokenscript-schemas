@@ -1,0 +1,25 @@
+{
+  "name": "Best Contrast",
+  "type": "function",
+  "description": "Selects the color with highest contrast against a background from a list of candidates. Uses WCAG 2.1 contrast ratio. Perfect for choosing readable text colors.",
+  "keyword": "best_contrast",
+  "input": {
+    "type": "object",
+    "properties": {
+      "background": {
+        "type": "color",
+        "description": "The background color to contrast against"
+      },
+      "candidates": {
+        "type": "list",
+        "description": "List of candidate colors to choose from. Default is [black, white]"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./best-contrast.tokenscript"
+  },
+  "requirements": ["/api/v1/core/srgb-linear-color/0/", "/api/v1/core/srgb-color/0/"]
+}
+

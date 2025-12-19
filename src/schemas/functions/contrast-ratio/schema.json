@@ -1,0 +1,25 @@
+{
+  "name": "Contrast Ratio",
+  "type": "function",
+  "description": "Calculates the WCAG 2.1 contrast ratio between two colors. Returns a value from 1 (no contrast) to 21 (black/white). WCAG AA requires 4.5:1 for normal text, 3:1 for large text.",
+  "keyword": "contrast_ratio",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color1": {
+        "type": "color",
+        "description": "First color (e.g., background)"
+      },
+      "color2": {
+        "type": "color",
+        "description": "Second color (e.g., foreground)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./contrast-ratio.tokenscript"
+  },
+  "requirements": ["/api/v1/core/srgb-linear-color/0/"]
+}
+
