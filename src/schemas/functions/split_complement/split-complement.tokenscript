@@ -15,7 +15,7 @@ if (input.length() > 1) [
 variable complement_h: Number = base.h + 180;
 if (complement_h >= 360) [ complement_h = complement_h - 360; ];
 
-variable result: List = ;
+variable result: List;
 
 // Base color
 result = result, base.to.srgb();

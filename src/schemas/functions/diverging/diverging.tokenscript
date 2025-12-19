@@ -23,15 +23,15 @@ if (input.length() > 3) [
 // Calculate midpoint index
 variable mid: Number = (count - 1) / 2;
 
-variable result: List = ;
+variable result: List;
 variable i: Number = 0;
+variable t: Number = 0;
+variable step_color: Color.OKLCH;
 
 while (i < count) [
-    variable step_color: Color.OKLCH;
-    
     if (i < mid) [
         // First half: color1 → neutral
-        variable t: Number = i / mid;
+        t = i / mid;
         step_color.l = color1.l + (neutral_l - color1.l) * t;
         step_color.c = color1.c * (1 - t);
         step_color.h = color1.h;
@@ -43,7 +43,7 @@ while (i < count) [
             step_color.h = 0;
         ] else [
             // Second half: neutral → color2
-            variable t: Number = (i - mid) / mid;
+            t = (i - mid) / mid;
             step_color.l = neutral_l + (color2.l - neutral_l) * t;
             step_color.c = color2.c * t;
             step_color.h = color2.h;

@@ -7,7 +7,7 @@
 variable input: List = {input};
 variable base: Color.OKLCH = input.get(0).to.oklch();
 
-variable result: List = ;
+variable result: List;
 
 // Base color (0°)
 result = result, base.to.srgb();

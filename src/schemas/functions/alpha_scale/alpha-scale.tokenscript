@@ -12,7 +12,7 @@ if (input.length() > 1) [
     count = input.get(1);
 ];
 
-variable result: List = ;
+variable result: List;
 variable i: Number = 0;
 
 while (i < count) [

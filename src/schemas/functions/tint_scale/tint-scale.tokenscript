@@ -33,27 +33,32 @@ variable base_l: Number = base.l;
 // Calculate chroma scaling factor (chroma decreases at extreme lightness)
 variable max_c: Number = base_c * 1.2;
 
-variable result: List = ;
+variable result: List;
 variable i: Number = 0;
+variable t: Number = 0;
+variable step_l: Number = 0;
+variable l_dist: Number = 0;
+variable chroma_scale: Number = 0;
+variable step_c: Number = 0;
+variable color: Color.OKLCH;
 
 while (i < count) [
-    variable t: Number = i / (count - 1);
+    t = i / (count - 1);
     
     // Interpolate lightness
-    variable step_l: Number = light_start + (light_end - light_start) * t;
+    step_l = light_start + (light_end - light_start) * t;
     
     // Scale chroma based on lightness distance from optimal (~0.6)
     // Chroma is highest in midtones, lower at extremes
-    variable l_dist: Number = step_l - 0.6;
+    l_dist = step_l - 0.6;
     if (l_dist < 0) [ l_dist = 0 - l_dist; ];
-    variable chroma_scale: Number = 1 - l_dist * 1.5;
+    chroma_scale = 1 - l_dist * 1.5;
     if (chroma_scale < 0.1) [ chroma_scale = 0.1; ];
-    variable step_c: Number = max_c * chroma_scale;
+    step_c = max_c * chroma_scale;
     
     // Clamp chroma
     if (step_c > 0.4) [ step_c = 0.4; ];
     
-    variable color: Color.OKLCH;
     color.l = step_l;
     color.c = step_c;
     color.h = base_h;

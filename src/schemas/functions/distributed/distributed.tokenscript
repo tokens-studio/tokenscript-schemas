@@ -33,14 +33,15 @@ if (input.length() > 3) [
 // Calculate hue step (360° / count for even distribution)
 variable hue_step: Number = 360 / count;
 
-variable result: List = ;
+variable result: List;
 variable i: Number = 0;
+variable current_hue: Number = 0;
+variable color: Color.OKLCH;
 
 while (i < count) [
-    variable current_hue: Number = start_hue + i * hue_step;
+    current_hue = start_hue + i * hue_step;
     if (current_hue >= 360) [ current_hue = current_hue - 360; ];
     
-    variable color: Color.OKLCH;
     color.l = lightness;
     color.c = chroma;
     color.h = current_hue;

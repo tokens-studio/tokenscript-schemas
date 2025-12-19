@@ -21,18 +21,20 @@ if (input.length() > 2) [
 variable step: Number = spread / (count - 1);
 variable start_offset: Number = 0 - spread / 2;
 
-variable result: List = ;
+variable result: List;
 variable i: Number = 0;
+variable hue_offset: Number = 0;
+variable new_hue: Number = 0;
+variable color: Color.OKLCH;
 
 while (i < count) [
-    variable hue_offset: Number = start_offset + i * step;
-    variable new_hue: Number = base.h + hue_offset;
+    hue_offset = start_offset + i * step;
+    new_hue = base.h + hue_offset;
     
     // Normalize hue to 0-360
     if (new_hue < 0) [ new_hue = new_hue + 360; ];
     if (new_hue >= 360) [ new_hue = new_hue - 360; ];
     
-    variable color: Color.OKLCH;
     color.l = base.l;
     color.c = base.c;
     color.h = new_hue;
