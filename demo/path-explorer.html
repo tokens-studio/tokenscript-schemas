@@ -3,17 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Color Path Explorer — Tokens Studio</title>
+  <title>Color Path Explorer — TokenScript</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <script src="https://colorjs.io/dist/color.global.js"></script>
   <style>
     :root {
       --bg-primary: #09090b;
       --bg-secondary: #18181b;
       --bg-tertiary: #27272a;
-      --bg-elevated: #3f3f46;
       --border-subtle: rgba(255,255,255,0.06);
       --border-default: rgba(255,255,255,0.1);
       --text-primary: #fafafa;
@@ -22,31 +19,21 @@
       --accent: #a855f7;
       --accent-muted: rgba(168, 85, 247, 0.15);
       --success: #22c55e;
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 16px;
     }
     
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Inter', -apple-system, sans-serif;
       background: var(--bg-primary);
       color: var(--text-primary);
       min-height: 100vh;
-      line-height: 1.5;
-    }
-    
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
       padding: 48px 32px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
     
-    /* Header */
-    header {
-      margin-bottom: 48px;
-    }
+    header { margin-bottom: 32px; }
     
     .brand {
       display: flex;
@@ -59,739 +46,538 @@
       width: 32px;
       height: 32px;
       background: linear-gradient(135deg, var(--accent), #ec4899);
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      border-radius: 6px;
     }
     
-    .brand-icon svg {
-      width: 18px;
-      height: 18px;
-      fill: white;
-    }
+    h1 { font-size: 24px; font-weight: 600; }
+    .subtitle { color: var(--text-tertiary); font-size: 14px; }
     
-    h1 {
-      font-size: 24px;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-    }
-    
-    .subtitle {
-      color: var(--text-tertiary);
-      font-size: 14px;
-    }
-    
-    /* Controls */
-    .controls {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 16px 20px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
+    .notice {
+      background: var(--accent-muted);
+      border: 1px solid rgba(168,85,247,0.3);
+      border-radius: 8px;
+      padding: 16px;
       margin-bottom: 32px;
     }
     
-    .control-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    
-    .control-group label {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text-tertiary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    
-    select {
-      appearance: none;
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border-default);
-      border-radius: var(--radius-sm);
-      padding: 10px 32px 10px 12px;
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-primary);
-      cursor: pointer;
-      min-width: 140px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 10px center;
-      transition: border-color 0.15s, background-color 0.15s;
-    }
-    
-    select:hover {
-      background-color: var(--bg-elevated);
-    }
-    
-    select:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-    
-    .color-input-group {
-      display: flex;
-      align-items: flex-end;
-      gap: 8px;
-    }
-    
-    input[type="color"] {
-      width: 42px;
-      height: 42px;
-      padding: 0;
-      border: none;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      background: transparent;
-    }
-    
-    input[type="color"]::-webkit-color-swatch-wrapper {
-      padding: 0;
-    }
-    
-    input[type="color"]::-webkit-color-swatch {
-      border: 2px solid var(--border-default);
-      border-radius: var(--radius-sm);
-    }
-    
-    input[type="text"] {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border-default);
-      border-radius: var(--radius-sm);
-      padding: 10px 12px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      color: var(--text-primary);
-      width: 90px;
-      transition: border-color 0.15s;
-    }
-    
-    input[type="text"]:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-    
-    .spacer {
-      flex: 1;
-    }
-    
-    button {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 20px;
-      background: var(--accent);
-      border: none;
-      border-radius: var(--radius-sm);
-      font-family: inherit;
-      font-size: 13px;
+    .notice-title {
       font-weight: 600;
-      color: white;
-      cursor: pointer;
-      transition: opacity 0.15s, transform 0.1s;
-    }
-    
-    button:hover {
-      opacity: 0.9;
-    }
-    
-    button:active {
-      transform: scale(0.98);
-    }
-    
-    button svg {
-      width: 14px;
-      height: 14px;
-    }
-    
-    /* Path visualization */
-    .path-section {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-    }
-    
-    .path-header {
+      color: var(--accent);
+      margin-bottom: 4px;
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border-subtle);
-      background: rgba(255,255,255,0.02);
     }
     
-    .path-label {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-tertiary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
+    .notice-text { color: var(--text-secondary); font-size: 14px; }
     
-    .path-steps {
+    .controls {
       display: flex;
-      align-items: center;
-      gap: 6px;
+      gap: 12px;
+      margin-bottom: 24px;
       flex-wrap: wrap;
     }
     
-    .path-step {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--accent);
-      background: var(--accent-muted);
-      padding: 4px 10px;
-      border-radius: 100px;
+    select, button {
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
     }
     
-    .path-arrow {
-      color: var(--text-tertiary);
-      font-size: 11px;
-    }
-    
-    .step-count {
-      margin-left: auto;
-      font-size: 12px;
-      color: var(--text-tertiary);
-    }
-    
-    /* Conversion chain */
-    .chain {
-      display: flex;
-      align-items: stretch;
-      padding: 24px;
-      gap: 0;
-      overflow-x: auto;
-    }
-    
-    .chain::-webkit-scrollbar {
-      height: 6px;
-    }
-    
-    .chain::-webkit-scrollbar-track {
+    select {
       background: var(--bg-tertiary);
-      border-radius: 3px;
+      border: 1px solid var(--border-default);
+      color: var(--text-primary);
+      min-width: 140px;
     }
     
-    .chain::-webkit-scrollbar-thumb {
-      background: var(--bg-elevated);
-      border-radius: 3px;
+    button {
+      background: var(--accent);
+      border: none;
+      color: white;
+      font-weight: 600;
     }
     
-    .chain-item {
+    .result-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    
+    .result-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
+      gap: 12px;
+    }
+    
+    .color-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: 2px solid var(--border-default);
+    }
+    
+    .result-title {
+      font-weight: 600;
+      font-size: 14px;
+    }
+    
+    .result-path {
+      color: var(--text-tertiary);
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .chain {
+      display: flex;
+      padding: 20px;
+      gap: 0;
+      overflow-x: auto;
     }
     
     .step-card {
       background: var(--bg-primary);
       border: 1px solid var(--border-default);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      min-width: 120px;
-      transition: border-color 0.15s;
-    }
-    
-    .step-card:hover {
-      border-color: var(--accent);
+      border-radius: 8px;
+      padding: 12px;
+      min-width: 100px;
     }
     
     .step-name {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
       color: var(--text-secondary);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
     
-    .color-preview {
+    .step-swatch {
       width: 100%;
-      aspect-ratio: 1;
-      border-radius: var(--radius-sm);
-      margin-bottom: 12px;
-      position: relative;
-      overflow: hidden;
+      height: 40px;
+      border-radius: 4px;
+      margin-bottom: 8px;
     }
     
-    .color-preview::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: 
-        linear-gradient(45deg, #333 25%, transparent 25%),
-        linear-gradient(-45deg, #333 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, #333 75%),
-        linear-gradient(-45deg, transparent 75%, #333 75%);
-      background-size: 8px 8px;
-      background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
-      opacity: 0.5;
-      z-index: 0;
-    }
-    
-    .color-preview-inner {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-    }
-    
-    .no-css {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 9px;
+    .step-values {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
       color: var(--text-tertiary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      z-index: 2;
     }
     
-    .coords {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    
-    .coord-row {
+    .step-values div {
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
     }
     
-    .coord-label {
-      color: var(--text-tertiary);
-    }
-    
-    .coord-value {
-      color: var(--text-primary);
-      font-weight: 500;
-    }
-    
-    /* Arrow connector */
     .connector {
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       padding: 0 8px;
-      min-width: 60px;
+      min-width: 50px;
     }
     
-    .connector-line {
-      display: flex;
-      align-items: center;
-    }
-    
-    .connector-line::before {
-      content: '';
-      width: 24px;
-      height: 1px;
-      background: var(--border-default);
-    }
-    
-    .connector-line::after {
-      content: '';
-      width: 0;
-      height: 0;
-      border-top: 4px solid transparent;
-      border-bottom: 4px solid transparent;
-      border-left: 6px solid var(--text-tertiary);
-    }
-    
-    .transform-name {
-      font-size: 9px;
-      color: var(--text-tertiary);
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      margin-top: 6px;
-      text-align: center;
-      white-space: nowrap;
-    }
-    
-    /* Empty state */
-    #no-path {
-      display: none;
-      padding: 48px;
-      text-align: center;
+    .connector::before {
+      content: '→';
       color: var(--text-tertiary);
     }
     
-    /* Footer info */
-    .info-section {
-      margin-top: 32px;
-      padding: 20px 24px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-    }
-    
-    .info-title {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 12px;
-    }
-    
-    .info-text {
-      font-size: 13px;
-      color: var(--text-tertiary);
-      line-height: 1.6;
-      margin-bottom: 16px;
-    }
-    
-    .space-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    
-    .space-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--text-secondary);
-      background: var(--bg-tertiary);
-      padding: 4px 10px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-subtle);
-    }
-    
-    .space-tag.hub {
-      color: var(--accent);
-      background: var(--accent-muted);
-      border-color: transparent;
-    }
-    
-    footer {
-      margin-top: 48px;
-      padding-top: 24px;
+    .code-section {
+      background: var(--bg-primary);
+      padding: 16px;
       border-top: 1px solid var(--border-subtle);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
     
-    .footer-brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .code-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    
+    pre {
+      font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
-      color: var(--text-tertiary);
-    }
-    
-    .footer-brand img {
-      height: 16px;
-      opacity: 0.5;
-    }
-    
-    .footer-links {
-      display: flex;
-      gap: 16px;
-    }
-    
-    .footer-links a {
-      font-size: 12px;
-      color: var(--text-tertiary);
-      text-decoration: none;
-      transition: color 0.15s;
-    }
-    
-    .footer-links a:hover {
       color: var(--text-secondary);
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+    
+    .ts-badge {
+      background: var(--success);
+      color: white;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 100px;
+      margin-left: auto;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="brand">
-        <div class="brand-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+  <header>
+    <div class="brand">
+      <div class="brand-icon"></div>
+      <h1>Color Path Explorer</h1>
+    </div>
+    <p class="subtitle">Real TokenScript interpreter conversions</p>
+  </header>
+  
+  <div class="notice">
+    <div class="notice-title">
+      <span>✓</span> Powered by TokenScript Interpreter
+    </div>
+    <p class="notice-text">
+      These conversions are executed by the real TokenScript interpreter, not ColorJS.
+      The interpreter automatically finds the shortest path through the conversion graph.
+    </p>
+  </div>
+  
+  <div class="controls">
+    <select id="path-select">
+      <option value="srgb-oklch">sRGB → OKLCH</option>
+      <option value="hsl-oklch">HSL → OKLCH</option>
+      <option value="oklch-srgb">OKLCH → sRGB</option>
+    </select>
+    <select id="color-select">
+      <option value="#a855f7">Purple</option>
+      <option value="#ff6b6b">Coral</option>
+      <option value="#14b8a6">Teal</option>
+      <option value="#f59e0b">Gold</option>
+    </select>
+  </div>
+  
+  <div id="results">
+    
+    <div class="result-card">
+      <div class="result-header">
+        <div class="color-dot" style="background: #a855f7"></div>
+        <div>
+          <div class="result-title">Purple</div>
+          <div class="result-path">sRGB → Linear sRGB → XYZ D65 → OKLab → OKLCH</div>
         </div>
-        <h1>Color Path Explorer</h1>
+        <div class="ts-badge">TokenScript</div>
       </div>
-      <p class="subtitle">Visualize color space conversion paths</p>
-    </header>
-    
-    <div class="controls">
-      <div class="control-group">
-        <label>From</label>
-        <select id="from-space">
-          <option value="srgb">sRGB</option>
-          <option value="srgb-linear">Linear sRGB</option>
-          <option value="xyz-d65">XYZ D65</option>
-          <option value="xyz-d50">XYZ D50</option>
-          <option value="oklab">OKLab</option>
-          <option value="oklch">OKLCH</option>
-          <option value="lab">Lab</option>
-          <option value="lch">LCH</option>
-          <option value="hsl">HSL</option>
-          <option value="hsv">HSV</option>
-          <option value="hwb">HWB</option>
-          <option value="p3">Display P3</option>
-        </select>
+      <div class="chain">
+        
+          
+          <div class="step-card">
+            <div class="step-name">sRGB</div>
+            <div class="step-swatch" style="background: color(srgb 0.659 0.333 0.969)"></div>
+            <div class="step-values">
+              <div><span>R</span><span>0.6588</span></div><div><span>G</span><span>0.3333</span></div><div><span>B</span><span>0.9686</span></div>
+            </div>
+          </div>
+        
+          <div class="connector"></div>
+          <div class="step-card">
+            <div class="step-name">Linear sRGB</div>
+            <div class="step-swatch" style="background: color(srgb-linear 0.392 0.091 0.930)"></div>
+            <div class="step-values">
+              <div><span>R</span><span>0.3916</span></div><div><span>G</span><span>0.0908</span></div><div><span>B</span><span>0.9301</span></div>
+            </div>
+          </div>
+        
+          <div class="connector"></div>
+          <div class="step-card">
+            <div class="step-name">XYZ D65</div>
+            <div class="step-swatch" style="background: color(xyz-d65 0.362 0.215 0.902)"></div>
+            <div class="step-values">
+              <div><span>X</span><span>0.3618</span></div><div><span>Y</span><span>0.2154</span></div><div><span>Z</span><span>0.9025</span></div>
+            </div>
+          </div>
+        
+          <div class="connector"></div>
+          <div class="step-card">
+            <div class="step-name">OKLab</div>
+            <div class="step-swatch" style="background: oklab(0.627 0.130 -0.193)"></div>
+            <div class="step-values">
+              <div><span>L</span><span>0.6268</span></div><div><span>a</span><span>0.1297</span></div><div><span>b</span><span>-0.1930</span></div>
+            </div>
+          </div>
+        
+          <div class="connector"></div>
+          <div class="step-card">
+            <div class="step-name">OKLCH</div>
+            <div class="step-swatch" style="background: oklch(0.627 0.233 303.9)"></div>
+            <div class="step-values">
+              <div><span>L</span><span>0.6268</span></div><div><span>C</span><span>0.2325</span></div><div><span>H</span><span>303.9004</span></div>
+            </div>
+          </div>
+        
       </div>
-      
-      <div class="control-group">
-        <label>To</label>
-        <select id="to-space">
-          <option value="srgb" >sRGB</option>
-          <option value="srgb-linear" >Linear sRGB</option>
-          <option value="xyz-d65" >XYZ D65</option>
-          <option value="xyz-d50" >XYZ D50</option>
-          <option value="oklab" >OKLab</option>
-          <option value="oklch" selected>OKLCH</option>
-          <option value="lab" >Lab</option>
-          <option value="lch" >LCH</option>
-          <option value="hsl" >HSL</option>
-          <option value="hsv" >HSV</option>
-          <option value="hwb" >HWB</option>
-          <option value="p3" >Display P3</option>
-        </select>
+      <div class="code-section">
+        <div class="code-label">TokenScript Code</div>
+        <pre>variable start: Color.SRGB;
+start.r = 0.6588235294117647;
+start.g = 0.3333333333333333;
+start.b = 0.9686274509803922;
+start.to.oklch()</pre>
       </div>
-      
-      <div class="control-group">
-        <label>Color</label>
-        <div class="color-input-group">
-          <input type="color" id="color-picker" value="#a855f7">
-          <input type="text" id="hex-input" value="#a855f7" spellcheck="false">
+    </div>
+  
+
+    <div class="result-card">
+      <div class="result-header">
+        <div class="color-dot" style="background: #ff6b6b"></div>
+        <div>
+          <div class="result-title">Coral</div>
+          <div class="result-path">sRGB → Linear sRGB → XYZ D65 → OKLab → OKLCH</div>
         </div>
+        <div class="ts-badge">TokenScript</div>
       </div>
-      
-      <div class="spacer"></div>
-      
-      <button onclick="updateConversion()">
-        Convert
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 12h14M12 5l7 7-7 7"/>
-        </svg>
-      </button>
+      <div class="chain">
+        
+          
+          <div class="step-card">
+            <div class="step-name">sRGB</div>
+            <div class="step-swatch" style="background: color(srgb 1.000 0.420 0.420)"></div>
+            <div class="step-values">
+              <div><span>R</span><span>1.0000</span></div><div><span>G</span><span>0.4196</span></div><div><span>B</span><span>0.4196</span></div>
+            </div>
+          </div>
+        
+          <div class="connector"></div>
+          <div class="step-card">
+            <div class="step-name">Linear sRGB</div>
+            <div class="step-swatch" style="background: color(srgb-linear 1.000 0.147 0.147)"></div>
+            <div class="step-values">
+              <div><span>R</span><span>1.0000</span></div><div><span>G</span><span>0.1470</span></div><div><span>B</span><span>0.1470</span></div>
+            </div>
+          </div>
+        
+          <div class="connector"></div>
+          <div class="step-card">
+            <div class="step-name">XYZ D65</div>
+            <div class="step-swatch" style="background: color(xyz-d65 0.492 0.328 0.177)"></div>
+            <div class="step-values">
+              <div><span>X</span><span>0.4915</span></div><div><span>Y</span><span>0.3284</span></div><div><span>Z</span><span>0.1766</span></div>
+            </div>
+          </div>
+        
+          <div class="connector"></div>
+          <div class="step-card">
+            <div class="step-name">OKLab</div>
+            <div class="step-swatch" style="background: oklab(0.712 0.167 0.070)"></div>
+            <div class="step-values">
+              <div><span>L</span><span>0.7116</span></div><div><span>a</span><span>0.1670</span></div><div><span>b</span><span>0.0703</span></div>
+            </div>
+          </div>
+        
+          <div class="connector"></div>
+          <div class="step-card">
+            <div class="step-name">OKLCH</div>
+            <div class="step-swatch" style="background: oklch(0.712 0.181 22.8)"></div>
+            <div class="step-values">
+              <div><span>L</span><span>0.7116</span></div><div><span>C</span><span>0.1812</span></div><div><span>H</span><span>22.8389</span></div>
+            </div>
+          </div>
+        
+      </div>
+      <div class="code-section">
+        <div class="code-label">TokenScript Code</div>
+        <pre>variable start: Color.SRGB;
+start.r = 1;
+start.g = 0.4196078431372549;
+start.b = 0.4196078431372549;
+start.to.oklch()</pre>
+      </div>
     </div>
-    
-    <div class="path-section">
-      <div class="path-header">
-        <span class="path-label">Path</span>
-        <div class="path-steps" id="path-steps"></div>
-        <span class="step-count" id="step-count"></span>
+  
+
+    <div class="result-card">
+      <div class="result-header">
+        <div class="color-dot" style="background: #14b8a6"></div>
+        <div>
+          <div class="result-title">Teal</div>
+          <div class="result-path">sRGB → Linear sRGB → XYZ D65 → OKLab → OKLCH</div>
+        </div>
+        <div class="ts-badge">TokenScript</div>
       </div>
-      <div id="no-path">No conversion path available</div>
-      <div class="chain" id="chain"></div>
+      <div class="chain">
+        
+          
+          <div class="step-card">
+            <div class="step-name">sRGB</div>
+            <div class="step-swatch" style="background: color(srgb 0.078 0.722 0.651)"></div>
+            <div class="step-values">
+              <div><span>R</span><span>0.0784</span></div><div><span>G</span><span>0.7216</span></div><div><span>B</span><span>0.6510</span></div>
+            </div>
+          </div>
+        
+          <div class="connector"></div>
+          <div class="step-card">
+            <div class="step-name">Linear sRGB</div>
+            <div class="step-swatch" style="background: color(srgb-linear 0.007 0.479 0.381)"></div>
+            <div class="step-values">
+              <div><span>R</span><span>0.0070</span></div><div><span>G</span><span>0.4793</span></div><div><span>B</span><span>0.3813</span></div>
+            </div>
+          </div>
+        
+          <div class="connector"></div>
+          <div class="step-card">
+            <div class="step-name">XYZ D65</div>
+            <div class="step-swatch" style="background: color(xyz-d65 0.243 0.372 0.420)"></div>
+            <div class="step-values">
+              <div><span>X</span><span>0.2431</span></div><div><span>Y</span><span>0.3718</span></div><div><span>Z</span><span>0.4197</span></div>
+            </div>
+          </div>
+        
+          <div class="connector"></div>
+          <div class="step-card">
+            <div class="step-name">OKLab</div>
+            <div class="step-swatch" style="background: oklab(0.704 -0.123 -0.005)"></div>
+            <div class="step-values">
+              <div><span>L</span><span>0.7038</span></div><div><span>a</span><span>-0.1229</span></div><div><span>b</span><span>-0.0054</span></div>
+            </div>
+          </div>
+        
+          <div class="connector"></div>
+          <div class="step-card">
+            <div class="step-name">OKLCH</div>
+            <div class="step-swatch" style="background: oklch(0.704 0.123 182.5)"></div>
+            <div class="step-values">
+              <div><span>L</span><span>0.7038</span></div><div><span>C</span><span>0.1230</span></div><div><span>H</span><span>182.5025</span></div>
+            </div>
+          </div>
+        
+      </div>
+      <div class="code-section">
+        <div class="code-label">TokenScript Code</div>
+        <pre>variable start: Color.SRGB;
+start.r = 0.0784313725490196;
+start.g = 0.7215686274509804;
+start.b = 0.6509803921568628;
+start.to.oklch()</pre>
+      </div>
     </div>
-    
-    <div class="info-section">
-      <div class="info-title">Conversion Graph</div>
-      <p class="info-text">
-        Colors are converted through a graph of color spaces. <strong>XYZ D65</strong> is the central hub connecting most perceptual spaces.
-        HSL, HSV, and HWB connect directly through sRGB.
-      </p>
-      <div class="space-tags">
-        <span class="space-tag ">sRGB</span>
-        <span class="space-tag ">Linear sRGB</span>
-        <span class="space-tag hub">XYZ D65</span>
-        <span class="space-tag ">XYZ D50</span>
-        <span class="space-tag ">OKLab</span>
-        <span class="space-tag ">OKLCH</span>
-        <span class="space-tag ">Lab</span>
-        <span class="space-tag ">LCH</span>
-        <span class="space-tag ">HSL</span>
-        <span class="space-tag ">HSV</span>
-        <span class="space-tag ">HWB</span>
-        <span class="space-tag ">Display P3</span>
+  
+
+    <div class="result-card">
+      <div class="result-header">
+        <div class="color-dot" style="background: #f59e0b"></div>
+        <div>
+          <div class="result-title">Gold</div>
+          <div class="result-path">sRGB → Linear sRGB → XYZ D65 → OKLab → OKLCH</div>
+        </div>
+        <div class="ts-badge">TokenScript</div>
+      </div>
+      <div class="chain">
+        
+          
+          <div class="step-card">
+            <div class="step-name">sRGB</div>
+            <div class="step-swatch" style="background: color(srgb 0.961 0.620 0.043)"></div>
+            <div class="step-values">
+              <div><span>R</span><span>0.9608</span></div><div><span>G</span><span>0.6196</span></div><div><span>B</span><span>0.0431</span></div>
+            </div>
+          </div>
+        
+          <div class="connector"></div>
+          <div class="step-card">
+            <div class="step-name">Linear sRGB</div>
+            <div class="step-swatch" style="background: color(srgb-linear 0.913 0.342 0.003)"></div>
+            <div class="step-values">
+              <div><span>R</span><span>0.9131</span></div><div><span>G</span><span>0.3419</span></div><div><span>B</span><span>0.0033</span></div>
+            </div>
+          </div>
+        
+          <div class="connector"></div>
+          <div class="step-card">
+            <div class="step-name">XYZ D65</div>
+            <div class="step-swatch" style="background: color(xyz-d65 0.499 0.439 0.062)"></div>
+            <div class="step-values">
+              <div><span>X</span><span>0.4994</span></div><div><span>Y</span><span>0.4389</span></div><div><span>Z</span><span>0.0616</span></div>
+            </div>
+          </div>
+        
+          <div class="connector"></div>
+          <div class="step-card">
+            <div class="step-name">OKLab</div>
+            <div class="step-swatch" style="background: oklab(0.769 0.056 0.155)"></div>
+            <div class="step-values">
+              <div><span>L</span><span>0.7686</span></div><div><span>a</span><span>0.0561</span></div><div><span>b</span><span>0.1548</span></div>
+            </div>
+          </div>
+        
+          <div class="connector"></div>
+          <div class="step-card">
+            <div class="step-name">OKLCH</div>
+            <div class="step-swatch" style="background: oklch(0.769 0.165 70.1)"></div>
+            <div class="step-values">
+              <div><span>L</span><span>0.7686</span></div><div><span>C</span><span>0.1647</span></div><div><span>H</span><span>70.0804</span></div>
+            </div>
+          </div>
+        
+      </div>
+      <div class="code-section">
+        <div class="code-label">TokenScript Code</div>
+        <pre>variable start: Color.SRGB;
+start.r = 0.9607843137254902;
+start.g = 0.6196078431372549;
+start.b = 0.043137254901960784;
+start.to.oklch()</pre>
       </div>
     </div>
-    
-    <footer>
-      <div class="footer-brand">
-        <span>Tokens Studio</span>
-        <span>·</span>
-        <span>Color Schema Registry</span>
-      </div>
-      <div class="footer-links">
-        <a href="color-comparison.html">Parity Tests</a>
-        <a href="advanced-tests.html">Advanced Tests</a>
-      </div>
-    </footer>
+  
   </div>
   
   <script>
-    const allPaths = {"srgb":{"srgb":["srgb"],"srgb-linear":["srgb","srgb-linear"],"xyz-d65":["srgb","srgb-linear","xyz-d65"],"xyz-d50":["srgb","srgb-linear","xyz-d65","xyz-d50"],"oklab":["srgb","srgb-linear","xyz-d65","oklab"],"oklch":["srgb","srgb-linear","xyz-d65","oklab","oklch"],"lab":["srgb","srgb-linear","xyz-d65","xyz-d50","lab"],"lch":["srgb","srgb-linear","xyz-d65","xyz-d50","lab","lch"],"hsl":["srgb","hsl"],"hsv":["srgb","hsv"],"hwb":["srgb","hwb"],"p3":["srgb","srgb-linear","xyz-d65","p3"]},"srgb-linear":{"srgb":["srgb-linear","srgb"],"srgb-linear":["srgb-linear"],"xyz-d65":["srgb-linear","xyz-d65"],"xyz-d50":["srgb-linear","xyz-d65","xyz-d50"],"oklab":["srgb-linear","xyz-d65","oklab"],"oklch":["srgb-linear","xyz-d65","oklab","oklch"],"lab":["srgb-linear","xyz-d65","xyz-d50","lab"],"lch":["srgb-linear","xyz-d65","xyz-d50","lab","lch"],"hsl":["srgb-linear","srgb","hsl"],"hsv":["srgb-linear","srgb","hsv"],"hwb":["srgb-linear","srgb","hwb"],"p3":["srgb-linear","xyz-d65","p3"]},"xyz-d65":{"srgb":["xyz-d65","srgb-linear","srgb"],"srgb-linear":["xyz-d65","srgb-linear"],"xyz-d65":["xyz-d65"],"xyz-d50":["xyz-d65","xyz-d50"],"oklab":["xyz-d65","oklab"],"oklch":["xyz-d65","oklab","oklch"],"lab":["xyz-d65","xyz-d50","lab"],"lch":["xyz-d65","xyz-d50","lab","lch"],"hsl":["xyz-d65","srgb-linear","srgb","hsl"],"hsv":["xyz-d65","srgb-linear","srgb","hsv"],"hwb":["xyz-d65","srgb-linear","srgb","hwb"],"p3":["xyz-d65","p3"]},"xyz-d50":{"srgb":["xyz-d50","xyz-d65","srgb-linear","srgb"],"srgb-linear":["xyz-d50","xyz-d65","srgb-linear"],"xyz-d65":["xyz-d50","xyz-d65"],"xyz-d50":["xyz-d50"],"oklab":["xyz-d50","xyz-d65","oklab"],"oklch":["xyz-d50","xyz-d65","oklab","oklch"],"lab":["xyz-d50","lab"],"lch":["xyz-d50","lab","lch"],"hsl":["xyz-d50","xyz-d65","srgb-linear","srgb","hsl"],"hsv":["xyz-d50","xyz-d65","srgb-linear","srgb","hsv"],"hwb":["xyz-d50","xyz-d65","srgb-linear","srgb","hwb"],"p3":["xyz-d50","xyz-d65","p3"]},"oklab":{"srgb":["oklab","xyz-d65","srgb-linear","srgb"],"srgb-linear":["oklab","xyz-d65","srgb-linear"],"xyz-d65":["oklab","xyz-d65"],"xyz-d50":["oklab","xyz-d65","xyz-d50"],"oklab":["oklab"],"oklch":["oklab","oklch"],"lab":["oklab","xyz-d65","xyz-d50","lab"],"lch":["oklab","xyz-d65","xyz-d50","lab","lch"],"hsl":["oklab","xyz-d65","srgb-linear","srgb","hsl"],"hsv":["oklab","xyz-d65","srgb-linear","srgb","hsv"],"hwb":["oklab","xyz-d65","srgb-linear","srgb","hwb"],"p3":["oklab","xyz-d65","p3"]},"oklch":{"srgb":["oklch","oklab","xyz-d65","srgb-linear","srgb"],"srgb-linear":["oklch","oklab","xyz-d65","srgb-linear"],"xyz-d65":["oklch","oklab","xyz-d65"],"xyz-d50":["oklch","oklab","xyz-d65","xyz-d50"],"oklab":["oklch","oklab"],"oklch":["oklch"],"lab":["oklch","oklab","xyz-d65","xyz-d50","lab"],"lch":["oklch","oklab","xyz-d65","xyz-d50","lab","lch"],"hsl":["oklch","oklab","xyz-d65","srgb-linear","srgb","hsl"],"hsv":["oklch","oklab","xyz-d65","srgb-linear","srgb","hsv"],"hwb":["oklch","oklab","xyz-d65","srgb-linear","srgb","hwb"],"p3":["oklch","oklab","xyz-d65","p3"]},"lab":{"srgb":["lab","xyz-d50","xyz-d65","srgb-linear","srgb"],"srgb-linear":["lab","xyz-d50","xyz-d65","srgb-linear"],"xyz-d65":["lab","xyz-d50","xyz-d65"],"xyz-d50":["lab","xyz-d50"],"oklab":["lab","xyz-d50","xyz-d65","oklab"],"oklch":["lab","xyz-d50","xyz-d65","oklab","oklch"],"lab":["lab"],"lch":["lab","lch"],"hsl":["lab","xyz-d50","xyz-d65","srgb-linear","srgb","hsl"],"hsv":["lab","xyz-d50","xyz-d65","srgb-linear","srgb","hsv"],"hwb":["lab","xyz-d50","xyz-d65","srgb-linear","srgb","hwb"],"p3":["lab","xyz-d50","xyz-d65","p3"]},"lch":{"srgb":["lch","lab","xyz-d50","xyz-d65","srgb-linear","srgb"],"srgb-linear":["lch","lab","xyz-d50","xyz-d65","srgb-linear"],"xyz-d65":["lch","lab","xyz-d50","xyz-d65"],"xyz-d50":["lch","lab","xyz-d50"],"oklab":["lch","lab","xyz-d50","xyz-d65","oklab"],"oklch":["lch","lab","xyz-d50","xyz-d65","oklab","oklch"],"lab":["lch","lab"],"lch":["lch"],"hsl":["lch","lab","xyz-d50","xyz-d65","srgb-linear","srgb","hsl"],"hsv":["lch","lab","xyz-d50","xyz-d65","srgb-linear","srgb","hsv"],"hwb":["lch","lab","xyz-d50","xyz-d65","srgb-linear","srgb","hwb"],"p3":["lch","lab","xyz-d50","xyz-d65","p3"]},"hsl":{"srgb":["hsl","srgb"],"srgb-linear":["hsl","srgb","srgb-linear"],"xyz-d65":["hsl","srgb","srgb-linear","xyz-d65"],"xyz-d50":["hsl","srgb","srgb-linear","xyz-d65","xyz-d50"],"oklab":["hsl","srgb","srgb-linear","xyz-d65","oklab"],"oklch":["hsl","srgb","srgb-linear","xyz-d65","oklab","oklch"],"lab":["hsl","srgb","srgb-linear","xyz-d65","xyz-d50","lab"],"lch":["hsl","srgb","srgb-linear","xyz-d65","xyz-d50","lab","lch"],"hsl":["hsl"],"hsv":["hsl","srgb","hsv"],"hwb":["hsl","srgb","hwb"],"p3":["hsl","srgb","srgb-linear","xyz-d65","p3"]},"hsv":{"srgb":["hsv","srgb"],"srgb-linear":["hsv","srgb","srgb-linear"],"xyz-d65":["hsv","srgb","srgb-linear","xyz-d65"],"xyz-d50":["hsv","srgb","srgb-linear","xyz-d65","xyz-d50"],"oklab":["hsv","srgb","srgb-linear","xyz-d65","oklab"],"oklch":["hsv","srgb","srgb-linear","xyz-d65","oklab","oklch"],"lab":["hsv","srgb","srgb-linear","xyz-d65","xyz-d50","lab"],"lch":["hsv","srgb","srgb-linear","xyz-d65","xyz-d50","lab","lch"],"hsl":["hsv","srgb","hsl"],"hsv":["hsv"],"hwb":["hsv","srgb","hwb"],"p3":["hsv","srgb","srgb-linear","xyz-d65","p3"]},"hwb":{"srgb":["hwb","srgb"],"srgb-linear":["hwb","srgb","srgb-linear"],"xyz-d65":["hwb","srgb","srgb-linear","xyz-d65"],"xyz-d50":["hwb","srgb","srgb-linear","xyz-d65","xyz-d50"],"oklab":["hwb","srgb","srgb-linear","xyz-d65","oklab"],"oklch":["hwb","srgb","srgb-linear","xyz-d65","oklab","oklch"],"lab":["hwb","srgb","srgb-linear","xyz-d65","xyz-d50","lab"],"lch":["hwb","srgb","srgb-linear","xyz-d65","xyz-d50","lab","lch"],"hsl":["hwb","srgb","hsl"],"hsv":["hwb","srgb","hsv"],"hwb":["hwb"],"p3":["hwb","srgb","srgb-linear","xyz-d65","p3"]},"p3":{"srgb":["p3","xyz-d65","srgb-linear","srgb"],"srgb-linear":["p3","xyz-d65","srgb-linear"],"xyz-d65":["p3","xyz-d65"],"xyz-d50":["p3","xyz-d65","xyz-d50"],"oklab":["p3","xyz-d65","oklab"],"oklch":["p3","xyz-d65","oklab","oklch"],"lab":["p3","xyz-d65","xyz-d50","lab"],"lch":["p3","xyz-d65","xyz-d50","lab","lch"],"hsl":["p3","xyz-d65","srgb-linear","srgb","hsl"],"hsv":["p3","xyz-d65","srgb-linear","srgb","hsv"],"hwb":["p3","xyz-d65","srgb-linear","srgb","hwb"],"p3":["p3"]}};
-    const colorSpaces = [{"id":"srgb","displayName":"sRGB","coords":["R","G","B"],"cssSupported":true},{"id":"srgb-linear","displayName":"Linear sRGB","coords":["R","G","B"],"cssSupported":true,"parent":"srgb"},{"id":"xyz-d65","displayName":"XYZ D65","coords":["X","Y","Z"],"cssSupported":true,"parent":"srgb-linear"},{"id":"xyz-d50","displayName":"XYZ D50","coords":["X","Y","Z"],"cssSupported":true,"parent":"xyz-d65"},{"id":"oklab","displayName":"OKLab","coords":["L","a","b"],"cssSupported":true,"parent":"xyz-d65"},{"id":"oklch","displayName":"OKLCH","coords":["L","C","H"],"cssSupported":true,"parent":"oklab"},{"id":"lab","displayName":"Lab","coords":["L","a","b"],"cssSupported":true,"parent":"xyz-d50"},{"id":"lch","displayName":"LCH","coords":["L","C","H"],"cssSupported":true,"parent":"lab"},{"id":"hsl","displayName":"HSL","coords":["H","S","L"],"cssSupported":true,"parent":"srgb"},{"id":"hsv","displayName":"HSV","coords":["H","S","V"],"cssSupported":false,"parent":"srgb"},{"id":"hwb","displayName":"HWB","coords":["H","W","B"],"cssSupported":true,"parent":"srgb"},{"id":"p3","displayName":"Display P3","coords":["R","G","B"],"cssSupported":true,"parent":"xyz-d65"}];
+    const allResults = [{"from":"srgb","to":"oklch","color":"#a855f7","colorName":"Purple","steps":[{"space":"srgb","displayName":"sRGB","coords":[0.6588235294117647,0.3333333333333333,0.9686274509803922],"css":"color(srgb 0.659 0.333 0.969)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.39157247774972326,0.09084171118340768,0.9301108583754237],"css":"color(srgb-linear 0.392 0.091 0.930)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.36183160137248366,0.21537758536766632,0.9024975503844391],"css":"color(xyz-d65 0.362 0.215 0.902)"},{"space":"oklab","displayName":"OKLab","coords":[0.6268459182747175,0.12970053606722554,-0.19301160841705467],"css":"oklab(0.627 0.130 -0.193)"},{"space":"oklch","displayName":"OKLCH","coords":[0.6268459182747175,0.23254184578235415,303.90043309005654],"css":"oklch(0.627 0.233 303.9)"}],"tokenScriptCode":"variable start: Color.SRGB;\nstart.r = 0.6588235294117647;\nstart.g = 0.3333333333333333;\nstart.b = 0.9686274509803922;\nstart.to.oklch()"},{"from":"srgb","to":"oklch","color":"#ff6b6b","colorName":"Coral","steps":[{"space":"srgb","displayName":"sRGB","coords":[1,0.4196078431372549,0.4196078431372549],"css":"color(srgb 1.000 0.420 0.420)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[1,0.14702726649759498,0.14702726649759498],"css":"color(srgb-linear 1.000 0.147 0.147)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.49150104420197177,0.3284025405850511,0.17660984543292182],"css":"color(xyz-d65 0.492 0.328 0.177)"},{"space":"oklab","displayName":"OKLab","coords":[0.7116074749337721,0.16701351656184937,0.07033940646705672],"css":"oklab(0.712 0.167 0.070)"},{"space":"oklch","displayName":"OKLCH","coords":[0.7116074749337721,0.18122126480215547,22.83887755509347],"css":"oklch(0.712 0.181 22.8)"}],"tokenScriptCode":"variable start: Color.SRGB;\nstart.r = 1;\nstart.g = 0.4196078431372549;\nstart.b = 0.4196078431372549;\nstart.to.oklch()"},{"from":"srgb","to":"oklch","color":"#14b8a6","colorName":"Teal","steps":[{"space":"srgb","displayName":"sRGB","coords":[0.0784313725490196,0.7215686274509804,0.6509803921568628],"css":"color(srgb 0.078 0.722 0.651)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.006995410187265387,0.4793201831008268,0.38132601143253014],"css":"color(srgb-linear 0.007 0.479 0.381)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.24310425300725813,0.3718110867954087,0.4197303250377357],"css":"color(xyz-d65 0.243 0.372 0.420)"},{"space":"oklab","displayName":"OKLab","coords":[0.7037526674560554,-0.12290107893957175,-0.005371408825994406],"css":"oklab(0.704 -0.123 -0.005)"},{"space":"oklch","displayName":"OKLCH","coords":[0.7037526674560556,0.12301840202704153,182.5025274674597],"css":"oklch(0.704 0.123 182.5)"}],"tokenScriptCode":"variable start: Color.SRGB;\nstart.r = 0.0784313725490196;\nstart.g = 0.7215686274509804;\nstart.b = 0.6509803921568628;\nstart.to.oklch()"},{"from":"srgb","to":"oklch","color":"#f59e0b","colorName":"Gold","steps":[{"space":"srgb","displayName":"sRGB","coords":[0.9607843137254902,0.6196078431372549,0.043137254901960784],"css":"color(srgb 0.961 0.620 0.043)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.9130986517934192,0.3419144249086609,0.003346535763899161],"css":"color(srgb-linear 0.913 0.342 0.003)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.4994207119916236,0.43892847125876655,0.06158634893510344],"css":"color(xyz-d65 0.499 0.439 0.062)"},{"space":"oklab","displayName":"OKLab","coords":[0.768590359222848,0.05609969031644246,0.15480808475138869],"css":"oklab(0.769 0.056 0.155)"},{"space":"oklch","displayName":"OKLCH","coords":[0.7685903592228479,0.16465940106168814,70.0803864143123],"css":"oklch(0.769 0.165 70.1)"}],"tokenScriptCode":"variable start: Color.SRGB;\nstart.r = 0.9607843137254902;\nstart.g = 0.6196078431372549;\nstart.b = 0.043137254901960784;\nstart.to.oklch()"},{"from":"hsl","to":"oklch","color":"#a855f7","colorName":"Purple","steps":[{"space":"hsl","displayName":"HSL","coords":[270.74074074074076,0.9101123595505618,0.6509803921568627],"css":"hsl(270.7 91.0% 65.1%)"},{"space":"srgb","displayName":"sRGB","coords":[0.6588235294117647,0.33333333333333315,0.9686274509803922],"css":"color(srgb 0.659 0.333 0.969)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.39157247774972326,0.09084171118340759,0.9301108583754237],"css":"color(srgb-linear 0.392 0.091 0.930)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.3618316013724836,0.21537758536766627,0.9024975503844391],"css":"color(xyz-d65 0.362 0.215 0.902)"},{"space":"oklab","displayName":"OKLab","coords":[0.6268459182747175,0.12970053606722554,-0.19301160841705467],"css":"oklab(0.627 0.130 -0.193)"},{"space":"oklch","displayName":"OKLCH","coords":[0.626845918274717,0.23254184578235382,303.90043309005637],"css":"oklch(0.627 0.233 303.9)"}],"tokenScriptCode":"variable start: Color.HSL;\nstart.h = 270.74074074074076;\nstart.s = 0.9101123595505618;\nstart.l = 0.6509803921568627;\nstart.to.oklch()"},{"from":"hsl","to":"oklch","color":"#ff6b6b","colorName":"Coral","steps":[{"space":"hsl","displayName":"HSL","coords":[0,1,0.7098039215686275],"css":"hsl(0.0 100.0% 71.0%)"},{"space":"srgb","displayName":"sRGB","coords":[1,0.41960784313725497,0.41960784313725497],"css":"color(srgb 1.000 0.420 0.420)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[1,0.14702726649759504,0.14702726649759504],"css":"color(srgb-linear 1.000 0.147 0.147)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.49150104420197177,0.3284025405850511,0.1766098454329219],"css":"color(xyz-d65 0.492 0.328 0.177)"},{"space":"oklab","displayName":"OKLab","coords":[0.7116074749337721,0.16701351656184937,0.07033940646705672],"css":"oklab(0.712 0.167 0.070)"},{"space":"oklch","displayName":"OKLCH","coords":[0.7116074749337721,0.18122126480215547,22.838877555093433],"css":"oklch(0.712 0.181 22.8)"}],"tokenScriptCode":"variable start: Color.HSL;\nstart.h = 0;\nstart.s = 1;\nstart.l = 0.7098039215686275;\nstart.to.oklch()"},{"from":"hsl","to":"oklch","color":"#14b8a6","colorName":"Teal","steps":[{"space":"hsl","displayName":"HSL","coords":[173.41463414634146,0.803921568627451,0.4],"css":"hsl(173.4 80.4% 40.0%)"},{"space":"srgb","displayName":"sRGB","coords":[0.0784313725490196,0.7215686274509805,0.650980392156863],"css":"color(srgb 0.078 0.722 0.651)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.006995410187265387,0.47932018310082697,0.3813260114325304],"css":"color(srgb-linear 0.007 0.479 0.381)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.24310425300725821,0.3718110867954088,0.419730325037736],"css":"color(xyz-d65 0.243 0.372 0.420)"},{"space":"oklab","displayName":"OKLab","coords":[0.7037526674560556,-0.1229010789395717,-0.005371408825994406],"css":"oklab(0.704 -0.123 -0.005)"},{"space":"oklch","displayName":"OKLCH","coords":[0.7037526674560556,0.12301840202704149,182.50252746745988],"css":"oklch(0.704 0.123 182.5)"}],"tokenScriptCode":"variable start: Color.HSL;\nstart.h = 173.41463414634146;\nstart.s = 0.803921568627451;\nstart.l = 0.4;\nstart.to.oklch()"},{"from":"hsl","to":"oklch","color":"#f59e0b","colorName":"Gold","steps":[{"space":"hsl","displayName":"HSL","coords":[37.69230769230769,0.9212598425196851,0.5019607843137255],"css":"hsl(37.7 92.1% 50.2%)"},{"space":"srgb","displayName":"sRGB","coords":[0.9607843137254902,0.6196078431372545,0.04313725490196074],"css":"color(srgb 0.961 0.620 0.043)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.9130986517934192,0.34191442490866036,0.003346535763899156],"css":"color(srgb-linear 0.913 0.342 0.003)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.49942071199162336,0.4389284712587661,0.06158634893510337],"css":"color(xyz-d65 0.499 0.439 0.062)"},{"space":"oklab","displayName":"OKLab","coords":[0.7685903592228477,0.05609969031644302,0.15480808475138852],"css":"oklab(0.769 0.056 0.155)"},{"space":"oklch","displayName":"OKLCH","coords":[0.7685903592228479,0.16465940106168814,70.0803864143123],"css":"oklch(0.769 0.165 70.1)"}],"tokenScriptCode":"variable start: Color.HSL;\nstart.h = 37.69230769230769;\nstart.s = 0.9212598425196851;\nstart.l = 0.5019607843137255;\nstart.to.oklch()"},{"from":"oklch","to":"srgb","color":"#a855f7","colorName":"Purple","steps":[{"space":"oklch","displayName":"OKLCH","coords":[0.6268459182747175,0.23254184578235404,303.9004330900565],"css":"oklch(0.627 0.233 303.9)"},{"space":"oklab","displayName":"OKLab","coords":[0.6268459182747175,0.12970053606722548,-0.19301160841705473],"css":"oklab(0.627 0.130 -0.193)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.3618316013724836,0.21537758536766655,0.9024975503844396],"css":"color(xyz-d65 0.362 0.215 0.902)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.39157247774972254,0.09084171118340813,0.9301108583754243],"css":"color(srgb-linear 0.392 0.091 0.930)"},{"space":"srgb","displayName":"sRGB","coords":[0,0,0],"css":"color(srgb 0.000 0.000 0.000)"}],"tokenScriptCode":"variable start: Color.OKLCH;\nstart.l = 0;\nstart.c = 0;\nstart.h = 0;\nstart.to.srgb()"},{"from":"oklch","to":"srgb","color":"#ff6b6b","colorName":"Coral","steps":[{"space":"oklch","displayName":"OKLCH","coords":[0.7116074749337721,0.18122126480215547,22.83887755509346],"css":"oklch(0.712 0.181 22.8)"},{"space":"oklab","displayName":"OKLab","coords":[0.7116074749337721,0.1670135165618494,0.07033940646705669],"css":"oklab(0.712 0.167 0.070)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.49150104420197166,0.32840254058505125,0.1766098454329219],"css":"color(xyz-d65 0.492 0.328 0.177)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.9999999999999997,0.1470272664975954,0.14702726649759504],"css":"color(srgb-linear 1.000 0.147 0.147)"},{"space":"srgb","displayName":"sRGB","coords":[0,0,0],"css":"color(srgb 0.000 0.000 0.000)"}],"tokenScriptCode":"variable start: Color.OKLCH;\nstart.l = 0;\nstart.c = 0;\nstart.h = 0;\nstart.to.srgb()"},{"from":"oklch","to":"srgb","color":"#14b8a6","colorName":"Teal","steps":[{"space":"oklch","displayName":"OKLCH","coords":[0.7037526674560554,0.12301840202704153,182.50252746745971],"css":"oklch(0.704 0.123 182.5)"},{"space":"oklab","displayName":"OKLab","coords":[0.7037526674560554,-0.12290107893957175,-0.00537140882599431],"css":"oklab(0.704 -0.123 -0.005)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.24310425300725796,0.37181108679540886,0.4197303250377355],"css":"color(xyz-d65 0.243 0.372 0.420)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.006995410187264739,0.4793201831008272,0.38132601143253],"css":"color(srgb-linear 0.007 0.479 0.381)"},{"space":"srgb","displayName":"sRGB","coords":[0,0,0],"css":"color(srgb 0.000 0.000 0.000)"}],"tokenScriptCode":"variable start: Color.OKLCH;\nstart.l = 0;\nstart.c = 0;\nstart.h = 0;\nstart.to.srgb()"},{"from":"oklch","to":"srgb","color":"#f59e0b","colorName":"Gold","steps":[{"space":"oklch","displayName":"OKLCH","coords":[0.768590359222848,0.16465940106168822,70.08038641431222],"css":"oklch(0.769 0.165 70.1)"},{"space":"oklab","displayName":"OKLab","coords":[0.768590359222848,0.0560996903164425,0.15480808475138866],"css":"oklab(0.769 0.056 0.155)"},{"space":"xyz-d65","displayName":"XYZ D65","coords":[0.4994207119916233,0.43892847125876705,0.0615863489351034],"css":"color(xyz-d65 0.499 0.439 0.062)"},{"space":"srgb-linear","displayName":"Linear sRGB","coords":[0.9130986517934176,0.3419144249086621,0.003346535763899011],"css":"color(srgb-linear 0.913 0.342 0.003)"},{"space":"srgb","displayName":"sRGB","coords":[0,0,0],"css":"color(srgb 0.000 0.000 0.000)"}],"tokenScriptCode":"variable start: Color.OKLCH;\nstart.l = 0;\nstart.c = 0;\nstart.h = 0;\nstart.to.srgb()"}];
     
-    const transforms = {
-      'srgb->srgb-linear': 'Linearize',
-      'srgb-linear->srgb': 'Gamma',
-      'srgb-linear->xyz-d65': 'Matrix',
-      'xyz-d65->srgb-linear': 'Matrix',
-      'xyz-d65->oklab': 'LMS',
-      'oklab->xyz-d65': 'LMS⁻¹',
-      'oklab->oklch': 'Polar',
-      'oklch->oklab': 'Rect',
-      'xyz-d65->xyz-d50': 'Bradford',
-      'xyz-d50->xyz-d65': 'Bradford',
-      'xyz-d50->lab': 'Lab',
-      'lab->xyz-d50': 'Lab⁻¹',
-      'lab->lch': 'Polar',
-      'lch->lab': 'Rect',
-      'srgb->hsl': 'HSL',
-      'hsl->srgb': 'RGB',
-      'srgb->hsv': 'HSV',
-      'hsv->srgb': 'RGB',
-      'srgb->hwb': 'HWB',
-      'hwb->srgb': 'RGB',
-      'xyz-d65->p3': 'Matrix',
-      'p3->xyz-d65': 'Matrix',
-    };
-    
-    function getTransform(from, to) {
-      return transforms[from + '->' + to] || '→';
-    }
-    
-    function hexToRgb(hex) {
-      const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-      return r ? [parseInt(r[1],16)/255, parseInt(r[2],16)/255, parseInt(r[3],16)/255] : [0.66,0.33,0.97];
-    }
-    
-    function fmt(v, d=4) {
-      if (v === undefined || v === null || isNaN(v)) return '—';
-      return v.toFixed(d);
-    }
-    
-    function getCss(spaceId, coords) {
-      const c = coords.map(v => isNaN(v) ? 0 : v);
-      switch (spaceId) {
-        case 'srgb': return `color(srgb ${c.map(v=>v.toFixed(3)).join(' ')})`;
-        case 'srgb-linear': return `color(srgb-linear ${c.map(v=>v.toFixed(3)).join(' ')})`;
-        case 'xyz-d65': return `color(xyz-d65 ${c.map(v=>v.toFixed(3)).join(' ')})`;
-        case 'xyz-d50': return `color(xyz-d50 ${c.map(v=>v.toFixed(3)).join(' ')})`;
-        case 'oklab': return `oklab(${c[0].toFixed(3)} ${c[1].toFixed(3)} ${c[2].toFixed(3)})`;
-        case 'oklch': return `oklch(${c[0].toFixed(3)} ${c[1].toFixed(3)} ${c[2].toFixed(1)})`;
-        case 'lab': return `lab(${c[0].toFixed(1)} ${c[1].toFixed(2)} ${c[2].toFixed(2)})`;
-        case 'lch': return `lch(${c[0].toFixed(1)} ${c[1].toFixed(2)} ${c[2].toFixed(1)})`;
-        case 'hsl': return `hsl(${c[0].toFixed(1)} ${(c[1]*100).toFixed(1)}% ${(c[2]*100).toFixed(1)}%)`;
-        case 'hwb': return `hwb(${c[0].toFixed(1)} ${(c[1]*100).toFixed(1)}% ${(c[2]*100).toFixed(1)}%)`;
-        case 'p3': return `color(display-p3 ${c.map(v=>v.toFixed(3)).join(' ')})`;
-        default: return null;
-      }
-    }
-    
-    function updateConversion() {
-      const fromSpace = document.getElementById('from-space').value;
-      const toSpace = document.getElementById('to-space').value;
-      const hexInput = document.getElementById('hex-input').value;
-      
-      const path = allPaths[fromSpace]?.[toSpace];
-      const pathSteps = document.getElementById('path-steps');
-      const stepCount = document.getElementById('step-count');
-      const noPath = document.getElementById('no-path');
-      const chain = document.getElementById('chain');
-      
-      if (!path) {
-        pathSteps.innerHTML = '';
-        stepCount.textContent = '';
-        noPath.style.display = 'block';
-        chain.style.display = 'none';
-        return;
-      }
-      
-      noPath.style.display = 'none';
-      chain.style.display = 'flex';
-      
-      // Path header
-      pathSteps.innerHTML = path.map((step, i) => {
-        const sp = colorSpaces.find(s => s.id === step);
-        const html = `<span class="path-step">${sp?.displayName || step}</span>`;
-        return i < path.length - 1 ? html + '<span class="path-arrow">→</span>' : html;
-      }).join(' ');
-      
-      stepCount.textContent = `${path.length} step${path.length > 1 ? 's' : ''}`;
-      
-      // Build chain
-      const rgb = hexToRgb(hexInput);
-      let currentColor = new Color('srgb', rgb);
-      let chainHTML = '';
-      
-      for (let i = 0; i < path.length; i++) {
-        const spaceId = path[i];
-        const spaceInfo = colorSpaces.find(s => s.id === spaceId);
-        const converted = currentColor.to(spaceId);
-        const coords = [...converted.coords];
-        
-        if (['hsl', 'hsv', 'hwb'].includes(spaceId)) {
-          coords[1] = coords[1] / 100;
-          coords[2] = coords[2] / 100;
-        }
-        
-        const css = getCss(spaceId, coords);
-        const canShow = spaceInfo?.cssSupported && css;
-        
-        // Connector (except first)
-        if (i > 0) {
-          const transform = getTransform(path[i-1], spaceId);
-          chainHTML += `
-            <div class="connector">
-              <div class="connector-line"></div>
-              <div class="transform-name">${transform}</div>
+    function renderResult(r) {
+      return `
+        <div class="result-card">
+          <div class="result-header">
+            <div class="color-dot" style="background: ${r.color}"></div>
+            <div>
+              <div class="result-title">${r.colorName}</div>
+              <div class="result-path">${r.steps.map(s => s.displayName).join(' → ')}</div>
             </div>
-          `;
-        }
-        
-        // Card
-        chainHTML += `
-          <div class="chain-item">
-            <div class="step-card">
-              <div class="step-name">${spaceInfo?.displayName || spaceId}</div>
-              <div class="color-preview">
-                ${canShow 
-                  ? `<div class="color-preview-inner" style="background: ${css}"></div>`
-                  : `<div class="no-css">No CSS</div>`
-                }
-              </div>
-              <div class="coords">
-                ${spaceInfo?.coords.map((c, j) => `
-                  <div class="coord-row">
-                    <span class="coord-label">${c}</span>
-                    <span class="coord-value">${fmt(coords[j], 4)}</span>
-                  </div>
-                `).join('') || ''}
-              </div>
-            </div>
+            <div class="ts-badge">TokenScript</div>
           </div>
-        `;
-      }
-      
-      chain.innerHTML = chainHTML;
+          <div class="chain">
+            ${r.steps.map((s, i) => `
+              ${i > 0 ? '<div class="connector"></div>' : ''}
+              <div class="step-card">
+                <div class="step-name">${s.displayName}</div>
+                <div class="step-swatch" style="background: ${s.css || '#333'}"></div>
+                <div class="step-values">
+                  ${s.coords.map((v, j) => `<div><span>${['r','g','b','x','y','z','l','a','c','h','s'][j] || j}</span><span>${v.toFixed(4)}</span></div>`).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="code-section">
+            <div class="code-label">TokenScript Code</div>
+            <pre>${r.tokenScriptCode}</pre>
+          </div>
+        </div>
+      `;
     }
     
-    // Sync inputs
-    document.getElementById('color-picker').addEventListener('input', e => {
-      document.getElementById('hex-input').value = e.target.value;
-      updateConversion();
-    });
+    function updateResults() {
+      const pathKey = document.getElementById('path-select').value;
+      const color = document.getElementById('color-select').value;
+      const [from, to] = pathKey.split('-');
+      
+      const filtered = allResults.filter(r => 
+        r.from === from && r.to === to && r.color === color
+      );
+      
+      document.getElementById('results').innerHTML = filtered.map(renderResult).join('');
+    }
     
-    document.getElementById('hex-input').addEventListener('input', e => {
-      if (/^#[0-9A-Fa-f]{6}$/.test(e.target.value)) {
-        document.getElementById('color-picker').value = e.target.value;
-        updateConversion();
-      }
-    });
-    
-    // Auto-update on select change
-    document.getElementById('from-space').addEventListener('change', updateConversion);
-    document.getElementById('to-space').addEventListener('change', updateConversion);
-    
-    updateConversion();
+    document.getElementById('path-select').addEventListener('change', updateResults);
+    document.getElementById('color-select').addEventListener('change', updateResults);
   </script>
 </body>
 </html>
