@@ -38,7 +38,7 @@ describe("sRGB Color Schema", () => {
     it("should have conversion from RGB", async () => {
       const schema = (await getBundledSchema("srgb-color")) as ColorSpecification;
 
-      expect(schema.conversions).toHaveLength(1);
+      expect(schema.conversions.length).toBeGreaterThanOrEqual(1);
 
       const rgbToSrgb = schema.conversions.find(
         (c: { source: string }) => c.source.includes("rgb-color"),

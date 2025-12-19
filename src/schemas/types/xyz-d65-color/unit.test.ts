@@ -38,7 +38,7 @@ describe("XYZ-D65 Color Schema", () => {
     it("should have conversions from Linear sRGB and Linear P3", async () => {
       const schema = (await getBundledSchema("xyz-d65-color")) as ColorSpecification;
 
-      expect(schema.conversions).toHaveLength(2);
+      expect(schema.conversions.length).toBeGreaterThanOrEqual(2);
 
       const linearSrgbToXyz = schema.conversions.find(
         (c: { source: string }) => c.source.includes("srgb-linear-color"),

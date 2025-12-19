@@ -53,6 +53,16 @@
         "type": "/api/v1/core/tokenscript/0/",
         "script": "./from-linear-p3.tokenscript"
       }
+    },
+    {
+      "source": "/api/v1/core/oklab-color/0/",
+      "target": "$self",
+      "description": "Converts OKLab to XYZ-D65 using inverse LMS transformation",
+      "lossless": true,
+      "script": {
+        "type": "/api/v1/core/tokenscript/0/",
+        "script": "./from-oklab.tokenscript"
+      }
     }
   ]
 }

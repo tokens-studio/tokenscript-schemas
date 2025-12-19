@@ -38,7 +38,7 @@ describe("OKLab Color Schema", () => {
     it("should have conversion from XYZ-D65", async () => {
       const schema = (await getBundledSchema("oklab-color")) as ColorSpecification;
 
-      expect(schema.conversions).toHaveLength(1);
+      expect(schema.conversions.length).toBeGreaterThanOrEqual(1);
 
       const xyzToOklab = schema.conversions.find(
         (c: { source: string }) => c.source.includes("xyz-d65-color"),

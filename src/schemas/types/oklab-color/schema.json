@@ -43,6 +43,16 @@
         "type": "/api/v1/core/tokenscript/0/",
         "script": "./from-xyz-d65.tokenscript"
       }
+    },
+    {
+      "source": "/api/v1/core/oklch-color/0/",
+      "target": "$self",
+      "description": "Converts OKLCH to OKLab (polar to cartesian)",
+      "lossless": true,
+      "script": {
+        "type": "/api/v1/core/tokenscript/0/",
+        "script": "./from-oklch.tokenscript"
+      }
     }
   ]
 }

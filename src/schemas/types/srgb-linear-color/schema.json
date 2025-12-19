@@ -43,6 +43,16 @@
         "type": "/api/v1/core/tokenscript/0/",
         "script": "./from-srgb.tokenscript"
       }
+    },
+    {
+      "source": "/api/v1/core/xyz-d65-color/0/",
+      "target": "$self",
+      "description": "Converts XYZ-D65 to Linear sRGB using inverse transformation matrix",
+      "lossless": true,
+      "script": {
+        "type": "/api/v1/core/tokenscript/0/",
+        "script": "./from-xyz-d65.tokenscript"
+      }
     }
   ]
 }

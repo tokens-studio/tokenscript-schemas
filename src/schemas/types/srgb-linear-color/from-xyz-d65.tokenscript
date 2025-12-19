@@ -1,0 +1,34 @@
+// XYZ-D65 to Linear sRGB Conversion
+// Reference: ColorJS sRGB to XYZ inverse matrix
+//
+// Matrix (XYZ D65 to Linear sRGB):
+//   [ 3.2404541621141054, -1.5371385940306089, -0.49853140955601579]
+//   [-0.96926603050518312,  1.8760108454466942,  0.041556017530349834]
+//   [ 0.055643430959114726, -0.20397695888897652, 1.0571295702861434]
+//
+// Input: Color.XYZD65 with x, y, z tristimulus values
+// Output: Color.LinearSRGB with r, g, b in linear 0-1 range
+
+// Get input XYZ values
+variable x: Number = {input}.x;
+variable y: Number = {input}.y;
+variable z: Number = {input}.z;
+
+// Apply inverse matrix transformation
+// Row 1: R
+variable linear_r: Number = 3.2404541621141054 * x + -1.5371385940306089 * y + -0.49853140955601579 * z;
+
+// Row 2: G
+variable linear_g: Number = -0.96926603050518312 * x + 1.8760108454466942 * y + 0.041556017530349834 * z;
+
+// Row 3: B
+variable linear_b: Number = 0.055643430959114726 * x + -0.20397695888897652 * y + 1.0571295702861434 * z;
+
+// Create output
+variable output: Color.LinearSRGB;
+output.r = linear_r;
+output.g = linear_g;
+output.b = linear_b;
+
+return output;
+

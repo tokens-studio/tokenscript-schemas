@@ -43,6 +43,26 @@
         "type": "/api/v1/core/tokenscript/0/",
         "script": "./from-rgb.tokenscript"
       }
+    },
+    {
+      "source": "/api/v1/core/hsl-color/0/",
+      "target": "$self",
+      "description": "Converts HSL to sRGB",
+      "lossless": true,
+      "script": {
+        "type": "/api/v1/core/tokenscript/0/",
+        "script": "./from-hsl.tokenscript"
+      }
+    },
+    {
+      "source": "/api/v1/core/srgb-linear-color/0/",
+      "target": "$self",
+      "description": "Converts Linear sRGB to sRGB by applying gamma correction",
+      "lossless": true,
+      "script": {
+        "type": "/api/v1/core/tokenscript/0/",
+        "script": "./from-linear.tokenscript"
+      }
     }
   ]
 }
