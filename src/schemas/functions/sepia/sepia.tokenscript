@@ -1,5 +1,14 @@
 // sepia: Apply sepia tone transformation
-// Uses standard sepia matrix from CSS filter specification
+// Reference: CSS Filter Effects Module Level 1
+// Reference: https://www.w3.org/TR/filter-effects-1/#sepiaEquivalent
+//
+// Uses the standard sepia matrix transformation as defined in CSS.
+// The amount parameter controls intensity (0 = no effect, 1 = full sepia).
+//
+// Matrix coefficients:
+//   R' = 0.393R + 0.769G + 0.189B
+//   G' = 0.349R + 0.686G + 0.168B
+//   B' = 0.272R + 0.534G + 0.131B
 
 variable input: List = {input};
 variable color: Color.SRGB = input.get(0).to.srgb();

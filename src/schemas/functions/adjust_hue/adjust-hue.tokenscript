@@ -1,5 +1,11 @@
-// adjust_hue: Rotate hue by relative degrees
-// Preserves lightness and chroma
+// adjust_hue: Rotate hue by a relative angle
+//
+// Adds the specified degrees to the color's hue, wrapping
+// around the 360° color wheel. Positive values rotate clockwise,
+// negative values rotate counter-clockwise.
+//
+// Uses OKLCH for perceptually uniform hue rotation.
+// Preserves lightness and chroma.
 
 variable input: List = {input};
 variable color: Color.OKLCH = input.get(0).to.oklch();

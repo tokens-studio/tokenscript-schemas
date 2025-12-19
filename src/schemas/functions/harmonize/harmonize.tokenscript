@@ -1,6 +1,15 @@
-// harmonize: Shift hue of a color toward a source color
-// Inspired by Material Design 3's color harmonization
-// Uses OKLCH for perceptually uniform hue rotation
+// harmonize: Shift hue towards a source color for visual harmony
+// Reference: Material Design 3 Color System
+// Reference: https://m3.material.io/styles/color/dynamic-color
+//
+// Shifts the input color's hue towards a source color by a specified
+// amount, creating a harmonized palette. Uses OKLCH for perceptually
+// uniform hue interpolation via the shortest angular path.
+//
+// Parameters:
+//   color  - Color to harmonize
+//   source - Target hue source
+//   amount - Shift amount (0 = no change, 1 = match source), default 0.5
 
 variable input: List = {input};
 variable color: Color.OKLCH = input.get(0).to.oklch();

@@ -1,6 +1,13 @@
-// to_gamut: Map color into target gamut using CSS Color Level 4 algorithm
-// Preserves lightness and hue, reduces chroma to fit gamut
-// Uses binary search for convergence
+// to_gamut: Perceptual gamut mapping (CSS Color Level 4 algorithm)
+// Reference: CSS Color Level 4, Section 13.2 Gamut Mapping
+// Reference: https://www.w3.org/TR/css-color-4/#gamut-mapping
+//
+// Maps out-of-gamut colors into sRGB while preserving perceptual
+// intent. Uses OKLCH space with binary search on chroma:
+//   - Lightness and hue are preserved
+//   - Chroma is reduced until the color fits in gamut
+//
+// This is the CSS Gamut Mapping Algorithm (GMA) used by browsers.
 
 variable input: List = {input};
 variable color: Color.OKLCH = input.get(0).to.oklch();

@@ -1,5 +1,11 @@
-// adjust_chroma: Adjust chroma by relative amount
-// Preserves lightness and hue
+// adjust_chroma: Adjust chroma by a relative amount
+//
+// Modifies the chroma (colorfulness) of a color by adding the
+// specified amount. Positive values increase saturation,
+// negative values decrease it. Result is clamped to [0, ∞).
+//
+// Uses OKLCH for perceptually uniform results.
+// Preserves lightness and hue.
 
 variable input: List = {input};
 variable color: Color.OKLCH = input.get(0).to.oklch();

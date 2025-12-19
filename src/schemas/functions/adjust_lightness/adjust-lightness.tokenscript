@@ -1,5 +1,11 @@
-// adjust_lightness: Adjust lightness by relative amount
-// Preserves hue and chroma
+// adjust_lightness: Adjust lightness by a relative amount
+//
+// Modifies the lightness of a color by adding the specified
+// amount. Positive values lighten, negative values darken.
+// Result is clamped to [0, 1].
+//
+// Uses OKLCH for perceptually uniform results.
+// Preserves hue and chroma.
 
 variable input: List = {input};
 variable color: Color.OKLCH = input.get(0).to.oklch();

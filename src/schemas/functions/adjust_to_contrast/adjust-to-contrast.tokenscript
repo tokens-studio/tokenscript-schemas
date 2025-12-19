@@ -1,6 +1,17 @@
-// adjust_to_contrast: Adjust foreground lightness to meet target contrast
-// Preserves hue and chroma, uses binary search in OKLCH lightness
-// Based on WCAG 2.1 contrast ratio formula
+// adjust_to_contrast: Adjust foreground to meet target WCAG contrast ratio
+// Reference: WCAG 2.1 Contrast Ratio Definition
+// Reference: https://www.w3.org/TR/WCAG21/#dfn-contrast-ratio
+//
+// Modifies the foreground color's lightness (in OKLCH) to achieve
+// the specified contrast ratio against the background, while
+// preserving hue and chroma.
+//
+// Parameters:
+//   foreground   - Color to adjust
+//   background   - Reference background color
+//   target_ratio - Minimum contrast ratio (default: 4.5 for WCAG AA)
+//
+// Uses binary search in OKLCH lightness for convergence.
 
 variable input: List = {input};
 variable foreground: Color.OKLCH = input.get(0).to.oklch();

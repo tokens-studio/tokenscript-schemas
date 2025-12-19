@@ -1,5 +1,14 @@
-// warmer: Shift hue towards warm colors (orange ~60° in OKLCH)
-// Interpolates hue towards warm via the shortest path
+// warmer: Shift hue towards warm colors
+//
+// Warm colors are centered around orange (~60° in OKLCH).
+// The function interpolates the hue towards this target via
+// the shortest angular path on the hue wheel.
+//
+// Parameters:
+//   color  - Input color
+//   amount - Shift amount (0 = no change, 1 = fully warm), default 0.25
+//
+// Preserves lightness and chroma.
 
 variable input: List = {input};
 variable color: Color.OKLCH = input.get(0).to.oklch();

@@ -1,5 +1,14 @@
-// interpolate: Blend between two colors in OKLCH perceptual space
-// Uses shortest-path hue interpolation
+// interpolate: Blend between two colors in perceptual space
+// Reference: CSS Color Level 4 Color Interpolation
+// Reference: https://www.w3.org/TR/css-color-4/#interpolation
+//
+// Performs linear interpolation in OKLCH space with shortest-path
+// hue interpolation. OKLCH provides perceptually uniform results.
+//
+// Parameters:
+//   start - First color (t=0)
+//   end   - Second color (t=1)
+//   t     - Interpolation factor [0, 1], default 0.5
 
 variable input: List = {input};
 variable start: Color.OKLCH = input.get(0).to.oklch();

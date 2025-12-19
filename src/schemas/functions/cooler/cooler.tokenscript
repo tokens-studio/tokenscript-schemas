@@ -1,5 +1,14 @@
-// cooler: Shift hue towards cool colors (blue ~260° in OKLCH)
-// Interpolates hue towards cool via the shortest path
+// cooler: Shift hue towards cool colors
+//
+// Cool colors are centered around blue (~260° in OKLCH).
+// The function interpolates the hue towards this target via
+// the shortest angular path on the hue wheel.
+//
+// Parameters:
+//   color  - Input color
+//   amount - Shift amount (0 = no change, 1 = fully cool), default 0.25
+//
+// Preserves lightness and chroma.
 
 variable input: List = {input};
 variable color: Color.OKLCH = input.get(0).to.oklch();
