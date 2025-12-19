@@ -14,7 +14,6 @@ import {
   SPACE_COORDS,
   compareCoords,
   DEFAULT_TOLERANCE,
-  SPACE_TOLERANCES,
   findConversionPath,
   getAllConversionPaths,
   CONVERSION_GRAPH,
@@ -98,7 +97,7 @@ describe("ColorJS Parity", () => {
 
     describe("Round-trip Precision", () => {
       it("should maintain precision in sRGB → OKLab → sRGB round-trip", () => {
-        const colors = [
+        const colors: [number, number, number][] = [
           [1, 0, 0], // red
           [0, 1, 0], // green
           [0, 0, 1], // blue
@@ -242,7 +241,7 @@ describe("ColorJS Parity", () => {
       const paths = getAllConversionPaths("srgb");
 
       console.log("\n=== All conversion paths from sRGB ===\n");
-      for (const [target, path] of paths) {
+      for (const [_target, path] of paths) {
         console.log(`  ${visualizePath(path)}`);
       }
       console.log("");
@@ -263,7 +262,7 @@ describe("ColorJS Parity", () => {
       console.log("\n=== ColorJS Reference Values for Testing ===\n");
 
       for (const [name, { space, coords }] of Object.entries(TEST_COLORS)) {
-        const color = new Color(space, coords);
+        const color = new Color(space, coords as [number, number, number]);
 
         console.log(`\n${name.toUpperCase()} (${space}: [${coords.join(", ")}]):`);
 
@@ -288,33 +287,138 @@ describe("ColorJS Parity", () => {
   });
 });
 
-describe("TokenScript Parity Tests (Placeholder)", () => {
-  // These tests will be filled in as we implement each color space
+describe("TokenScript Parity Tests", () => {
+  // Active tests verifying TokenScript color conversions match ColorJS
 
-  it.skip("should match ColorJS for sRGB → Linear sRGB conversion", async () => {
-    // TODO: Implement when srgb-color and srgb-linear-color schemas exist
-    // const result = await executeWithSchema("srgb-linear-color", "type", `
-    //   variable c: Color.SRGB;
-    //   c.r = 0.5;
-    //   c.g = 0.5;
-    //   c.b = 0.5;
-    //   c.to.linearsrgb()
-    // `);
-    //
-    // const colorJS = new Color("srgb", [0.5, 0.5, 0.5]).to("srgb-linear");
-    // expect(result.value.r.value).toBeCloseTo(colorJS.coords[0], 5);
+  it("should match ColorJS for sRGB → Linear sRGB conversion", async () => {
+    const { executeWithSchema } = await import("@tests/helpers/schema-test-utils");
+
+    const result = await executeWithSchema(
+      "srgb-linear-color",
+      "type",
+      `
+      variable c: Color.SRGB;
+      c.r = 0.5;
+      c.g = 0.5;
+      c.b = 0.5;
+      c.to.linearsrgb()
+    `,
+    );
+
+    const colorJS = new Color("srgb", [0.5, 0.5, 0.5]).to("srgb-linear");
+    expect((result as any).value.r.value).toBeCloseTo(colorJS.coords[0], 10);
+    expect((result as any).value.g.value).toBeCloseTo(colorJS.coords[1], 10);
+    expect((result as any).value.b.value).toBeCloseTo(colorJS.coords[2], 10);
   });
 
-  it.skip("should match ColorJS for Linear sRGB → XYZ-D65 conversion", async () => {
-    // TODO: Implement when xyz-d65-color schema exists
+  it("should match ColorJS for Linear sRGB → XYZ-D65 conversion", async () => {
+    const { executeWithSchema } = await import("@tests/helpers/schema-test-utils");
+
+    const result = await executeWithSchema(
+      "xyz-d65-color",
+      "type",
+      `
+      variable c: Color.LinearSRGB;
+      c.r = 0.5;
+      c.g = 0.3;
+      c.b = 0.2;
+      c.to.xyzd65()
+    `,
+    );
+
+    const colorJS = new Color("srgb-linear", [0.5, 0.3, 0.2]).to("xyz-d65");
+    expect((result as any).value.x.value).toBeCloseTo(colorJS.coords[0], 10);
+    expect((result as any).value.y.value).toBeCloseTo(colorJS.coords[1], 10);
+    expect((result as any).value.z.value).toBeCloseTo(colorJS.coords[2], 10);
   });
 
-  it.skip("should match ColorJS for XYZ-D65 → OKLab conversion", async () => {
-    // TODO: Implement when oklab-color schema exists
+  it("should match ColorJS for XYZ-D65 → OKLab conversion", async () => {
+    const { executeWithSchema } = await import("@tests/helpers/schema-test-utils");
+
+    const result = await executeWithSchema(
+      "oklab-color",
+      "type",
+      `
+      variable c: Color.XYZD65;
+      c.x = 0.4;
+      c.y = 0.3;
+      c.z = 0.2;
+      c.to.oklab()
+    `,
+    );
+
+    const colorJS = new Color("xyz-d65", [0.4, 0.3, 0.2]).to("oklab");
+    expect((result as any).value.l.value).toBeCloseTo(colorJS.coords[0], 5);
+    expect((result as any).value.a.value).toBeCloseTo(colorJS.coords[1], 5);
+    expect((result as any).value.b.value).toBeCloseTo(colorJS.coords[2], 5);
   });
 
-  it.skip("should match ColorJS for full sRGB → OKLab round-trip", async () => {
-    // TODO: Implement when full conversion chain exists
+  it("should match ColorJS for full sRGB → OKLCH chain", async () => {
+    const { executeWithSchema } = await import("@tests/helpers/schema-test-utils");
+
+    const result = await executeWithSchema(
+      "oklch-color",
+      "type",
+      `
+      variable c: Color.SRGB;
+      c.r = 0.6;
+      c.g = 0.3;
+      c.b = 0.8;
+      c.to.oklch()
+    `,
+    );
+
+    const colorJS = new Color("srgb", [0.6, 0.3, 0.8]).to("oklch");
+    expect((result as any).value.l.value).toBeCloseTo(colorJS.coords[0], 4);
+    expect((result as any).value.c.value).toBeCloseTo(colorJS.coords[1], 4);
+    // Hue comparison (handle 360 wrap)
+    const tsHue = (result as any).value.h.value;
+    const cjHue = colorJS.coords[2];
+    const hueDiff = Math.min(Math.abs(tsHue - cjHue), 360 - Math.abs(tsHue - cjHue));
+    expect(hueDiff).toBeLessThan(0.01);
+  });
+
+  it("should match ColorJS for sRGB → Lab conversion", async () => {
+    const { executeWithSchema } = await import("@tests/helpers/schema-test-utils");
+
+    const result = await executeWithSchema(
+      "lab-color",
+      "type",
+      `
+      variable c: Color.SRGB;
+      c.r = 0.7;
+      c.g = 0.4;
+      c.b = 0.2;
+      c.to.lab()
+    `,
+    );
+
+    const colorJS = new Color("srgb", [0.7, 0.4, 0.2]).to("lab");
+    expect((result as any).value.l.value).toBeCloseTo(colorJS.coords[0], 4);
+    expect((result as any).value.a.value).toBeCloseTo(colorJS.coords[1], 4);
+    expect((result as any).value.b.value).toBeCloseTo(colorJS.coords[2], 4);
+  });
+
+  it("should match ColorJS for sRGB → HSL conversion", async () => {
+    const { executeWithSchema } = await import("@tests/helpers/schema-test-utils");
+
+    const result = await executeWithSchema(
+      "hsl-color",
+      "type",
+      `
+      variable c: Color.SRGB;
+      c.r = 0.8;
+      c.g = 0.2;
+      c.b = 0.4;
+      c.to.hsl()
+    `,
+    );
+
+    const colorJS = new Color("srgb", [0.8, 0.2, 0.4]).to("hsl");
+    expect((result as any).value.h.value).toBeCloseTo(colorJS.coords[0], 4);
+    // ColorJS uses 0-100 for saturation/lightness
+    expect((result as any).value.s.value).toBeCloseTo(colorJS.coords[1] / 100, 4);
+    expect((result as any).value.l.value).toBeCloseTo(colorJS.coords[2] / 100, 4);
   });
 });
 
