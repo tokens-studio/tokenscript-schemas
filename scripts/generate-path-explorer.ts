@@ -83,65 +83,66 @@ async function runConversion(
   const [r, g, b] = color.rgb;
   const srgb = [r/255, g/255, b/255];
   
-  // Generate TokenScript code
-  const code = `
-variable start: Color.${fromSpace.tsType};
-${fromSpace.coords.map((c, i) => {
-  if (fromSpace.id === "srgb") return `start.${c} = ${srgb[i]};`;
-  if (fromSpace.id === "hsl") {
-    const hslColor = new Color("srgb", srgb).to("hsl");
-    const val = i === 0 ? hslColor.coords[0] : hslColor.coords[i] / 100;
-    return `start.${c} = ${val};`;
-  }
-  return `start.${c} = 0;`;
-}).join('\n')}
-start.to.${toSpace.id.replace(/-/g, '')}()
-  `.trim();
-
-  // Execute with TokenScript interpreter
-  const lexer = new Lexer(code);
-  const parser = new Parser(lexer);
-  const interpreter = new Interpreter(parser, { config });
+  // Get starting values for the source space
+  const startValues = getStartValues(fromSpace, srgb);
   
-  const result = interpreter.interpret();
-  
-  // Collect conversion path by running through intermediate spaces
-  const steps: ConversionStep[] = [];
-  
-  // Use ColorJS to track intermediate values (since interpreter auto-jumps)
-  let current = new Color("srgb", srgb);
-  
-  // Determine path based on from/to
+  // Determine the conversion path
   const pathSpaces = getPathSpaces(fromSpace.id, toSpace.id);
   
-  for (const spaceId of pathSpaces) {
-    const converted = current.to(spaceId);
-    let coords = [...converted.coords];
+  // Execute REAL step-by-step conversions through TokenScript
+  const steps: ConversionStep[] = [];
+  let codeAccumulator = "";
+  let prevVarName = "start";
+  
+  for (let i = 0; i < pathSpaces.length; i++) {
+    const spaceId = pathSpaces[i];
+    const spaceInfo = colorSpaces.find(s => s.id === spaceId)!;
+    const varName = i === 0 ? "start" : `step${i}`;
     
-    // Normalize HSL
-    if (spaceId === "hsl") {
-      coords[1] = coords[1] / 100;
-      coords[2] = coords[2] / 100;
+    let code: string;
+    
+    if (i === 0) {
+      // First step: initialize the starting color
+      code = `
+variable ${varName}: Color.${spaceInfo.tsType};
+${spaceInfo.coords.map((c, j) => `${varName}.${c} = ${startValues[j]};`).join('\n')}
+return ${varName};
+      `.trim();
+    } else {
+      // Subsequent steps: convert from previous
+      const prevSpace = colorSpaces.find(s => s.id === pathSpaces[i-1])!;
+      const targetKeyword = spaceId.replace(/-/g, '');
+      
+      code = `
+variable start: Color.${colorSpaces.find(s => s.id === pathSpaces[0])!.tsType};
+${colorSpaces.find(s => s.id === pathSpaces[0])!.coords.map((c, j) => `start.${c} = ${startValues[j]};`).join('\n')}
+${buildConversionChain(pathSpaces.slice(0, i + 1), colorSpaces)}
+      `.trim();
     }
     
-    const spaceInfo = colorSpaces.find(s => s.id === spaceId)!;
+    // Execute this step
+    const lexer = new Lexer(code);
+    const parser = new Parser(lexer);
+    const interpreter = new Interpreter(parser, { config });
+    const result = interpreter.interpret();
+    
+    // Extract coordinates from result
+    const coords = spaceInfo.coords.map(c => result?.value?.[c]?.value ?? 0);
+    
     steps.push({
       space: spaceId,
       displayName: spaceInfo.displayName,
       coords,
       css: getCss(spaceId, coords),
     });
-    
-    current = converted;
   }
   
-  // Replace last step with actual TokenScript result
-  if (result?.value && steps.length > 0) {
-    const lastStep = steps[steps.length - 1];
-    const tsCoords = toSpace.coords.map(c => result.value[c]?.value ?? 0);
-    lastStep.coords = tsCoords;
-    lastStep.css = getCss(toSpace.id, tsCoords);
-  }
+  // Generate the final single-line code for display
+  const finalCode = `
+variable start: Color.${fromSpace.tsType};
+${fromSpace.coords.map((c, j) => `start.${c} = ${startValues[j]};`).join('\n')}
+start.to.${toSpace.id.replace(/-/g, '')}()
+  `.trim();
 
   return {
     from: fromSpace.id,
@@ -149,8 +150,53 @@ start.to.${toSpace.id.replace(/-/g, '')}()
     color: color.hex,
     colorName: color.name,
     steps,
-    tokenScriptCode: code,
+    tokenScriptCode: finalCode,
   };
+}
+
+function getStartValues(space: ColorSpaceInfo, srgb: number[]): number[] {
+  if (space.id === "srgb") return srgb;
+  if (space.id === "hsl") {
+    const hslColor = new Color("srgb", srgb).to("hsl");
+    return [hslColor.coords[0], hslColor.coords[1] / 100, hslColor.coords[2] / 100];
+  }
+  if (space.id === "oklch") {
+    const oklchColor = new Color("srgb", srgb).to("oklch");
+    return oklchColor.coords;
+  }
+  return srgb;
+}
+
+function buildConversionChain(path: string[], spaces: ColorSpaceInfo[]): string {
+  if (path.length < 2) return "return start;";
+  
+  let code = "";
+  let prevVar = "start";
+  
+  for (let i = 1; i < path.length; i++) {
+    const targetSpace = spaces.find(s => s.id === path[i])!;
+    const targetKeyword = getConversionKeyword(path[i]);
+    const varName = i === path.length - 1 ? "result" : `step${i}`;
+    
+    code += `variable ${varName}: Color.${targetSpace.tsType} = ${prevVar}.to.${targetKeyword}();\n`;
+    prevVar = varName;
+  }
+  
+  code += `return ${prevVar};`;
+  return code;
+}
+
+function getConversionKeyword(spaceId: string): string {
+  // Map space IDs to their TokenScript conversion keywords
+  const keywords: Record<string, string> = {
+    "srgb": "srgb",
+    "srgb-linear": "linearsrgb",
+    "xyz-d65": "xyzd65",
+    "oklab": "oklab",
+    "oklch": "oklch",
+    "hsl": "hsl",
+  };
+  return keywords[spaceId] || spaceId.replace(/-/g, '');
 }
 
 function getPathSpaces(from: string, to: string): string[] {
