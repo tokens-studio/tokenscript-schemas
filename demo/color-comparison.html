@@ -200,6 +200,21 @@
     }
     .match-badge.pass { background: #22c55e20; color: #22c55e; }
     .match-badge.fail { background: #ef444420; color: #ef4444; }
+    .match-badge.achromatic { background: #f59e0b20; color: #f59e0b; }
+    
+    .conversion.achromatic-hue {
+      border-color: #f59e0b40;
+    }
+    
+    .achromatic-note {
+      font-size: 0.65rem;
+      color: #f59e0b;
+      background: #f59e0b10;
+      padding: 0.35rem 0.5rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
     
     .conversion-path {
       font-size: 0.7rem;
@@ -298,7 +313,7 @@
 </head>
 <body>
   <h1>🎨 TokenScript Color Conversions</h1>
-  <p class="subtitle">Visual comparison with ColorJS • Generated 12/19/2025, 1:04:09 AM</p>
+  <p class="subtitle">Visual comparison with ColorJS • Generated 12/19/2025, 1:19:54 AM</p>
   
   <!-- Explanation -->
   <div class="explanation">
@@ -336,7 +351,7 @@
       <h3>📋 Test Results (CSV)</h3>
       <button class="copy-btn" onclick="copyLog()">Copy to Clipboard</button>
     </div>
-    <div class="log-content" id="logContent">Color,Space,ConversionPath,TS_C0,TS_C1,TS_C2,CJ_C0,CJ_C1,CJ_C2,MaxDiff,Match
+    <div class="log-content" id="logContent">Color,Space,ConversionPath,TS_C0,TS_C1,TS_C2,CJ_C0,CJ_C1,CJ_C2,MaxDiff,Status
 Red,srgb,"RGB → sRGB (÷255)",1.000000,0.000000,0.000000,1.000000,0.000000,0.000000,0.00e+0,PASS
 Red,srgb-linear,"sRGB → Linear (gamma decode)",1.000000,0.000000,0.000000,1.000000,0.000000,0.000000,0.00e+0,PASS
 Red,xyz-d65,"Linear sRGB → XYZ-D65 (matrix)",0.412391,0.212639,0.019331,0.412391,0.212639,0.019331,0.00e+0,PASS
@@ -451,35 +466,35 @@ White,srgb,"RGB → sRGB (÷255)",1.000000,1.000000,1.000000,1.000000,1.000000,1
 White,srgb-linear,"sRGB → Linear (gamma decode)",1.000000,1.000000,1.000000,1.000000,1.000000,1.000000,0.00e+0,PASS
 White,xyz-d65,"Linear sRGB → XYZ-D65 (matrix)",0.950456,1.000000,1.089058,0.950456,1.000000,1.089058,0.00e+0,PASS
 White,oklab,"XYZ-D65 → OKLab (LMS cone response)",1.000000,-0.000000,0.000000,1.000000,-0.000000,0.000000,0.00e+0,PASS
-White,oklch,"OKLab → OKLCH (cartesian to polar)",1.000000,0.000000,180.000000,1.000000,0.000000,NaN,0.00e+0,PASS
+White,oklch,"OKLab → OKLCH (cartesian to polar)",1.000000,0.000000,180.000000,1.000000,0.000000,NaN,0.00e+0,ACHROMATIC_HUE
 White,xyz-d50,"XYZ-D65 → XYZ-D50 (Bradford)",0.964296,1.000000,0.825105,0.964296,1.000000,0.825105,0.00e+0,PASS
 White,lab,"XYZ-D50 → Lab (perceptual)",100.000000,0.000000,0.000000,100.000000,0.000000,0.000000,0.00e+0,PASS
-White,lch,"Lab → LCH (cartesian to polar)",100.000000,0.000000,0.000000,100.000000,0.000000,NaN,0.00e+0,PASS
-White,hsl,"sRGB → HSL (cylindrical)",0.000000,0.000000,1.000000,NaN,0.000000,1.000000,0.00e+0,PASS
-White,hsv,"sRGB → HSV (cylindrical)",0.000000,0.000000,1.000000,NaN,0.000000,1.000000,0.00e+0,PASS
-White,hwb,"HSV → HWB (whiteness/blackness)",0.000000,1.000000,0.000000,NaN,1.000000,0.000000,0.00e+0,PASS
+White,lch,"Lab → LCH (cartesian to polar)",100.000000,0.000000,0.000000,100.000000,0.000000,NaN,0.00e+0,ACHROMATIC_HUE
+White,hsl,"sRGB → HSL (cylindrical)",0.000000,0.000000,1.000000,NaN,0.000000,1.000000,0.00e+0,ACHROMATIC_HUE
+White,hsv,"sRGB → HSV (cylindrical)",0.000000,0.000000,1.000000,NaN,0.000000,1.000000,0.00e+0,ACHROMATIC_HUE
+White,hwb,"HSV → HWB (whiteness/blackness)",0.000000,1.000000,0.000000,NaN,1.000000,0.000000,0.00e+0,ACHROMATIC_HUE
 Black,srgb,"RGB → sRGB (÷255)",0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.00e+0,PASS
 Black,srgb-linear,"sRGB → Linear (gamma decode)",0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.00e+0,PASS
 Black,xyz-d65,"Linear sRGB → XYZ-D65 (matrix)",0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.00e+0,PASS
 Black,oklab,"XYZ-D65 → OKLab (LMS cone response)",0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.00e+0,PASS
-Black,oklch,"OKLab → OKLCH (cartesian to polar)",0.000000,0.000000,0.000000,0.000000,0.000000,NaN,0.00e+0,PASS
+Black,oklch,"OKLab → OKLCH (cartesian to polar)",0.000000,0.000000,0.000000,0.000000,0.000000,NaN,0.00e+0,ACHROMATIC_HUE
 Black,xyz-d50,"XYZ-D65 → XYZ-D50 (Bradford)",0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.00e+0,PASS
 Black,lab,"XYZ-D50 → Lab (perceptual)",0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.00e+0,PASS
-Black,lch,"Lab → LCH (cartesian to polar)",0.000000,0.000000,0.000000,0.000000,0.000000,NaN,0.00e+0,PASS
-Black,hsl,"sRGB → HSL (cylindrical)",0.000000,0.000000,0.000000,NaN,0.000000,0.000000,0.00e+0,PASS
-Black,hsv,"sRGB → HSV (cylindrical)",0.000000,0.000000,0.000000,NaN,0.000000,0.000000,0.00e+0,PASS
-Black,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.000000,1.000000,NaN,0.000000,1.000000,0.00e+0,PASS
+Black,lch,"Lab → LCH (cartesian to polar)",0.000000,0.000000,0.000000,0.000000,0.000000,NaN,0.00e+0,ACHROMATIC_HUE
+Black,hsl,"sRGB → HSL (cylindrical)",0.000000,0.000000,0.000000,NaN,0.000000,0.000000,0.00e+0,ACHROMATIC_HUE
+Black,hsv,"sRGB → HSV (cylindrical)",0.000000,0.000000,0.000000,NaN,0.000000,0.000000,0.00e+0,ACHROMATIC_HUE
+Black,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.000000,1.000000,NaN,0.000000,1.000000,0.00e+0,ACHROMATIC_HUE
 Gray 50%,srgb,"RGB → sRGB (÷255)",0.501961,0.501961,0.501961,0.501961,0.501961,0.501961,0.00e+0,PASS
 Gray 50%,srgb-linear,"sRGB → Linear (gamma decode)",0.215861,0.215861,0.215861,0.215861,0.215861,0.215861,0.00e+0,PASS
 Gray 50%,xyz-d65,"Linear sRGB → XYZ-D65 (matrix)",0.205166,0.215861,0.235085,0.205166,0.215861,0.235085,0.00e+0,PASS
 Gray 50%,oklab,"XYZ-D65 → OKLab (LMS cone response)",0.599871,-0.000000,0.000000,0.599871,-0.000000,0.000000,0.00e+0,PASS
-Gray 50%,oklch,"OKLab → OKLCH (cartesian to polar)",0.599871,0.000000,180.000000,0.599871,0.000000,NaN,0.00e+0,PASS
+Gray 50%,oklch,"OKLab → OKLCH (cartesian to polar)",0.599871,0.000000,180.000000,0.599871,0.000000,NaN,0.00e+0,ACHROMATIC_HUE
 Gray 50%,xyz-d50,"XYZ-D65 → XYZ-D50 (Bradford)",0.208153,0.215861,0.178107,0.208153,0.215861,0.178107,0.00e+0,PASS
 Gray 50%,lab,"XYZ-D50 → Lab (perceptual)",53.585013,0.000000,0.000000,53.585013,0.000000,0.000000,0.00e+0,PASS
-Gray 50%,lch,"Lab → LCH (cartesian to polar)",53.585013,0.000000,0.000000,53.585013,0.000000,NaN,0.00e+0,PASS
-Gray 50%,hsl,"sRGB → HSL (cylindrical)",0.000000,0.000000,0.501961,NaN,0.000000,0.501961,0.00e+0,PASS
-Gray 50%,hsv,"sRGB → HSV (cylindrical)",0.000000,0.000000,0.501961,NaN,0.000000,0.501961,0.00e+0,PASS
-Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,0.501961,0.498039,1.11e-16,PASS</div>
+Gray 50%,lch,"Lab → LCH (cartesian to polar)",53.585013,0.000000,0.000000,53.585013,0.000000,NaN,0.00e+0,ACHROMATIC_HUE
+Gray 50%,hsl,"sRGB → HSL (cylindrical)",0.000000,0.000000,0.501961,NaN,0.000000,0.501961,0.00e+0,ACHROMATIC_HUE
+Gray 50%,hsv,"sRGB → HSV (cylindrical)",0.000000,0.000000,0.501961,NaN,0.000000,0.501961,0.00e+0,ACHROMATIC_HUE
+Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,0.501961,0.498039,1.11e-16,ACHROMATIC_HUE</div>
   </div>
   
   <div class="stats">
@@ -512,12 +527,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
       </div>
       <div class="conversions">
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">RGB → sRGB (÷255)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb 1.0000 0.0000 0.0000)">
@@ -541,12 +557,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">Linear sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → Linear (gamma decode)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb-linear 1.0000 0.0000 0.0000)">
@@ -570,12 +587,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D65</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Linear sRGB → XYZ-D65 (matrix)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d65 0.4124 0.2126 0.0193)">
@@ -599,12 +617,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → OKLab (LMS cone response)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklab(0.6280 0.2249 0.1258)">
@@ -628,12 +647,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">OKLab → OKLCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklch(0.6280 0.2577 29.23)">
@@ -657,12 +677,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D50</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → XYZ-D50 (Bradford)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d50 0.4361 0.2225 0.0139)">
@@ -686,12 +707,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE Lab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D50 → Lab (perceptual)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lab(54.29 80.8049 69.8910)">
@@ -715,12 +737,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE LCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Lab → LCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lch(54.29 106.8372 40.86)">
@@ -744,12 +767,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSL</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSL (cylindrical)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hsl(0.0 100.0% 50.0%)">
@@ -773,12 +797,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSV</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSV (cylindrical)</div>
+            
             
             <div class="swatch-unavailable">
               <span>No CSS support</span>
@@ -797,12 +822,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HWB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">HSV → HWB (whiteness/blackness)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hwb(0.0 0.0% 0.0%)">
@@ -839,12 +865,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
       </div>
       <div class="conversions">
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">RGB → sRGB (÷255)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb 0.0000 1.0000 0.0000)">
@@ -868,12 +895,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">Linear sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → Linear (gamma decode)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb-linear 0.0000 1.0000 0.0000)">
@@ -897,12 +925,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D65</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Linear sRGB → XYZ-D65 (matrix)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d65 0.3576 0.7152 0.1192)">
@@ -926,12 +955,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → OKLab (LMS cone response)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklab(0.8664 -0.2339 0.1795)">
@@ -955,12 +985,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">OKLab → OKLCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklch(0.8664 0.2948 142.50)">
@@ -984,12 +1015,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D50</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → XYZ-D50 (Bradford)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d50 0.3852 0.7169 0.0971)">
@@ -1013,12 +1045,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE Lab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D50 → Lab (perceptual)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lab(87.82 -79.2711 80.9946)">
@@ -1042,12 +1075,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE LCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Lab → LCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lch(87.82 113.3315 134.38)">
@@ -1071,12 +1105,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSL</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSL (cylindrical)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hsl(120.0 100.0% 50.0%)">
@@ -1100,12 +1135,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSV</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSV (cylindrical)</div>
+            
             
             <div class="swatch-unavailable">
               <span>No CSS support</span>
@@ -1124,12 +1160,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HWB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">HSV → HWB (whiteness/blackness)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hwb(120.0 0.0% 0.0%)">
@@ -1166,12 +1203,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
       </div>
       <div class="conversions">
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">RGB → sRGB (÷255)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb 0.0000 0.0000 1.0000)">
@@ -1195,12 +1233,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">Linear sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → Linear (gamma decode)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb-linear 0.0000 0.0000 1.0000)">
@@ -1224,12 +1263,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D65</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Linear sRGB → XYZ-D65 (matrix)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d65 0.1805 0.0722 0.9505)">
@@ -1253,12 +1293,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → OKLab (LMS cone response)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklab(0.4520 -0.0325 -0.3115)">
@@ -1282,12 +1323,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">OKLab → OKLCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklch(0.4520 0.3132 264.05)">
@@ -1311,12 +1353,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D50</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → XYZ-D50 (Bradford)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d50 0.1431 0.0606 0.7141)">
@@ -1340,12 +1383,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE Lab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D50 → Lab (perceptual)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lab(29.57 68.2874 -112.0297)">
@@ -1369,12 +1413,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE LCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Lab → LCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lch(29.57 131.2014 301.36)">
@@ -1398,12 +1443,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSL</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSL (cylindrical)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hsl(240.0 100.0% 50.0%)">
@@ -1427,12 +1473,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSV</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSV (cylindrical)</div>
+            
             
             <div class="swatch-unavailable">
               <span>No CSS support</span>
@@ -1451,12 +1498,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HWB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">HSV → HWB (whiteness/blackness)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hwb(240.0 0.0% 0.0%)">
@@ -1493,12 +1541,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
       </div>
       <div class="conversions">
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">RGB → sRGB (÷255)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb 0.0000 1.0000 1.0000)">
@@ -1522,12 +1571,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">Linear sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → Linear (gamma decode)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb-linear 0.0000 1.0000 1.0000)">
@@ -1551,12 +1601,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D65</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Linear sRGB → XYZ-D65 (matrix)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d65 0.5381 0.7874 1.0697)">
@@ -1580,12 +1631,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → OKLab (LMS cone response)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklab(0.9054 -0.1494 -0.0394)">
@@ -1609,12 +1661,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">OKLab → OKLCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklch(0.9054 0.1546 194.77)">
@@ -1638,12 +1691,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D50</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → XYZ-D50 (Bradford)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d50 0.5282 0.7775 0.8112)">
@@ -1667,12 +1721,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE Lab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D50 → Lab (perceptual)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lab(90.67 -50.6565 -14.9617)">
@@ -1696,12 +1751,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE LCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Lab → LCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lch(90.67 52.8198 196.45)">
@@ -1725,12 +1781,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSL</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSL (cylindrical)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hsl(180.0 100.0% 50.0%)">
@@ -1754,12 +1811,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSV</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSV (cylindrical)</div>
+            
             
             <div class="swatch-unavailable">
               <span>No CSS support</span>
@@ -1778,12 +1836,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HWB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">HSV → HWB (whiteness/blackness)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hwb(180.0 0.0% 0.0%)">
@@ -1820,12 +1879,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
       </div>
       <div class="conversions">
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">RGB → sRGB (÷255)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb 1.0000 0.0000 1.0000)">
@@ -1849,12 +1909,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">Linear sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → Linear (gamma decode)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb-linear 1.0000 0.0000 1.0000)">
@@ -1878,12 +1939,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D65</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Linear sRGB → XYZ-D65 (matrix)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d65 0.5929 0.2848 0.9699)">
@@ -1907,12 +1969,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → OKLab (LMS cone response)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklab(0.7017 0.2746 -0.1692)">
@@ -1936,12 +1999,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">OKLab → OKLCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklch(0.7017 0.3225 328.36)">
@@ -1965,12 +2029,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D50</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → XYZ-D50 (Bradford)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d50 0.5791 0.2831 0.7280)">
@@ -1994,12 +2059,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE Lab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D50 → Lab (perceptual)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lab(60.17 93.5396 -60.5008)">
@@ -2023,12 +2089,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE LCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Lab → LCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lch(60.17 111.4002 327.11)">
@@ -2052,12 +2119,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSL</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSL (cylindrical)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hsl(300.0 100.0% 50.0%)">
@@ -2081,12 +2149,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSV</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSV (cylindrical)</div>
+            
             
             <div class="swatch-unavailable">
               <span>No CSS support</span>
@@ -2105,12 +2174,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HWB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">HSV → HWB (whiteness/blackness)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hwb(300.0 0.0% 0.0%)">
@@ -2147,12 +2217,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
       </div>
       <div class="conversions">
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">RGB → sRGB (÷255)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb 1.0000 1.0000 0.0000)">
@@ -2176,12 +2247,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">Linear sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → Linear (gamma decode)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb-linear 1.0000 1.0000 0.0000)">
@@ -2205,12 +2277,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D65</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Linear sRGB → XYZ-D65 (matrix)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d65 0.7700 0.9278 0.1385)">
@@ -2234,12 +2307,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → OKLab (LMS cone response)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklab(0.9680 -0.0714 0.1986)">
@@ -2263,12 +2337,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">OKLab → OKLCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklch(0.9680 0.2110 109.77)">
@@ -2292,12 +2367,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D50</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → XYZ-D50 (Bradford)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d50 0.8212 0.9394 0.1110)">
@@ -2321,12 +2397,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE Lab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D50 → Lab (perceptual)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lab(97.61 -15.7498 93.3936)">
@@ -2350,12 +2427,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE LCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Lab → LCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lch(97.61 94.7123 99.57)">
@@ -2379,12 +2457,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSL</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSL (cylindrical)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hsl(60.0 100.0% 50.0%)">
@@ -2408,12 +2487,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSV</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSV (cylindrical)</div>
+            
             
             <div class="swatch-unavailable">
               <span>No CSS support</span>
@@ -2432,12 +2512,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HWB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">HSV → HWB (whiteness/blackness)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hwb(60.0 0.0% 0.0%)">
@@ -2474,12 +2555,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
       </div>
       <div class="conversions">
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">RGB → sRGB (÷255)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb 1.0000 0.6471 0.0000)">
@@ -2503,12 +2585,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">Linear sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → Linear (gamma decode)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb-linear 1.0000 0.3763 0.0000)">
@@ -2532,12 +2615,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D65</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Linear sRGB → XYZ-D65 (matrix)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d65 0.5469 0.4817 0.0642)">
@@ -2561,12 +2645,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → OKLab (LMS cone response)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklab(0.7927 0.0566 0.1614)">
@@ -2590,12 +2675,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">OKLab → OKLCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklch(0.7927 0.1710 70.67)">
@@ -2619,12 +2705,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D50</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → XYZ-D50 (Bradford)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d50 0.5810 0.4922 0.0505)">
@@ -2648,12 +2735,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE Lab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D50 → Lab (perceptual)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lab(75.59 27.5162 79.1208)">
@@ -2677,12 +2765,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE LCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Lab → LCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lch(75.59 83.7690 70.82)">
@@ -2706,12 +2795,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSL</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSL (cylindrical)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hsl(38.8 100.0% 50.0%)">
@@ -2735,12 +2825,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSV</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSV (cylindrical)</div>
+            
             
             <div class="swatch-unavailable">
               <span>No CSS support</span>
@@ -2759,12 +2850,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HWB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">HSV → HWB (whiteness/blackness)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hwb(38.8 0.0% 0.0%)">
@@ -2801,12 +2893,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
       </div>
       <div class="conversions">
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">RGB → sRGB (÷255)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb 1.0000 0.4980 0.3137)">
@@ -2830,12 +2923,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">Linear sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → Linear (gamma decode)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb-linear 1.0000 0.2122 0.0802)">
@@ -2859,12 +2953,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D65</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Linear sRGB → XYZ-D65 (matrix)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d65 0.5028 0.3702 0.1209)">
@@ -2888,12 +2983,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → OKLab (LMS cone response)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklab(0.7351 0.1282 0.1085)">
@@ -2917,12 +3013,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">OKLab → OKLCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklch(0.7351 0.1680 40.25)">
@@ -2946,12 +3043,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D50</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → XYZ-D50 (Bradford)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d50 0.5293 0.3795 0.0918)">
@@ -2975,12 +3073,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE Lab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D50 → Lab (perceptual)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lab(67.98 47.3834 48.6029)">
@@ -3004,12 +3103,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE LCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Lab → LCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lch(67.98 67.8781 45.73)">
@@ -3033,12 +3133,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSL</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSL (cylindrical)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hsl(16.1 100.0% 65.7%)">
@@ -3062,12 +3163,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSV</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSV (cylindrical)</div>
+            
             
             <div class="swatch-unavailable">
               <span>No CSS support</span>
@@ -3086,12 +3188,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HWB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">HSV → HWB (whiteness/blackness)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hwb(16.1 31.4% 0.0%)">
@@ -3128,12 +3231,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
       </div>
       <div class="conversions">
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">RGB → sRGB (÷255)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb 0.0000 0.5020 0.5020)">
@@ -3157,12 +3261,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">Linear sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → Linear (gamma decode)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb-linear 0.0000 0.2159 0.2159)">
@@ -3186,12 +3291,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D65</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Linear sRGB → XYZ-D65 (matrix)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d65 0.1161 0.1700 0.2309)">
@@ -3215,12 +3321,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → OKLab (LMS cone response)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklab(0.5431 -0.0896 -0.0236)">
@@ -3244,12 +3351,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">OKLab → OKLCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklch(0.5431 0.0927 194.77)">
@@ -3273,12 +3381,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D50</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → XYZ-D50 (Bradford)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d50 0.1140 0.1678 0.1751)">
@@ -3302,12 +3411,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE Lab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D50 → Lab (perceptual)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lab(47.99 -30.3874 -8.9751)">
@@ -3331,12 +3441,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE LCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Lab → LCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lch(47.99 31.6851 196.45)">
@@ -3360,12 +3471,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSL</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSL (cylindrical)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hsl(180.0 100.0% 25.1%)">
@@ -3389,12 +3501,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSV</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSV (cylindrical)</div>
+            
             
             <div class="swatch-unavailable">
               <span>No CSS support</span>
@@ -3413,12 +3526,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HWB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">HSV → HWB (whiteness/blackness)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hwb(180.0 0.0% 49.8%)">
@@ -3455,12 +3569,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
       </div>
       <div class="conversions">
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">RGB → sRGB (÷255)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb 0.5020 0.0000 0.5020)">
@@ -3484,12 +3599,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">Linear sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → Linear (gamma decode)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb-linear 0.2159 0.0000 0.2159)">
@@ -3513,12 +3629,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D65</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Linear sRGB → XYZ-D65 (matrix)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d65 0.1280 0.0615 0.2094)">
@@ -3542,12 +3659,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → OKLab (LMS cone response)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklab(0.4209 0.1647 -0.1015)">
@@ -3571,12 +3689,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">OKLab → OKLCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklch(0.4209 0.1935 328.36)">
@@ -3600,12 +3719,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D50</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → XYZ-D50 (Bradford)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d50 0.1250 0.0611 0.1572)">
@@ -3629,12 +3749,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE Lab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D50 → Lab (perceptual)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lab(29.69 56.1117 -36.2927)">
@@ -3658,12 +3779,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE LCH</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Lab → LCH (cartesian to polar)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lch(29.69 66.8257 327.11)">
@@ -3687,12 +3809,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSL</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSL (cylindrical)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hsl(300.0 100.0% 25.1%)">
@@ -3716,12 +3839,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HSV</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → HSV (cylindrical)</div>
+            
             
             <div class="swatch-unavailable">
               <span>No CSS support</span>
@@ -3740,12 +3864,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">HWB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">HSV → HWB (whiteness/blackness)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: hwb(300.0 0.0% 49.8%)">
@@ -3782,12 +3907,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
       </div>
       <div class="conversions">
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">RGB → sRGB (÷255)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb 1.0000 1.0000 1.0000)">
@@ -3811,12 +3937,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">Linear sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → Linear (gamma decode)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb-linear 1.0000 1.0000 1.0000)">
@@ -3840,12 +3967,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D65</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Linear sRGB → XYZ-D65 (matrix)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d65 0.9505 1.0000 1.0891)">
@@ -3869,12 +3997,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → OKLab (LMS cone response)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklab(1.0000 -0.0000 0.0000)">
@@ -3898,12 +4027,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match achromatic-hue">
             <div class="conversion-header">
               <span class="space-name">OKLCH</span>
-              <span class="match-badge pass">✓ MATCH</span>
+              <span class="match-badge achromatic">⚠ ACHROMATIC</span>
             </div>
             <div class="conversion-path">OKLab → OKLCH (cartesian to polar)</div>
+            <div class="achromatic-note">Hue undefined for achromatic colors. TS returns 180°, ColorJS returns NaN.</div>
             
             <div class="swatch-unavailable">
               <span>NaN values</span>
@@ -3922,12 +4052,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D50</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → XYZ-D50 (Bradford)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d50 0.9643 1.0000 0.8251)">
@@ -3951,12 +4082,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE Lab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D50 → Lab (perceptual)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lab(100.00 0.0000 0.0000)">
@@ -3980,12 +4112,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match achromatic-hue">
             <div class="conversion-header">
               <span class="space-name">CIE LCH</span>
-              <span class="match-badge pass">✓ MATCH</span>
+              <span class="match-badge achromatic">⚠ ACHROMATIC</span>
             </div>
             <div class="conversion-path">Lab → LCH (cartesian to polar)</div>
+            <div class="achromatic-note">Hue undefined for achromatic colors. TS returns 0°, ColorJS returns NaN.</div>
             
             <div class="swatch-unavailable">
               <span>NaN values</span>
@@ -4004,12 +4137,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match achromatic-hue">
             <div class="conversion-header">
               <span class="space-name">HSL</span>
-              <span class="match-badge pass">✓ MATCH</span>
+              <span class="match-badge achromatic">⚠ ACHROMATIC</span>
             </div>
             <div class="conversion-path">sRGB → HSL (cylindrical)</div>
+            <div class="achromatic-note">Hue undefined for achromatic colors. TS returns 1°, ColorJS returns NaN.</div>
             
             <div class="swatch-unavailable">
               <span>NaN values</span>
@@ -4028,12 +4162,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match achromatic-hue">
             <div class="conversion-header">
               <span class="space-name">HSV</span>
-              <span class="match-badge pass">✓ MATCH</span>
+              <span class="match-badge achromatic">⚠ ACHROMATIC</span>
             </div>
             <div class="conversion-path">sRGB → HSV (cylindrical)</div>
+            <div class="achromatic-note">Hue undefined for achromatic colors. TS returns 1°, ColorJS returns NaN.</div>
             
             <div class="swatch-unavailable">
               <span>No CSS support</span>
@@ -4052,12 +4187,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match achromatic-hue">
             <div class="conversion-header">
               <span class="space-name">HWB</span>
-              <span class="match-badge pass">✓ MATCH</span>
+              <span class="match-badge achromatic">⚠ ACHROMATIC</span>
             </div>
             <div class="conversion-path">HSV → HWB (whiteness/blackness)</div>
+            <div class="achromatic-note">Hue undefined for achromatic colors. TS returns 0°, ColorJS returns NaN.</div>
             
             <div class="swatch-unavailable">
               <span>NaN values</span>
@@ -4089,12 +4225,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
       </div>
       <div class="conversions">
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">RGB → sRGB (÷255)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb 0.0000 0.0000 0.0000)">
@@ -4118,12 +4255,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">Linear sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → Linear (gamma decode)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb-linear 0.0000 0.0000 0.0000)">
@@ -4147,12 +4285,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D65</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Linear sRGB → XYZ-D65 (matrix)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d65 0.0000 0.0000 0.0000)">
@@ -4176,12 +4315,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → OKLab (LMS cone response)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklab(0.0000 0.0000 0.0000)">
@@ -4205,12 +4345,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match achromatic-hue">
             <div class="conversion-header">
               <span class="space-name">OKLCH</span>
-              <span class="match-badge pass">✓ MATCH</span>
+              <span class="match-badge achromatic">⚠ ACHROMATIC</span>
             </div>
             <div class="conversion-path">OKLab → OKLCH (cartesian to polar)</div>
+            <div class="achromatic-note">Hue undefined for achromatic colors. TS returns 0°, ColorJS returns NaN.</div>
             
             <div class="swatch-unavailable">
               <span>NaN values</span>
@@ -4229,12 +4370,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D50</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → XYZ-D50 (Bradford)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d50 0.0000 0.0000 0.0000)">
@@ -4258,12 +4400,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE Lab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D50 → Lab (perceptual)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lab(0.00 0.0000 0.0000)">
@@ -4287,12 +4430,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match achromatic-hue">
             <div class="conversion-header">
               <span class="space-name">CIE LCH</span>
-              <span class="match-badge pass">✓ MATCH</span>
+              <span class="match-badge achromatic">⚠ ACHROMATIC</span>
             </div>
             <div class="conversion-path">Lab → LCH (cartesian to polar)</div>
+            <div class="achromatic-note">Hue undefined for achromatic colors. TS returns 0°, ColorJS returns NaN.</div>
             
             <div class="swatch-unavailable">
               <span>NaN values</span>
@@ -4311,12 +4455,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match achromatic-hue">
             <div class="conversion-header">
               <span class="space-name">HSL</span>
-              <span class="match-badge pass">✓ MATCH</span>
+              <span class="match-badge achromatic">⚠ ACHROMATIC</span>
             </div>
             <div class="conversion-path">sRGB → HSL (cylindrical)</div>
+            <div class="achromatic-note">Hue undefined for achromatic colors. TS returns 0°, ColorJS returns NaN.</div>
             
             <div class="swatch-unavailable">
               <span>NaN values</span>
@@ -4335,12 +4480,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match achromatic-hue">
             <div class="conversion-header">
               <span class="space-name">HSV</span>
-              <span class="match-badge pass">✓ MATCH</span>
+              <span class="match-badge achromatic">⚠ ACHROMATIC</span>
             </div>
             <div class="conversion-path">sRGB → HSV (cylindrical)</div>
+            <div class="achromatic-note">Hue undefined for achromatic colors. TS returns 0°, ColorJS returns NaN.</div>
             
             <div class="swatch-unavailable">
               <span>No CSS support</span>
@@ -4359,12 +4505,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match achromatic-hue">
             <div class="conversion-header">
               <span class="space-name">HWB</span>
-              <span class="match-badge pass">✓ MATCH</span>
+              <span class="match-badge achromatic">⚠ ACHROMATIC</span>
             </div>
             <div class="conversion-path">HSV → HWB (whiteness/blackness)</div>
+            <div class="achromatic-note">Hue undefined for achromatic colors. TS returns 1°, ColorJS returns NaN.</div>
             
             <div class="swatch-unavailable">
               <span>NaN values</span>
@@ -4396,12 +4543,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
       </div>
       <div class="conversions">
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">RGB → sRGB (÷255)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb 0.5020 0.5020 0.5020)">
@@ -4425,12 +4573,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">Linear sRGB</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">sRGB → Linear (gamma decode)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(srgb-linear 0.2159 0.2159 0.2159)">
@@ -4454,12 +4603,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D65</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">Linear sRGB → XYZ-D65 (matrix)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d65 0.2052 0.2159 0.2351)">
@@ -4483,12 +4633,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">OKLab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → OKLab (LMS cone response)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: oklab(0.5999 -0.0000 0.0000)">
@@ -4512,12 +4663,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match achromatic-hue">
             <div class="conversion-header">
               <span class="space-name">OKLCH</span>
-              <span class="match-badge pass">✓ MATCH</span>
+              <span class="match-badge achromatic">⚠ ACHROMATIC</span>
             </div>
             <div class="conversion-path">OKLab → OKLCH (cartesian to polar)</div>
+            <div class="achromatic-note">Hue undefined for achromatic colors. TS returns 180°, ColorJS returns NaN.</div>
             
             <div class="swatch-unavailable">
               <span>NaN values</span>
@@ -4536,12 +4688,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">XYZ-D50</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D65 → XYZ-D50 (Bradford)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: color(xyz-d50 0.2082 0.2159 0.1781)">
@@ -4565,12 +4718,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match ">
             <div class="conversion-header">
               <span class="space-name">CIE Lab</span>
               <span class="match-badge pass">✓ MATCH</span>
             </div>
             <div class="conversion-path">XYZ-D50 → Lab (perceptual)</div>
+            
             
             <div class="swatch-comparison">
               <div class="swatch-half ts" style="background: lab(53.59 0.0000 0.0000)">
@@ -4594,12 +4748,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match achromatic-hue">
             <div class="conversion-header">
               <span class="space-name">CIE LCH</span>
-              <span class="match-badge pass">✓ MATCH</span>
+              <span class="match-badge achromatic">⚠ ACHROMATIC</span>
             </div>
             <div class="conversion-path">Lab → LCH (cartesian to polar)</div>
+            <div class="achromatic-note">Hue undefined for achromatic colors. TS returns 0°, ColorJS returns NaN.</div>
             
             <div class="swatch-unavailable">
               <span>NaN values</span>
@@ -4618,12 +4773,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match achromatic-hue">
             <div class="conversion-header">
               <span class="space-name">HSL</span>
-              <span class="match-badge pass">✓ MATCH</span>
+              <span class="match-badge achromatic">⚠ ACHROMATIC</span>
             </div>
             <div class="conversion-path">sRGB → HSL (cylindrical)</div>
+            <div class="achromatic-note">Hue undefined for achromatic colors. TS returns 1°, ColorJS returns NaN.</div>
             
             <div class="swatch-unavailable">
               <span>NaN values</span>
@@ -4642,12 +4798,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match achromatic-hue">
             <div class="conversion-header">
               <span class="space-name">HSV</span>
-              <span class="match-badge pass">✓ MATCH</span>
+              <span class="match-badge achromatic">⚠ ACHROMATIC</span>
             </div>
             <div class="conversion-path">sRGB → HSV (cylindrical)</div>
+            <div class="achromatic-note">Hue undefined for achromatic colors. TS returns 1°, ColorJS returns NaN.</div>
             
             <div class="swatch-unavailable">
               <span>No CSS support</span>
@@ -4666,12 +4823,13 @@ Gray 50%,hwb,"HSV → HWB (whiteness/blackness)",0.000000,0.501961,0.498039,NaN,
             </div>
           </div>
         
-          <div class="conversion match">
+          <div class="conversion match achromatic-hue">
             <div class="conversion-header">
               <span class="space-name">HWB</span>
-              <span class="match-badge pass">✓ MATCH</span>
+              <span class="match-badge achromatic">⚠ ACHROMATIC</span>
             </div>
             <div class="conversion-path">HSV → HWB (whiteness/blackness)</div>
+            <div class="achromatic-note">Hue undefined for achromatic colors. TS returns 0°, ColorJS returns NaN.</div>
             
             <div class="swatch-unavailable">
               <span>NaN values</span>

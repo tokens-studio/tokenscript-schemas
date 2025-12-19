@@ -22,6 +22,7 @@ interface ConversionResult {
   colorJS: { coords: number[]; css: string | null };
   match: boolean;
   maxDiff: number;
+  nanMismatch: boolean; // TokenScript has value, ColorJS has NaN (achromatic hue)
 }
 
 interface ColorResult {
@@ -204,6 +205,7 @@ async function runConversion(
   let tsCoords: number[] = [NaN, NaN, NaN];
   let cjCoords: number[] = [NaN, NaN, NaN];
   let maxDiff = 0;
+  let nanMismatch = false;
 
   try {
     // ColorJS conversion first (always works)
@@ -323,10 +325,15 @@ async function runConversion(
       });
     }
 
-    // Calculate max difference (ignoring NaN for hue on achromatic colors)
+    // Check for NaN mismatch (TokenScript has value, ColorJS has NaN - achromatic hue)
     const diffs = tsCoords.map((v, i) => {
       if (isNaN(v) && isNaN(cjCoords[i])) return 0; // Both NaN is OK
-      if (isNaN(v) || isNaN(cjCoords[i])) return 0; // One NaN, likely achromatic hue
+      if (!isNaN(v) && isNaN(cjCoords[i])) {
+        // TokenScript has value, ColorJS has NaN - achromatic hue case
+        nanMismatch = true;
+        return 0; // Visually same, but semantically different
+      }
+      if (isNaN(v) || isNaN(cjCoords[i])) return Infinity; // Other NaN cases are errors
       return Math.abs(v - cjCoords[i]);
     });
     maxDiff = Math.max(...diffs);
@@ -350,16 +357,25 @@ async function runConversion(
     },
     match: maxDiff < 1e-6,
     maxDiff,
+    nanMismatch,
   };
 }
 
 function generateCSV(results: ColorResult[]): string {
   const lines = [
-    "Color,Space,ConversionPath,TS_C0,TS_C1,TS_C2,CJ_C0,CJ_C1,CJ_C2,MaxDiff,Match",
+    "Color,Space,ConversionPath,TS_C0,TS_C1,TS_C2,CJ_C0,CJ_C1,CJ_C2,MaxDiff,Status",
   ];
 
   for (const result of results) {
     for (const conv of result.conversions) {
+      // Determine status: PASS, ACHROMATIC_HUE (semantic diff), or FAIL
+      let status = "FAIL";
+      if (conv.match && !conv.nanMismatch) {
+        status = "PASS";
+      } else if (conv.match && conv.nanMismatch) {
+        status = "ACHROMATIC_HUE"; // Visually same, but TS returns 0/180, CJ returns NaN
+      }
+
       lines.push(
         [
           result.name,
@@ -384,7 +400,7 @@ function generateCSV(results: ColorResult[]): string {
             ? "NaN"
             : conv.colorJS.coords[2].toFixed(6),
           conv.maxDiff.toExponential(2),
-          conv.match ? "PASS" : "FAIL",
+          status,
         ].join(","),
       );
     }
@@ -607,6 +623,21 @@ function generateHTML(results: ColorResult[], csv: string): string {
     }
     .match-badge.pass { background: #22c55e20; color: #22c55e; }
     .match-badge.fail { background: #ef444420; color: #ef4444; }
+    .match-badge.achromatic { background: #f59e0b20; color: #f59e0b; }
+    
+    .conversion.achromatic-hue {
+      border-color: #f59e0b40;
+    }
+    
+    .achromatic-note {
+      font-size: 0.65rem;
+      color: #f59e0b;
+      background: #f59e0b10;
+      padding: 0.35rem 0.5rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
     
     .conversion-path {
       font-size: 0.7rem;
@@ -783,13 +814,25 @@ function generateHTML(results: ColorResult[], csv: string): string {
             const cjCss = conv.colorJS.css;
             const canShowSwatches = conv.cssSupported && tsCss && cjCss;
 
+            // Determine badge style and text
+            let badgeClass = conv.match ? "pass" : "fail";
+            let badgeText = conv.match ? "✓ MATCH" : "✗ DIFF";
+            let extraNote = "";
+
+            if (conv.nanMismatch) {
+              badgeClass = "achromatic";
+              badgeText = "⚠ ACHROMATIC";
+              extraNote = `<div class="achromatic-note">Hue undefined for achromatic colors. TS returns ${conv.tokenScript.coords[conv.tokenScript.coords.length - 1].toFixed(0)}°, ColorJS returns NaN.</div>`;
+            }
+
             return `
-          <div class="conversion ${conv.match ? "match" : "mismatch"}">
+          <div class="conversion ${conv.match ? "match" : "mismatch"} ${conv.nanMismatch ? "achromatic-hue" : ""}">
             <div class="conversion-header">
               <span class="space-name">${conv.displayName}</span>
-              <span class="match-badge ${conv.match ? "pass" : "fail"}">${conv.match ? "✓ MATCH" : "✗ DIFF"}</span>
+              <span class="match-badge ${badgeClass}">${badgeText}</span>
             </div>
             <div class="conversion-path">${conv.conversionPath}</div>
+            ${extraNote}
             ${
               canShowSwatches
                 ? `
