@@ -1,0 +1,20 @@
+{
+  "name": "Luminance",
+  "type": "function",
+  "description": "Returns the relative luminance of a color (0-1). Uses the WCAG formula based on linear sRGB. Useful for contrast calculations and accessibility.",
+  "keyword": "luminance",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "The color to measure"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./luminance.tokenscript"
+  },
+  "requirements": ["/api/v1/core/srgb-linear-color/0/"]
+}

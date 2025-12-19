@@ -1,6 +1,16 @@
+// RGB Color Initializer
+// Creates an RGB color from r, g, b values (0-255 range)
+//
+// Usage: rgb(255, 128, 64) → Color.Rgb { r: 255, g: 128, b: 64 }
+//
+// Input: List of 3 numbers [r, g, b]
+// Output: Color.Rgb
+
 variable color_parts: List = {input}; 
+
 variable output: Color.Rgb;
 output.r = color_parts.get(0);
 output.g = color_parts.get(1);
 output.b = color_parts.get(2);
+
 return output;

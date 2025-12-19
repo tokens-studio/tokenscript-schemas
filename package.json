@@ -43,7 +43,13 @@
     "download": "tsx scripts/download-schemas.ts",
     "update-versions": "tsx scripts/update-versions.ts",
     "bundle": "tsx scripts/bundle-schemas.ts",
-    "push": "tsx scripts/push-to-registry.ts"
+    "push": "tsx scripts/push-to-registry.ts",
+    "demo:parity": "tsx scripts/generate-demo.ts",
+    "demo:advanced": "tsx scripts/generate-advanced-demo.ts",
+    "demo:functions": "tsx scripts/generate-functions-playground.ts",
+    "demo:paths": "tsx scripts/generate-path-explorer.ts",
+    "demo:all": "npm run demo:parity && npm run demo:advanced && npm run demo:functions && npm run demo:paths",
+    "colorjs:compare": "tsx scripts/compare-colorjs.ts"
   },
   "keywords": [
     "tokenscript",
@@ -60,6 +66,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.2.4",
     "@types/node": "^22.18.6",
+    "colorjs.io": "^0.5.2",
     "tsup": "^8.5.0",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",

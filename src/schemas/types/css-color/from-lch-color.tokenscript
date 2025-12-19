@@ -1,0 +1,16 @@
+// CIE LCH to CSS Conversion
+// Converts CIE LCH to CSS lch() syntax
+// CSS Color Level 4: lch(L C H) where L is a percentage
+//
+// Input: Color.LCH with l (0-100), c, h (0-360)
+// Output: Color.CSS with value like "lch(75% 50 180)"
+
+variable precision: Number = 10000;
+variable l: Number = round({input}.l * precision) / precision;
+variable c: Number = round({input}.c * precision) / precision;
+variable h: Number = round({input}.h * precision) / precision;
+
+variable output: Color.CSS;
+output.value = "lch(".concat(l.to_string()).concat("% ").concat(c.to_string()).concat(" ").concat(h.to_string()).concat(")");
+return output;
+

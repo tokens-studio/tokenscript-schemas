@@ -1,0 +1,28 @@
+{
+  "name": "Analogous",
+  "type": "function",
+  "description": "Generates analogous colors - hues adjacent on the color wheel. Creates harmonious, low-contrast palettes. Perfect for backgrounds and subtle variations.",
+  "keyword": "analogous",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "Base color"
+      },
+      "count": {
+        "type": "number",
+        "description": "Number of colors (odd recommended). Default is 5"
+      },
+      "spread": {
+        "type": "number",
+        "description": "Total angle spread in degrees. Default is 60"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./analogous.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/", "/api/v1/core/srgb-color/0/"]
+}

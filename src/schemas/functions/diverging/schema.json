@@ -1,0 +1,32 @@
+{
+  "name": "Diverging",
+  "type": "function",
+  "description": "Creates a diverging color palette for heatmaps. Goes from color1 through a neutral midpoint to color2. Perfect for data that diverges from a center value (e.g., -1 to 0 to +1).",
+  "keyword": "diverging",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color1": {
+        "type": "color",
+        "description": "Color for negative/low end (e.g., blue)"
+      },
+      "color2": {
+        "type": "color",
+        "description": "Color for positive/high end (e.g., red)"
+      },
+      "count": {
+        "type": "number",
+        "description": "Number of steps (should be odd for clear midpoint). Default is 9"
+      },
+      "neutral": {
+        "type": "number",
+        "description": "Lightness of neutral midpoint (0-1). Default is 0.95 (near white)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./diverging.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/", "/api/v1/core/srgb-color/0/"]
+}

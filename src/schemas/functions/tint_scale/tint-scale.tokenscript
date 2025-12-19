@@ -1,0 +1,71 @@
+// Create a sequential tint scale from a base color
+// Varies lightness while preserving hue and scaling chroma
+//
+// Ideal for: choropleth maps, intensity scales, single-hue heatmaps
+// Chroma is scaled proportionally to maintain color harmony
+
+variable input: List = {input};
+variable base: Color.OKLCH = input.get(0).to.oklch();
+
+// Default count is 9
+variable count: Number = 9;
+if (input.length() > 1) [
+    count = input.get(1);
+];
+
+// Default light_start is 0.95 (nearly white)
+variable light_start: Number = 0.95;
+if (input.length() > 2) [
+    light_start = input.get(2);
+];
+
+// Default light_end is 0.25 (dark)
+variable light_end: Number = 0.25;
+if (input.length() > 3) [
+    light_end = input.get(3);
+];
+
+// Base color properties
+variable base_h: Number = base.h;
+variable base_c: Number = base.c;
+variable base_l: Number = base.l;
+
+// Calculate chroma scaling factor (chroma decreases at extreme lightness)
+variable max_c: Number = base_c * 1.2;
+
+variable result: List;
+variable i: Number = 0;
+variable t: Number = 0;
+variable step_l: Number = 0;
+variable l_dist: Number = 0;
+variable chroma_scale: Number = 0;
+variable step_c: Number = 0;
+variable color: Color.OKLCH;
+
+while (i < count) [
+    t = i / (count - 1);
+    
+    // Interpolate lightness
+    step_l = light_start + (light_end - light_start) * t;
+    
+    // Scale chroma based on lightness distance from optimal (~0.6)
+    // Chroma is highest in midtones, lower at extremes
+    l_dist = step_l - 0.6;
+    if (l_dist < 0) [ l_dist = 0 - l_dist; ];
+    chroma_scale = 1 - l_dist * 1.5;
+    if (chroma_scale < 0.1) [ chroma_scale = 0.1; ];
+    step_c = max_c * chroma_scale;
+    
+    // Clamp chroma
+    if (step_c > 0.4) [ step_c = 0.4; ];
+    
+    color.l = step_l;
+    color.c = step_c;
+    color.h = base_h;
+    
+    result = result, color.to.srgb();
+    i = i + 1;
+];
+
+return result;
+

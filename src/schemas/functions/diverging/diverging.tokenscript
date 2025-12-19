@@ -1,0 +1,58 @@
+// Create a diverging color palette for data visualization
+// Goes: color1 → neutral → color2
+//
+// Ideal for: heatmaps, correlation matrices, deviation from mean
+// Example: blue → white → red for temperature anomalies
+
+variable input: List = {input};
+variable color1: Color.OKLCH = input.get(0).to.oklch();
+variable color2: Color.OKLCH = input.get(1).to.oklch();
+
+// Default count is 9 (gives clear midpoint at index 4)
+variable count: Number = 9;
+if (input.length() > 2) [
+    count = input.get(2);
+];
+
+// Default neutral lightness is 0.95 (near white)
+variable neutral_l: Number = 0.95;
+if (input.length() > 3) [
+    neutral_l = input.get(3);
+];
+
+// Calculate midpoint index
+variable mid: Number = (count - 1) / 2;
+
+variable result: List;
+variable i: Number = 0;
+variable t: Number = 0;
+variable step_color: Color.OKLCH;
+
+while (i < count) [
+    if (i < mid) [
+        // First half: color1 → neutral
+        t = i / mid;
+        step_color.l = color1.l + (neutral_l - color1.l) * t;
+        step_color.c = color1.c * (1 - t);
+        step_color.h = color1.h;
+    ] else [
+        if (i == mid) [
+            // Midpoint: neutral (achromatic)
+            step_color.l = neutral_l;
+            step_color.c = 0;
+            step_color.h = 0;
+        ] else [
+            // Second half: neutral → color2
+            t = (i - mid) / mid;
+            step_color.l = neutral_l + (color2.l - neutral_l) * t;
+            step_color.c = color2.c * t;
+            step_color.h = color2.h;
+        ];
+    ];
+    
+    result = result, step_color.to.srgb();
+    i = i + 1;
+];
+
+return result;
+

@@ -1,0 +1,21 @@
+// Get the complementary color by rotating hue 180° in OKLCH
+// Preserves lightness and chroma for perceptually balanced results
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+
+// Rotate hue by 180°
+variable new_h: Number = color.h + 180;
+if (new_h >= 360) [ new_h = new_h - 360; ];
+
+// Create complementary color
+variable result: Color.OKLCH;
+result.l = color.l;
+result.c = color.c;
+result.h = new_h;
+
+return result.to.srgb();
+
+
+
+

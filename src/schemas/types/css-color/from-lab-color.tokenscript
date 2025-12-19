@@ -1,0 +1,16 @@
+// CIE Lab to CSS Conversion
+// Converts CIE Lab to CSS lab() syntax
+// CSS Color Level 4: lab(L a b) where L is a percentage
+//
+// Input: Color.Lab with l (0-100), a, b
+// Output: Color.CSS with value like "lab(75% 20 -30)"
+
+variable precision: Number = 10000;
+variable l: Number = round({input}.l * precision) / precision;
+variable a: Number = round({input}.a * precision) / precision;
+variable b_val: Number = round({input}.b * precision) / precision;
+
+variable output: Color.CSS;
+output.value = "lab(".concat(l.to_string()).concat("% ").concat(a.to_string()).concat(" ").concat(b_val.to_string()).concat(")");
+return output;
+

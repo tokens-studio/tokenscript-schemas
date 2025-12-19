@@ -1,0 +1,24 @@
+{
+  "name": "Split Complement",
+  "type": "function",
+  "description": "Generates split-complementary colors - base color plus two colors adjacent to its complement. More nuanced than direct complement, less tension than triadic.",
+  "keyword": "split_complement",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "Base color"
+      },
+      "angle": {
+        "type": "number",
+        "description": "Degrees from complement for split colors. Default is 30"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./split-complement.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/", "/api/v1/core/srgb-color/0/"]
+}

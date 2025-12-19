@@ -1,0 +1,28 @@
+{
+  "name": "Steps",
+  "type": "function",
+  "description": "Generates a list of colors interpolated between two colors in OKLCH space. Perfect for gradient stops.",
+  "keyword": "steps",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color1": {
+        "type": "color",
+        "description": "Start color"
+      },
+      "color2": {
+        "type": "color",
+        "description": "End color"
+      },
+      "count": {
+        "type": "number",
+        "description": "Number of steps (including start and end). Default is 5"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./steps.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/", "/api/v1/core/srgb-color/0/"]
+}

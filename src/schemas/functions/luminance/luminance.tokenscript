@@ -1,0 +1,16 @@
+// Get relative luminance of a color
+// Per WCAG 2.1: L = 0.2126*R + 0.7152*G + 0.0722*B (linear RGB)
+//
+// Returns: 0 (black) to 1 (white)
+// Used for contrast calculations
+
+variable input: List = {input};
+variable color: Color.LinearSRGB = input.get(0).to.linearsrgb();
+
+variable lum: Number = 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b;
+
+return lum;
+
+
+
+

@@ -1,0 +1,61 @@
+// Generate a design system shade scale (like Tailwind 50-900)
+// Input color becomes the middle (500) shade
+//
+// Lightness distribution:
+//   50: ~0.97  (very light)
+//  100: ~0.93
+//  200: ~0.87
+//  300: ~0.78
+//  400: ~0.67
+//  500: input lightness (base)
+//  600: ~0.52
+//  700: ~0.42
+//  800: ~0.32
+//  900: ~0.22 (very dark)
+//
+// Chroma is scaled to avoid washed-out lights and muddy darks
+
+variable input: List = {input};
+variable base: Color.OKLCH = input.get(0).to.oklch();
+
+variable count: Number = 10;
+if (input.length() > 1) [
+    count = input.get(1);
+];
+
+// Target lightness values for standard 10-step scale
+// These are perceptually optimized for OKLCH
+variable lightness_targets: List = 0.97, 0.93, 0.87, 0.78, 0.67, 0.55, 0.45, 0.35, 0.27, 0.20;
+
+variable base_h: Number = base.h;
+variable base_c: Number = base.c;
+
+variable result: List;
+variable i: Number = 0;
+variable target_l: Number = 0;
+variable l_factor: Number = 0;
+variable scaled_c: Number = 0;
+variable shade: Color.OKLCH;
+
+while (i < count) [
+    target_l = lightness_targets.get(i);
+    
+    // Scale chroma based on lightness
+    // Chroma peaks in midtones, reduces at extremes
+    l_factor = 1 - abs(target_l - 0.55) * 1.2;
+    if (l_factor < 0.3) [ l_factor = 0.3; ];
+    if (l_factor > 1.2) [ l_factor = 1.2; ];
+    
+    scaled_c = base_c * l_factor;
+    if (scaled_c > 0.4) [ scaled_c = 0.4; ];
+    
+    shade.l = target_l;
+    shade.c = scaled_c;
+    shade.h = base_h;
+    
+    result = result, shade.to.srgb();
+    i = i + 1;
+];
+
+return result;
+

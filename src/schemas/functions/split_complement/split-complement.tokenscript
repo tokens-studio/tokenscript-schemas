@@ -1,0 +1,38 @@
+// Generate split-complementary colors
+// Returns [base, complement-angle, complement+angle]
+//
+// Use case: Balanced contrast with more variety than complement
+// Example: Blue → Orange-Red, Orange-Yellow (instead of just Orange)
+
+variable input: List = {input};
+variable base: Color.OKLCH = input.get(0).to.oklch();
+
+variable angle: Number = 30;
+if (input.length() > 1) [
+    angle = input.get(1);
+];
+
+variable complement_h: Number = base.h + 180;
+if (complement_h >= 360) [ complement_h = complement_h - 360; ];
+
+variable result: List;
+
+// Base color
+result = result, base.to.srgb();
+
+// Complement - angle
+variable h2: Number = complement_h - angle;
+if (h2 < 0) [ h2 = h2 + 360; ];
+variable c2: Color.OKLCH;
+c2.l = base.l; c2.c = base.c; c2.h = h2;
+result = result, c2.to.srgb();
+
+// Complement + angle
+variable h3: Number = complement_h + angle;
+if (h3 >= 360) [ h3 = h3 - 360; ];
+variable c3: Color.OKLCH;
+c3.l = base.l; c3.c = base.c; c3.h = h3;
+result = result, c3.to.srgb();
+
+return result;
+

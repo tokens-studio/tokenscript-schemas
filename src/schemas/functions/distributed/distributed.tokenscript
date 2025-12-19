@@ -1,0 +1,54 @@
+// Create evenly distributed categorical colors using OKLCH
+// Colors are spaced equally around the hue wheel
+//
+// Ideal for: pie charts, bar charts, legends, category labels
+// Uses golden angle offset for better distinction with many colors
+
+variable input: List = {input};
+
+// Default count is 6
+variable count: Number = 6;
+if (input.length() > 0) [
+    count = input.get(0);
+];
+
+// Default lightness is 0.7 (good for both light/dark backgrounds)
+variable lightness: Number = 0.7;
+if (input.length() > 1) [
+    lightness = input.get(1);
+];
+
+// Default chroma is 0.15 (vivid but not overwhelming)
+variable chroma: Number = 0.15;
+if (input.length() > 2) [
+    chroma = input.get(2);
+];
+
+// Default start hue is 30 (orange - visually distinct starting point)
+variable start_hue: Number = 30;
+if (input.length() > 3) [
+    start_hue = input.get(3);
+];
+
+// Calculate hue step (360° / count for even distribution)
+variable hue_step: Number = 360 / count;
+
+variable result: List;
+variable i: Number = 0;
+variable current_hue: Number = 0;
+variable color: Color.OKLCH;
+
+while (i < count) [
+    current_hue = start_hue + i * hue_step;
+    if (current_hue >= 360) [ current_hue = current_hue - 360; ];
+    
+    color.l = lightness;
+    color.c = chroma;
+    color.h = current_hue;
+    
+    result = result, color.to.srgb();
+    i = i + 1;
+];
+
+return result;
+

@@ -1,0 +1,32 @@
+{
+  "name": "Distributed",
+  "type": "function",
+  "description": "Creates evenly distributed colors around the OKLCH hue wheel. Perfect for categorical data where each category needs a distinct, visually balanced color.",
+  "keyword": "distributed",
+  "input": {
+    "type": "object",
+    "properties": {
+      "count": {
+        "type": "number",
+        "description": "Number of colors to generate. Default is 6"
+      },
+      "lightness": {
+        "type": "number",
+        "description": "Lightness for all colors (0-1). Default is 0.7"
+      },
+      "chroma": {
+        "type": "number",
+        "description": "Chroma/saturation for all colors (0-0.4). Default is 0.15"
+      },
+      "start_hue": {
+        "type": "number",
+        "description": "Starting hue angle (0-360). Default is 30 (orange)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./distributed.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/", "/api/v1/core/srgb-color/0/"]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "Set Hue",
+  "type": "function",
+  "description": "Sets a color's hue to a specific angle in OKLCH space. Preserves lightness and chroma.",
+  "keyword": "set_hue",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "The color to modify"
+      },
+      "hue": {
+        "type": "number",
+        "description": "Target hue angle (0-360)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./set-hue.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/", "/api/v1/core/srgb-color/0/"]
+}

@@ -33,7 +33,7 @@
       },
       "style": {
         "noNegationElse": "off",
-        "noNonNullAssertion": "error",
+        "noNonNullAssertion": "off",
         "useConst": "error",
         "useImportType": "error",
         "useExportType": "error",

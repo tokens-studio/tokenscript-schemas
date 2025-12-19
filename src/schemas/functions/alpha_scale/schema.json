@@ -1,0 +1,24 @@
+{
+  "name": "Alpha Scale",
+  "type": "function",
+  "description": "Generates transparency variants of a color. Returns colors with progressively lower opacity. Perfect for overlays, shadows, and layered UI elements.",
+  "keyword": "alpha_scale",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "Base color"
+      },
+      "count": {
+        "type": "number",
+        "description": "Number of alpha steps. Default is 10"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./alpha-scale.tokenscript"
+  },
+  "requirements": ["/api/v1/core/srgb-color/0/"]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "Grayscale",
+  "type": "function",
+  "description": "Converts a color to grayscale by removing all chroma in OKLCH space. Preserves perceptual lightness.",
+  "keyword": "grayscale",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "The color to convert to grayscale"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./grayscale.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/", "/api/v1/core/srgb-color/0/"]
+}

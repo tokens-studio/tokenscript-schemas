@@ -1,0 +1,33 @@
+// Generate triadic colors (120° apart)
+// Returns [base, base+120°, base+240°]
+//
+// Use case: Vibrant, balanced palettes
+// Example: Red → Green → Blue
+
+variable input: List = {input};
+variable base: Color.OKLCH = input.get(0).to.oklch();
+
+variable result: List;
+
+// Base color
+result = result, base.to.srgb();
+
+// +120°
+variable h2: Number = base.h + 120;
+if (h2 >= 360) [ h2 = h2 - 360; ];
+variable c2: Color.OKLCH;
+c2.l = base.l; c2.c = base.c; c2.h = h2;
+result = result, c2.to.srgb();
+
+// +240°
+variable h3: Number = base.h + 240;
+if (h3 >= 360) [ h3 = h3 - 360; ];
+variable c3: Color.OKLCH;
+c3.l = base.l; c3.c = base.c; c3.h = h3;
+result = result, c3.to.srgb();
+
+return result;
+
+
+
+

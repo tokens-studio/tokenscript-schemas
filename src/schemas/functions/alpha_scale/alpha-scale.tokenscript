@@ -1,0 +1,38 @@
+// Generate alpha/transparency scale
+// Returns colors from 100% opacity down to nearly transparent
+//
+// Default 10 steps: 100%, 90%, 80%, 70%, 60%, 50%, 40%, 30%, 20%, 10%
+// Useful for: overlays, shadows, backgrounds, hover states
+
+variable input: List = {input};
+variable base: Color.SRGB = input.get(0).to.srgb();
+
+variable count: Number = 10;
+if (input.length() > 1) [
+    count = input.get(1);
+];
+
+variable result: List;
+variable i: Number = 0;
+variable step_alpha: Number = 0;
+variable step_color: Color.SRGB;
+
+while (i < count) [
+    // Alpha from 1.0 down to 0.1
+    step_alpha = 1 - (i / count);
+    
+    // Create color with alpha
+    // Note: This creates the color value; actual alpha handling
+    // depends on how the consuming system processes the output
+    step_color.r = base.r;
+    step_color.g = base.g;
+    step_color.b = base.b;
+    
+    // Store alpha as 4th value (RGBA convention)
+    // Use .to.srgb() to create a new color instance for each step
+    result = result, step_color.to.srgb(), step_alpha;
+    i = i + 1;
+];
+
+return result;
+
