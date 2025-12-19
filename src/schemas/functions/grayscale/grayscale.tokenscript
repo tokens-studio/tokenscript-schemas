@@ -1,0 +1,14 @@
+// Convert a color to grayscale by setting OKLCH chroma to 0
+// This preserves perceptual lightness (unlike simple RGB averaging)
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+
+// Create grayscale by removing chroma
+variable result: Color.OKLCH;
+result.l = color.l;
+result.c = 0;
+result.h = 0;
+
+return result.to.srgb();
+

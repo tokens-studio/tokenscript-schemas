@@ -1,0 +1,50 @@
+// Generate gradient steps between two colors in OKLCH space
+// Returns a List of colors from start to end (inclusive)
+//
+// Uses perceptually uniform interpolation with shortest hue path
+
+variable input: List = {input};
+variable color1: Color.OKLCH = input.get(0).to.oklch();
+variable color2: Color.OKLCH = input.get(1).to.oklch();
+
+// Default count is 5
+variable count: Number = 5;
+if (input.length() > 2) [
+    count = input.get(2);
+];
+
+// Calculate hue difference (shortest path)
+variable h1: Number = color1.h;
+variable h2: Number = color2.h;
+variable h_diff: Number = h2 - h1;
+if (h_diff > 180) [ h_diff = h_diff - 360; ];
+if (h_diff < -180) [ h_diff = h_diff + 360; ];
+
+// Generate steps
+variable result: List = ;
+variable i: Number = 0;
+
+while (i < count) [
+    variable t: Number = i / (count - 1);
+    
+    // Interpolate each component
+    variable step_l: Number = color1.l + (color2.l - color1.l) * t;
+    variable step_c: Number = color1.c + (color2.c - color1.c) * t;
+    variable step_h: Number = h1 + h_diff * t;
+    
+    // Normalize hue
+    if (step_h < 0) [ step_h = step_h + 360; ];
+    if (step_h >= 360) [ step_h = step_h - 360; ];
+    
+    // Create color and add to list
+    variable step_color: Color.OKLCH;
+    step_color.l = step_l;
+    step_color.c = step_c;
+    step_color.h = step_h;
+    
+    result = result, step_color.to.srgb();
+    i = i + 1;
+];
+
+return result;
+

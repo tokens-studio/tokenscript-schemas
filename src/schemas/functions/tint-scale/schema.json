@@ -1,0 +1,33 @@
+{
+  "name": "Tint Scale",
+  "type": "function",
+  "description": "Creates a sequential scale of tints from a base color. Varies lightness while preserving hue and adjusting chroma proportionally. Perfect for sequential/quantitative data visualization.",
+  "keyword": "tint_scale",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "Base color for the scale"
+      },
+      "count": {
+        "type": "number",
+        "description": "Number of tints to generate. Default is 9"
+      },
+      "light_start": {
+        "type": "number",
+        "description": "Lightness of lightest tint (0-1). Default is 0.95"
+      },
+      "light_end": {
+        "type": "number",
+        "description": "Lightness of darkest tint (0-1). Default is 0.25"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./tint-scale.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/", "/api/v1/core/srgb-color/0/"]
+}
+
