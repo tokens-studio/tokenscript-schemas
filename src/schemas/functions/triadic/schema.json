@@ -1,0 +1,21 @@
+{
+  "name": "Triadic",
+  "type": "function",
+  "description": "Generates triadic colors - three hues equally spaced 120° apart on the color wheel. Creates vibrant, balanced palettes with high contrast.",
+  "keyword": "triadic",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "Base color"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./triadic.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/", "/api/v1/core/srgb-color/0/"]
+}
+

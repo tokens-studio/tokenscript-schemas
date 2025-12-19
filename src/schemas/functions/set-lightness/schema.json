@@ -1,0 +1,25 @@
+{
+  "name": "Set Lightness",
+  "type": "function",
+  "description": "Sets a color's lightness to a specific value in OKLCH space. Preserves hue and chroma.",
+  "keyword": "set_lightness",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "The color to modify"
+      },
+      "lightness": {
+        "type": "number",
+        "description": "Target lightness (0-1)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./set-lightness.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/", "/api/v1/core/srgb-color/0/"]
+}
+

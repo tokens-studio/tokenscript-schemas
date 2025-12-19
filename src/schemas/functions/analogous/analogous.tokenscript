@@ -1,0 +1,45 @@
+// Generate analogous colors (adjacent hues)
+// Colors are spread evenly around the base hue
+//
+// Use case: Harmonious, subtle palettes
+// Example: 5 colors with 60° spread = -30°, -15°, 0°, +15°, +30°
+
+variable input: List = {input};
+variable base: Color.OKLCH = input.get(0).to.oklch();
+
+variable count: Number = 5;
+if (input.length() > 1) [
+    count = input.get(1);
+];
+
+variable spread: Number = 60;
+if (input.length() > 2) [
+    spread = input.get(2);
+];
+
+// Calculate step size and starting offset
+variable step: Number = spread / (count - 1);
+variable start_offset: Number = 0 - spread / 2;
+
+variable result: List = ;
+variable i: Number = 0;
+
+while (i < count) [
+    variable hue_offset: Number = start_offset + i * step;
+    variable new_hue: Number = base.h + hue_offset;
+    
+    // Normalize hue to 0-360
+    if (new_hue < 0) [ new_hue = new_hue + 360; ];
+    if (new_hue >= 360) [ new_hue = new_hue - 360; ];
+    
+    variable color: Color.OKLCH;
+    color.l = base.l;
+    color.c = base.c;
+    color.h = new_hue;
+    
+    result = result, color.to.srgb();
+    i = i + 1;
+];
+
+return result;
+

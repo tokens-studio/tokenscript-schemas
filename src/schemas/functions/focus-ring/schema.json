@@ -1,0 +1,25 @@
+{
+  "name": "Focus Ring",
+  "type": "function",
+  "description": "Generates an accessible focus ring color that contrasts with the background. Ensures visibility for keyboard navigation and accessibility compliance.",
+  "keyword": "focus_ring",
+  "input": {
+    "type": "object",
+    "properties": {
+      "background": {
+        "type": "color",
+        "description": "Background color the focus ring will appear on"
+      },
+      "accent": {
+        "type": "color",
+        "description": "Optional accent color to base focus ring on"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./focus-ring.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/", "/api/v1/core/srgb-linear-color/0/", "/api/v1/core/srgb-color/0/"]
+}
+

@@ -1,0 +1,25 @@
+{
+  "name": "Shade Scale",
+  "type": "function",
+  "description": "Generates a Tailwind/Material-style shade scale from 50 (lightest) to 900 (darkest). The input color becomes the 500 (middle) value. Perfect for design system color tokens.",
+  "keyword": "shade_scale",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "Base color (becomes the 500 shade)"
+      },
+      "count": {
+        "type": "number",
+        "description": "Number of shades. Default is 10 (50-900)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./shade-scale.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/", "/api/v1/core/srgb-color/0/"]
+}
+

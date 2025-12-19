@@ -1,0 +1,18 @@
+// Set a color's hue to a specific angle
+// Preserves lightness and chroma
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+variable target_h: Number = input.get(1);
+
+// Normalize to 0-360
+while (target_h >= 360) [ target_h = target_h - 360; ];
+while (target_h < 0) [ target_h = target_h + 360; ];
+
+variable result: Color.OKLCH;
+result.l = color.l;
+result.c = color.c;
+result.h = target_h;
+
+return result.to.srgb();
+

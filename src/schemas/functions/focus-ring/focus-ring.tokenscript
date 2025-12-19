@@ -1,0 +1,41 @@
+// Generate accessible focus ring color
+// Ensures sufficient contrast against background
+//
+// Default: Uses a blue hue (270°) with adjusted lightness for contrast
+// With accent: Uses accent hue, adjusts lightness for contrast
+
+variable input: List = {input};
+variable bg: Color.LinearSRGB = input.get(0).to.linearsrgb();
+
+// Calculate background luminance
+variable bg_lum: Number = 0.2126 * bg.r + 0.7152 * bg.g + 0.0722 * bg.b;
+
+// Default focus ring hue (blue, accessible standard)
+variable ring_hue: Number = 250;
+variable ring_chroma: Number = 0.2;
+
+// If accent color provided, use its hue
+if (input.length() > 1) [
+    variable accent: Color.OKLCH = input.get(1).to.oklch();
+    ring_hue = accent.h;
+    ring_chroma = accent.c;
+    if (ring_chroma < 0.15) [ ring_chroma = 0.15; ];
+];
+
+// Set lightness to contrast with background
+variable ring_l: Number = 0.6;
+if (bg_lum > 0.5) [
+    // Light background: darker focus ring
+    ring_l = 0.45;
+] else [
+    // Dark background: lighter focus ring
+    ring_l = 0.7;
+];
+
+variable result: Color.OKLCH;
+result.l = ring_l;
+result.c = ring_chroma;
+result.h = ring_hue;
+
+return result.to.srgb();
+

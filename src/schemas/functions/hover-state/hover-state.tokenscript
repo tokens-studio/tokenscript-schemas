@@ -1,0 +1,43 @@
+// Generate hover state color
+// Lightens dark colors, darkens light colors for consistent feedback
+//
+// Algorithm:
+// - If L > 0.6: darken by intensity
+// - If L <= 0.6: lighten by intensity
+// Also slightly increases chroma for visual pop
+
+variable input: List = {input};
+variable base: Color.OKLCH = input.get(0).to.oklch();
+
+variable intensity: Number = 0.1;
+if (input.length() > 1) [
+    intensity = input.get(1);
+];
+
+variable new_l: Number = base.l;
+variable new_c: Number = base.c;
+
+// Adjust lightness based on whether color is light or dark
+if (base.l > 0.6) [
+    // Light color: darken
+    new_l = base.l - intensity * 0.5;
+] else [
+    // Dark color: lighten
+    new_l = base.l + intensity * 0.5;
+];
+
+// Slight chroma boost for visual feedback
+new_c = base.c * (1 + intensity * 0.3);
+if (new_c > 0.4) [ new_c = 0.4; ];
+
+// Clamp lightness
+if (new_l < 0) [ new_l = 0; ];
+if (new_l > 1) [ new_l = 1; ];
+
+variable result: Color.OKLCH;
+result.l = new_l;
+result.c = new_c;
+result.h = base.h;
+
+return result.to.srgb();
+

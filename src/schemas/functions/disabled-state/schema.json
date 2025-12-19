@@ -1,0 +1,25 @@
+{
+  "name": "Disabled State",
+  "type": "function",
+  "description": "Generates a disabled state color variant. Reduces chroma and moves lightness toward middle gray. Creates consistent disabled appearance across all colors.",
+  "keyword": "disabled_state",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "Base color"
+      },
+      "intensity": {
+        "type": "number",
+        "description": "Disabled intensity (0-1). Default is 0.6"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./disabled-state.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/", "/api/v1/core/srgb-color/0/"]
+}
+

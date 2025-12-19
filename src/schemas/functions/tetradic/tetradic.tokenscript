@@ -1,0 +1,37 @@
+// Generate tetradic (square) colors (90° apart)
+// Returns [base, base+90°, base+180°, base+270°]
+//
+// Use case: Rich, complex palettes
+// Contains two complementary pairs
+
+variable input: List = {input};
+variable base: Color.OKLCH = input.get(0).to.oklch();
+
+variable result: List = ;
+
+// Base color (0°)
+result = result, base.to.srgb();
+
+// +90°
+variable h2: Number = base.h + 90;
+if (h2 >= 360) [ h2 = h2 - 360; ];
+variable c2: Color.OKLCH;
+c2.l = base.l; c2.c = base.c; c2.h = h2;
+result = result, c2.to.srgb();
+
+// +180° (complement)
+variable h3: Number = base.h + 180;
+if (h3 >= 360) [ h3 = h3 - 360; ];
+variable c3: Color.OKLCH;
+c3.l = base.l; c3.c = base.c; c3.h = h3;
+result = result, c3.to.srgb();
+
+// +270°
+variable h4: Number = base.h + 270;
+if (h4 >= 360) [ h4 = h4 - 360; ];
+variable c4: Color.OKLCH;
+c4.l = base.l; c4.c = base.c; c4.h = h4;
+result = result, c4.to.srgb();
+
+return result;
+

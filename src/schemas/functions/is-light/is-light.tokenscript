@@ -1,0 +1,16 @@
+// Check if a color is perceptually light
+// Uses OKLCH lightness for accurate perception matching
+//
+// Returns: true if L > threshold, false otherwise
+// Default threshold: 0.6 (slightly above middle)
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+
+variable threshold: Number = 0.6;
+if (input.length() > 1) [
+    threshold = input.get(1);
+];
+
+return color.l > threshold;
+

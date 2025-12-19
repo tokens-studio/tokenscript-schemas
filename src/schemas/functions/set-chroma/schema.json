@@ -1,0 +1,25 @@
+{
+  "name": "Set Chroma",
+  "type": "function",
+  "description": "Sets a color's chroma (saturation) to a specific value in OKLCH space. Preserves hue and lightness.",
+  "keyword": "set_chroma",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "The color to modify"
+      },
+      "chroma": {
+        "type": "number",
+        "description": "Target chroma (0-0.4 typical for sRGB)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./set-chroma.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/", "/api/v1/core/srgb-color/0/"]
+}
+

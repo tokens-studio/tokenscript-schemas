@@ -1,0 +1,21 @@
+{
+  "name": "Tetradic",
+  "type": "function",
+  "description": "Generates tetradic (square) colors - four hues equally spaced 90° apart. Creates rich, complex palettes with two complementary pairs.",
+  "keyword": "tetradic",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "Base color"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./tetradic.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/", "/api/v1/core/srgb-color/0/"]
+}
+

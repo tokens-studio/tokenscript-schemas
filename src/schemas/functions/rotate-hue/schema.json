@@ -1,0 +1,25 @@
+{
+  "name": "Rotate Hue",
+  "type": "function",
+  "description": "Rotates a color's hue by a specified number of degrees in OKLCH space. Positive values rotate clockwise, negative counterclockwise.",
+  "keyword": "rotate_hue",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "The color to rotate"
+      },
+      "degrees": {
+        "type": "number",
+        "description": "Degrees to rotate (-360 to 360)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./rotate-hue.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/", "/api/v1/core/srgb-color/0/"]
+}
+

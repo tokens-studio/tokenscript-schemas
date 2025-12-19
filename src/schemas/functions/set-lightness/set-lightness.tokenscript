@@ -1,0 +1,18 @@
+// Set a color's lightness to a specific value
+// Preserves hue and chroma
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+variable target_l: Number = input.get(1);
+
+// Clamp to valid range
+if (target_l < 0) [ target_l = 0; ];
+if (target_l > 1) [ target_l = 1; ];
+
+variable result: Color.OKLCH;
+result.l = target_l;
+result.c = color.c;
+result.h = color.h;
+
+return result.to.srgb();
+
