@@ -5,9 +5,9 @@
  * Validates against ColorJS for parity
  */
 
-import { describe, expect, it } from "vitest";
-import Color from "colorjs.io";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
+import Color from "colorjs.io";
+import { describe, expect, it } from "vitest";
 import type { ColorSpecification } from "@/bundler/types";
 
 // ColorJS reference tolerance
@@ -56,7 +56,7 @@ describe("HWB Color Schema", () => {
         );
 
         // ColorJS reference (uses 0-100 for W and B, we use 0-1)
-        const colorJS = new Color("srgb", srgb).to("hwb");
+        const colorJS = new Color("srgb", srgb as [number, number, number]).to("hwb");
         const cjW = colorJS.coords[1] / 100;
         const cjB = colorJS.coords[2] / 100;
 
@@ -72,8 +72,12 @@ describe("HWB Color Schema", () => {
 
         console.log(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
         console.log(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
-        console.log(`TokenScript: { h: ${tsH.toFixed(3)}, w: ${tsW.toFixed(6)}, b: ${tsB.toFixed(6)} }`);
-        console.log(`ColorJS:     { h: ${colorJS.coords[0].toFixed(3)}, w: ${cjW.toFixed(6)}, b: ${cjB.toFixed(6)} } (normalized)`);
+        console.log(
+          `TokenScript: { h: ${tsH.toFixed(3)}, w: ${tsW.toFixed(6)}, b: ${tsB.toFixed(6)} }`,
+        );
+        console.log(
+          `ColorJS:     { h: ${colorJS.coords[0].toFixed(3)}, w: ${cjW.toFixed(6)}, b: ${cjB.toFixed(6)} } (normalized)`,
+        );
         console.log(`Max Diff (W,B): ${maxDiff.toExponential(2)}`);
         console.log(`Status:         ${maxDiff < TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
 
@@ -143,5 +147,3 @@ describe("HWB Color Schema", () => {
     });
   });
 });
-
-

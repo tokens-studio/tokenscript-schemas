@@ -6,20 +6,20 @@
  * will get consistent results.
  */
 
-import { describe, expect, it } from "vitest";
-import Color from "colorjs.io";
 import {
-  TEST_COLORS,
-  SPACE_MAPPINGS,
-  SPACE_COORDS,
+  CONVERSION_GRAPH,
   compareCoords,
   DEFAULT_TOLERANCE,
   findConversionPath,
-  getAllConversionPaths,
-  CONVERSION_GRAPH,
   generateMermaidGraph,
+  getAllConversionPaths,
+  SPACE_COORDS,
+  SPACE_MAPPINGS,
+  TEST_COLORS,
   visualizePath,
 } from "@tests/helpers/colorjs-parity";
+import Color from "colorjs.io";
+import { describe, expect, it } from "vitest";
 
 describe("ColorJS Parity", () => {
   describe("Reference: ColorJS Conversion Graph", () => {
@@ -40,8 +40,8 @@ describe("ColorJS Parity", () => {
         for (const toNode of CONVERSION_GRAPH) {
           const path = findConversionPath(fromNode.space, toNode.space);
           expect(path).not.toBeNull();
-          expect(path![0]).toBe(fromNode.space);
-          expect(path![path!.length - 1]).toBe(toNode.space);
+          expect(path?.[0]).toBe(fromNode.space);
+          expect(path?.[path?.length - 1]).toBe(toNode.space);
         }
       }
     });
@@ -218,7 +218,7 @@ describe("ColorJS Parity", () => {
         const linearAbove = aboveThreshold.to("srgb-linear");
 
         // Above threshold: linear = ((srgb + 0.055) / 1.055) ^ 2.4
-        const expected = Math.pow((0.5 + 0.055) / 1.055, 2.4);
+        const expected = ((0.5 + 0.055) / 1.055) ** 2.4;
         expect(linearAbove.coords[0]).toBeCloseTo(expected, 10);
       });
     });
@@ -276,7 +276,7 @@ describe("ColorJS Parity", () => {
               .map((name, i) => `${name}: ${converted.coords[i].toFixed(6)}`)
               .join(", ");
             console.log(`  → ${targetSpace}: { ${values} }`);
-          } catch (e) {
+          } catch (_e) {
             console.log(`  → ${targetSpace}: [conversion failed]`);
           }
         }
@@ -421,4 +421,3 @@ describe("TokenScript Parity Tests", () => {
     expect((result as any).value.l.value).toBeCloseTo(colorJS.coords[2] / 100, 4);
   });
 });
-

@@ -1,14 +1,39 @@
 /**
- * Color Path Explorer Generator
- * Uses REAL TokenScript interpreter for conversions
+ * Color Conversion Path Explorer Generator
+ *
+ * Generates an interactive HTML page (`demo/path-explorer.html`) that visualizes
+ * the automatic color space conversion paths resolved by the TokenScript interpreter.
+ *
+ * Features:
+ * - Select any source and target color space
+ * - Visualizes the conversion chain (e.g., HSL → sRGB → Linear → XYZ → OKLab → OKLCH)
+ * - Shows color swatches at each intermediate step
+ * - Displays coordinate values with TokenScript vs ColorJS comparison
+ * - Identifies transformation type at each step (gamma, matrix, polar, etc.)
+ *
+ * Technical Details:
+ * - Uses BFS to find shortest path through conversion graph
+ * - Executes REAL TokenScript code for each conversion step
+ * - Compares against ColorJS reference at each step
+ * - Shows "Match" indicator when values align within tolerance
+ *
+ * Supported Color Spaces:
+ *   sRGB, Linear sRGB, XYZ-D65, OKLab, OKLCH, HSL
+ *
+ * Output: demo/path-explorer.html
+ *
+ * Usage:
+ *   npx tsx scripts/generate-path-explorer.ts
+ *
+ * @module scripts/generate-path-explorer
  */
 
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { type Config, Interpreter, Lexer, Parser } from "@tokens-studio/tokenscript-interpreter";
 import Color from "colorjs.io";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
 import { setupColorManagerWithSchemas } from "../tests/helpers/schema-test-utils";
-import { Interpreter, Lexer, Parser, Config } from "@tokens-studio/tokenscript-interpreter";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -22,10 +47,34 @@ interface ColorSpaceInfo {
 
 const colorSpaces: ColorSpaceInfo[] = [
   { id: "srgb", tsType: "SRGB", displayName: "sRGB", coords: ["r", "g", "b"], cssSupported: true },
-  { id: "srgb-linear", tsType: "LinearSRGB", displayName: "Linear sRGB", coords: ["r", "g", "b"], cssSupported: true },
-  { id: "xyz-d65", tsType: "XYZD65", displayName: "XYZ D65", coords: ["x", "y", "z"], cssSupported: true },
-  { id: "oklab", tsType: "OKLab", displayName: "OKLab", coords: ["l", "a", "b"], cssSupported: true },
-  { id: "oklch", tsType: "OKLCH", displayName: "OKLCH", coords: ["l", "c", "h"], cssSupported: true },
+  {
+    id: "srgb-linear",
+    tsType: "LinearSRGB",
+    displayName: "Linear sRGB",
+    coords: ["r", "g", "b"],
+    cssSupported: true,
+  },
+  {
+    id: "xyz-d65",
+    tsType: "XYZD65",
+    displayName: "XYZ D65",
+    coords: ["x", "y", "z"],
+    cssSupported: true,
+  },
+  {
+    id: "oklab",
+    tsType: "OKLab",
+    displayName: "OKLab",
+    coords: ["l", "a", "b"],
+    cssSupported: true,
+  },
+  {
+    id: "oklch",
+    tsType: "OKLCH",
+    displayName: "OKLCH",
+    coords: ["l", "c", "h"],
+    cssSupported: true,
+  },
   { id: "hsl", tsType: "HSL", displayName: "HSL", coords: ["h", "s", "l"], cssSupported: true },
 ];
 
@@ -40,10 +89,10 @@ const testColors = [
 interface ConversionStep {
   space: string;
   displayName: string;
-  tsCoords: number[];  // TokenScript values
-  cjCoords: number[];  // ColorJS values
+  tsCoords: number[]; // TokenScript values
+  cjCoords: number[]; // ColorJS values
   css: string | null;
-  maxDiff: number;     // Max difference between TS and CJ
+  maxDiff: number; // Max difference between TS and CJ
 }
 
 interface PathResult {
@@ -57,22 +106,35 @@ interface PathResult {
 
 async function setupInterpreter(): Promise<Config> {
   const allSchemas = [
-    "hex-color", "rgb-color", "srgb-color", "srgb-linear-color",
-    "xyz-d65-color", "oklab-color", "oklch-color", "hsl-color",
+    "hex-color",
+    "rgb-color",
+    "srgb-color",
+    "srgb-linear-color",
+    "xyz-d65-color",
+    "oklab-color",
+    "oklch-color",
+    "hsl-color",
   ];
   return await setupColorManagerWithSchemas(allSchemas);
 }
 
 function getCss(spaceId: string, coords: number[]): string | null {
-  const [c0, c1, c2] = coords.map(v => isNaN(v) ? 0 : v);
+  const [c0, c1, c2] = coords.map((v) => (Number.isNaN(v) ? 0 : v));
   switch (spaceId) {
-    case "srgb": return `color(srgb ${c0.toFixed(3)} ${c1.toFixed(3)} ${c2.toFixed(3)})`;
-    case "srgb-linear": return `color(srgb-linear ${c0.toFixed(3)} ${c1.toFixed(3)} ${c2.toFixed(3)})`;
-    case "xyz-d65": return `color(xyz-d65 ${c0.toFixed(3)} ${c1.toFixed(3)} ${c2.toFixed(3)})`;
-    case "oklab": return `oklab(${c0.toFixed(3)} ${c1.toFixed(3)} ${c2.toFixed(3)})`;
-    case "oklch": return `oklch(${c0.toFixed(3)} ${c1.toFixed(3)} ${c2.toFixed(1)})`;
-    case "hsl": return `hsl(${c0.toFixed(1)} ${(c1*100).toFixed(1)}% ${(c2*100).toFixed(1)}%)`;
-    default: return null;
+    case "srgb":
+      return `color(srgb ${c0.toFixed(3)} ${c1.toFixed(3)} ${c2.toFixed(3)})`;
+    case "srgb-linear":
+      return `color(srgb-linear ${c0.toFixed(3)} ${c1.toFixed(3)} ${c2.toFixed(3)})`;
+    case "xyz-d65":
+      return `color(xyz-d65 ${c0.toFixed(3)} ${c1.toFixed(3)} ${c2.toFixed(3)})`;
+    case "oklab":
+      return `oklab(${c0.toFixed(3)} ${c1.toFixed(3)} ${c2.toFixed(3)})`;
+    case "oklch":
+      return `oklch(${c0.toFixed(3)} ${c1.toFixed(3)} ${c2.toFixed(1)})`;
+    case "hsl":
+      return `hsl(${c0.toFixed(1)} ${(c1 * 100).toFixed(1)}% ${(c2 * 100).toFixed(1)}%)`;
+    default:
+      return null;
   }
 }
 
@@ -80,69 +142,74 @@ async function runConversion(
   config: Config,
   fromSpace: ColorSpaceInfo,
   toSpace: ColorSpaceInfo,
-  color: typeof testColors[0]
+  color: (typeof testColors)[0],
 ): Promise<PathResult> {
   const [r, g, b] = color.rgb;
-  const srgb: [number, number, number] = [r/255, g/255, b/255];
-  
+  const srgb: [number, number, number] = [r / 255, g / 255, b / 255];
+
   // Get starting values for the source space
   const startValues = getStartValues(fromSpace, srgb);
-  
+
   // Determine the conversion path
   const pathSpaces = getPathSpaces(fromSpace.id, toSpace.id);
-  
+
   // Execute REAL step-by-step conversions through TokenScript
   // AND compute ColorJS values for comparison
   const steps: ConversionStep[] = [];
-  
+
   // ColorJS reference - convert through same path
   let cjColor = new Color("srgb", srgb);
-  
+
   for (let i = 0; i < pathSpaces.length; i++) {
     const spaceId = pathSpaces[i];
-    const spaceInfo = colorSpaces.find(s => s.id === spaceId)!;
-    
+    const spaceInfo = colorSpaces.find((s) => s.id === spaceId)!;
+
     // === TokenScript execution ===
     let code: string;
-    
+
     if (i === 0) {
       code = `
 variable start: Color.${spaceInfo.tsType};
-${spaceInfo.coords.map((c, j) => `start.${c} = ${startValues[j]};`).join('\n')}
+${spaceInfo.coords.map((c, j) => `start.${c} = ${startValues[j]};`).join("\n")}
 return start;
       `.trim();
     } else {
       code = `
-variable start: Color.${colorSpaces.find(s => s.id === pathSpaces[0])!.tsType};
-${colorSpaces.find(s => s.id === pathSpaces[0])!.coords.map((c, j) => `start.${c} = ${startValues[j]};`).join('\n')}
+variable start: Color.${colorSpaces.find((s) => s.id === pathSpaces[0])?.tsType};
+${colorSpaces
+  .find((s) => s.id === pathSpaces[0])
+  ?.coords.map((c, j) => `start.${c} = ${startValues[j]};`)
+  .join("\n")}
 ${buildConversionChain(pathSpaces.slice(0, i + 1), colorSpaces)}
       `.trim();
     }
-    
+
     const lexer = new Lexer(code);
     const parser = new Parser(lexer);
     const interpreter = new Interpreter(parser, { config });
     const result = interpreter.interpret();
-    
-    const tsCoords = spaceInfo.coords.map(c => (result as any)?.value?.[c]?.value ?? 0);
-    
+
+    const tsCoords = spaceInfo.coords.map((c) => (result as any)?.value?.[c]?.value ?? 0);
+
     // === ColorJS execution ===
     cjColor = cjColor.to(spaceId);
-    let cjCoords = [...cjColor.coords];
-    
+    const cjCoords = [...cjColor.coords];
+
     // Normalize HSL/HSV scales (ColorJS uses 0-100 for S/L)
     if (spaceId === "hsl") {
       cjCoords[1] = cjCoords[1] / 100;
       cjCoords[2] = cjCoords[2] / 100;
     }
-    
+
     // Calculate max difference
-    const maxDiff = Math.max(...tsCoords.map((v, j) => {
-      const cj = cjCoords[j];
-      if (isNaN(v) || isNaN(cj)) return 0;
-      return Math.abs(v - cj);
-    }));
-    
+    const maxDiff = Math.max(
+      ...tsCoords.map((v, j) => {
+        const cj = cjCoords[j];
+        if (Number.isNaN(v) || Number.isNaN(cj)) return 0;
+        return Math.abs(v - cj);
+      }),
+    );
+
     steps.push({
       space: spaceId,
       displayName: spaceInfo.displayName,
@@ -152,12 +219,12 @@ ${buildConversionChain(pathSpaces.slice(0, i + 1), colorSpaces)}
       maxDiff,
     });
   }
-  
+
   // Generate the final single-line code for display
   const finalCode = `
 variable start: Color.${fromSpace.tsType};
-${fromSpace.coords.map((c, j) => `start.${c} = ${startValues[j]};`).join('\n')}
-start.to.${toSpace.id.replace(/-/g, '')}()
+${fromSpace.coords.map((c, j) => `start.${c} = ${startValues[j]};`).join("\n")}
+start.to.${toSpace.id.replace(/-/g, "")}()
   `.trim();
 
   return {
@@ -185,19 +252,19 @@ function getStartValues(space: ColorSpaceInfo, srgb: [number, number, number]): 
 
 function buildConversionChain(path: string[], spaces: ColorSpaceInfo[]): string {
   if (path.length < 2) return "return start;";
-  
+
   let code = "";
   let prevVar = "start";
-  
+
   for (let i = 1; i < path.length; i++) {
-    const targetSpace = spaces.find(s => s.id === path[i])!;
+    const targetSpace = spaces.find((s) => s.id === path[i])!;
     const targetKeyword = getConversionKeyword(path[i]);
     const varName = i === path.length - 1 ? "result" : `step${i}`;
-    
+
     code += `variable ${varName}: Color.${targetSpace.tsType} = ${prevVar}.to.${targetKeyword}();\n`;
     prevVar = varName;
   }
-  
+
   code += `return ${prevVar};`;
   return code;
 }
@@ -205,66 +272,66 @@ function buildConversionChain(path: string[], spaces: ColorSpaceInfo[]): string 
 function getConversionKeyword(spaceId: string): string {
   // Map space IDs to their TokenScript conversion keywords
   const keywords: Record<string, string> = {
-    "srgb": "srgb",
+    srgb: "srgb",
     "srgb-linear": "linearsrgb",
     "xyz-d65": "xyzd65",
-    "oklab": "oklab",
-    "oklch": "oklch",
-    "hsl": "hsl",
+    oklab: "oklab",
+    oklch: "oklch",
+    hsl: "hsl",
   };
-  return keywords[spaceId] || spaceId.replace(/-/g, '');
+  return keywords[spaceId] || spaceId.replace(/-/g, "");
 }
 
 function getPathSpaces(from: string, to: string): string[] {
   // Known paths through the conversion graph
   const paths: Record<string, Record<string, string[]>> = {
-    "srgb": {
-      "srgb": ["srgb"],
+    srgb: {
+      srgb: ["srgb"],
       "srgb-linear": ["srgb", "srgb-linear"],
       "xyz-d65": ["srgb", "srgb-linear", "xyz-d65"],
-      "oklab": ["srgb", "srgb-linear", "xyz-d65", "oklab"],
-      "oklch": ["srgb", "srgb-linear", "xyz-d65", "oklab", "oklch"],
-      "hsl": ["srgb", "hsl"],
+      oklab: ["srgb", "srgb-linear", "xyz-d65", "oklab"],
+      oklch: ["srgb", "srgb-linear", "xyz-d65", "oklab", "oklch"],
+      hsl: ["srgb", "hsl"],
     },
-    "hsl": {
-      "srgb": ["hsl", "srgb"],
+    hsl: {
+      srgb: ["hsl", "srgb"],
       "srgb-linear": ["hsl", "srgb", "srgb-linear"],
       "xyz-d65": ["hsl", "srgb", "srgb-linear", "xyz-d65"],
-      "oklab": ["hsl", "srgb", "srgb-linear", "xyz-d65", "oklab"],
-      "oklch": ["hsl", "srgb", "srgb-linear", "xyz-d65", "oklab", "oklch"],
-      "hsl": ["hsl"],
+      oklab: ["hsl", "srgb", "srgb-linear", "xyz-d65", "oklab"],
+      oklch: ["hsl", "srgb", "srgb-linear", "xyz-d65", "oklab", "oklch"],
+      hsl: ["hsl"],
     },
-    "oklch": {
-      "srgb": ["oklch", "oklab", "xyz-d65", "srgb-linear", "srgb"],
-      "hsl": ["oklch", "oklab", "xyz-d65", "srgb-linear", "srgb", "hsl"],
-      "oklch": ["oklch"],
-      "oklab": ["oklch", "oklab"],
+    oklch: {
+      srgb: ["oklch", "oklab", "xyz-d65", "srgb-linear", "srgb"],
+      hsl: ["oklch", "oklab", "xyz-d65", "srgb-linear", "srgb", "hsl"],
+      oklch: ["oklch"],
+      oklab: ["oklch", "oklab"],
       "xyz-d65": ["oklch", "oklab", "xyz-d65"],
       "srgb-linear": ["oklch", "oklab", "xyz-d65", "srgb-linear"],
     },
   };
-  
+
   return paths[from]?.[to] || [from, to];
 }
 
 async function generateHTML(): Promise<string> {
   console.log("Setting up TokenScript interpreter...");
   const config = await setupInterpreter();
-  
+
   console.log("Running conversions with TokenScript...");
   const results: PathResult[] = [];
-  
+
   // Generate example conversions
   const examplePaths = [
     { from: "srgb", to: "oklch" },
     { from: "hsl", to: "oklch" },
     { from: "oklch", to: "srgb" },
   ];
-  
+
   for (const path of examplePaths) {
     for (const color of testColors) {
-      const fromSpace = colorSpaces.find(s => s.id === path.from)!;
-      const toSpace = colorSpaces.find(s => s.id === path.to)!;
+      const fromSpace = colorSpaces.find((s) => s.id === path.from)!;
+      const toSpace = colorSpaces.find((s) => s.id === path.to)!;
       const result = await runConversion(config, fromSpace, toSpace, color);
       results.push(result);
       console.log(`  ✓ ${color.name}: ${path.from} → ${path.to}`);
@@ -558,12 +625,15 @@ async function generateHTML(): Promise<string> {
       <option value="oklch-srgb">OKLCH → sRGB</option>
     </select>
     <select id="color-select">
-      ${testColors.map(c => `<option value="${c.hex}">${c.name}</option>`).join('\n      ')}
+      ${testColors.map((c) => `<option value="${c.hex}">${c.name}</option>`).join("\n      ")}
     </select>
   </div>
   
   <div id="results">
-    ${results.filter(r => r.from === "srgb" && r.to === "oklch").map(r => renderResult(r)).join('\n')}
+    ${results
+      .filter((r) => r.from === "srgb" && r.to === "oklch")
+      .map((r) => renderResult(r))
+      .join("\n")}
   </div>
   
   <script>
@@ -649,54 +719,60 @@ async function generateHTML(): Promise<string> {
 
 function renderResult(r: PathResult): string {
   const coordLabels: Record<string, string[]> = {
-    "srgb": ["R", "G", "B"],
+    srgb: ["R", "G", "B"],
     "srgb-linear": ["R", "G", "B"],
     "xyz-d65": ["X", "Y", "Z"],
-    "oklab": ["L", "a", "b"],
-    "oklch": ["L", "C", "H"],
-    "hsl": ["H", "S", "L"],
+    oklab: ["L", "a", "b"],
+    oklch: ["L", "C", "H"],
+    hsl: ["H", "S", "L"],
   };
-  
+
   return `
     <div class="result-card">
       <div class="result-header">
         <div class="color-dot" style="background: ${r.color}"></div>
         <div>
           <div class="result-title">${r.colorName}</div>
-          <div class="result-path">${r.steps.map(s => s.displayName).join(' → ')}</div>
+          <div class="result-path">${r.steps.map((s) => s.displayName).join(" → ")}</div>
         </div>
         <div class="ts-badge">✓ Verified</div>
       </div>
       <div class="chain">
-        ${r.steps.map((s, i) => {
-          const labels = coordLabels[s.space] || ['0','1','2'];
-          const diffClass = s.maxDiff < 1e-10 ? 'pass' : 'warn';
-          const diffText = s.maxDiff < 1e-10 ? '≡' : `Δ${s.maxDiff.toExponential(0)}`;
-          return `
-            ${i > 0 ? '<div class="connector"></div>' : ''}
+        ${r.steps
+          .map((s, i) => {
+            const labels = coordLabels[s.space] || ["0", "1", "2"];
+            const diffClass = s.maxDiff < 1e-10 ? "pass" : "warn";
+            const diffText = s.maxDiff < 1e-10 ? "≡" : `Δ${s.maxDiff.toExponential(0)}`;
+            return `
+            ${i > 0 ? '<div class="connector"></div>' : ""}
             <div class="step-card">
               <div class="step-name">
                 <span>${s.displayName}</span>
                 <span class="step-diff ${diffClass}">${diffText}</span>
               </div>
-              <div class="step-swatch" style="background: ${s.css || '#333'}"></div>
+              <div class="step-swatch" style="background: ${s.css || "#333"}"></div>
               <div class="step-values">
                 <div class="values-header">
                   <span></span>
                   <span class="ts">TS</span>
                   <span class="cj">CJ</span>
                 </div>
-                ${labels.map((l, j) => `
+                ${labels
+                  .map(
+                    (l, j) => `
                   <div class="values-row">
                     <span class="label">${l}</span>
-                    <span class="ts">${s.tsCoords[j]?.toFixed(4) ?? 'N/A'}</span>
-                    <span class="cj">${s.cjCoords[j]?.toFixed(4) ?? 'N/A'}</span>
+                    <span class="ts">${s.tsCoords[j]?.toFixed(4) ?? "N/A"}</span>
+                    <span class="cj">${s.cjCoords[j]?.toFixed(4) ?? "N/A"}</span>
                   </div>
-                `).join('')}
+                `,
+                  )
+                  .join("")}
               </div>
             </div>
           `;
-        }).join('')}
+          })
+          .join("")}
       </div>
       <div class="code-section">
         <div class="code-label">TokenScript Code</div>
@@ -707,7 +783,7 @@ function renderResult(r: PathResult): string {
 }
 
 // Run generator
-generateHTML().then(html => {
+generateHTML().then((html) => {
   const outputPath = path.join(__dirname, "..", "demo", "path-explorer.html");
   fs.writeFileSync(outputPath, html);
   console.log(`\n✅ Path Explorer generated: ${outputPath}`);

@@ -1,14 +1,29 @@
 /**
- * Generate Visual Color Demo
+ * Visual Color Parity Demo Generator
  *
- * Creates an HTML page showing side-by-side comparison
- * of TokenScript color conversions vs ColorJS
+ * Generates an HTML page (`demo/color-comparison.html`) that provides
+ * side-by-side visual comparison of TokenScript color conversions
+ * against the ColorJS reference implementation.
+ *
+ * Features:
+ * - Converts test colors through 11 color spaces (sRGB, Linear sRGB, XYZ-D65, etc.)
+ * - Shows color swatches from both TokenScript and ColorJS
+ * - Displays numerical coordinate values with max difference calculation
+ * - Exports test results as copyable CSV
+ * - Handles achromatic colors (NaN hue) specially
+ *
+ * Output: demo/color-comparison.html
+ *
+ * Usage:
+ *   npx tsx scripts/generate-demo.ts
+ *
+ * @module scripts/generate-demo
  */
 
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import Color from "colorjs.io";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
 import { executeWithSchema } from "../tests/helpers/schema-test-utils";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -142,18 +157,15 @@ const colorSpaces = [
 ];
 
 function rgbToHex(r: number, g: number, b: number): string {
-  return "#" + [r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("");
+  return `#${[r, g, b].map((x) => x.toString(16).padStart(2, "0")).join("")}`;
 }
 
 // Generate CSS color string from coordinates
-function toCssColor(
-  space: (typeof colorSpaces)[0],
-  coords: number[],
-): string | null {
+function toCssColor(space: (typeof colorSpaces)[0], coords: number[]): string | null {
   if (!space.cssSupported) return null;
 
   // Handle NaN values - can't display
-  if (coords.some((v) => v !== 0 && isNaN(v))) return null;
+  if (coords.some((v) => v !== 0 && Number.isNaN(v))) return null;
 
   const [c0, c1, c2] = coords;
 
@@ -169,27 +181,31 @@ function toCssColor(
     case "oklab":
       // oklab(L a b) where L is 0-1
       return `oklab(${c0.toFixed(4)} ${c1.toFixed(4)} ${c2.toFixed(4)})`;
-    case "oklch":
+    case "oklch": {
       // oklch(L C H) where L is 0-1, C is chroma, H is hue in degrees
       // coords are [l, c, h]
-      const oklchH = isNaN(c2) ? 0 : c2;
+      const oklchH = Number.isNaN(c2) ? 0 : c2;
       return `oklch(${c0.toFixed(4)} ${c1.toFixed(4)} ${oklchH.toFixed(2)})`;
+    }
     case "lab":
       // lab(L a b) where L is 0-100
       return `lab(${c0.toFixed(2)} ${c1.toFixed(4)} ${c2.toFixed(4)})`;
-    case "lch":
+    case "lch": {
       // lch(L C H) where L is 0-100, C is chroma, H is hue in degrees
       // coords are [l, c, h]
-      const lchH = isNaN(c2) ? 0 : c2;
+      const lchH = Number.isNaN(c2) ? 0 : c2;
       return `lch(${c0.toFixed(2)} ${c1.toFixed(4)} ${lchH.toFixed(2)})`;
-    case "hsl":
+    }
+    case "hsl": {
       // hsl(H S L) where H is degrees, S and L are 0-1 (we store as 0-1)
-      const hslH = isNaN(c0) ? 0 : c0;
+      const hslH = Number.isNaN(c0) ? 0 : c0;
       return `hsl(${hslH.toFixed(1)} ${(c1 * 100).toFixed(1)}% ${(c2 * 100).toFixed(1)}%)`;
-    case "hwb":
+    }
+    case "hwb": {
       // hwb(H W B) where H is degrees, W and B are 0-1 (we store as 0-1)
-      const hwbH = isNaN(c0) ? 0 : c0;
+      const hwbH = Number.isNaN(c0) ? 0 : c0;
       return `hwb(${hwbH.toFixed(1)} ${(c1 * 100).toFixed(1)}% ${(c2 * 100).toFixed(1)}%)`;
+    }
     default:
       return null;
   }
@@ -318,7 +334,7 @@ async function runConversion(
     }
 
     // Extract TokenScript coordinates
-    if (tsResult && tsResult.value) {
+    if (tsResult?.value) {
       tsCoords = space.coords.map((c) => {
         const val = tsResult.value[c];
         return val && typeof val.value === "number" ? val.value : NaN;
@@ -327,13 +343,13 @@ async function runConversion(
 
     // Check for NaN mismatch (TokenScript has value, ColorJS has NaN - achromatic hue)
     const diffs = tsCoords.map((v, i) => {
-      if (isNaN(v) && isNaN(cjCoords[i])) return 0; // Both NaN is OK
-      if (!isNaN(v) && isNaN(cjCoords[i])) {
+      if (Number.isNaN(v) && Number.isNaN(cjCoords[i])) return 0; // Both NaN is OK
+      if (!Number.isNaN(v) && Number.isNaN(cjCoords[i])) {
         // TokenScript has value, ColorJS has NaN - achromatic hue case
         nanMismatch = true;
         return 0; // Visually same, but semantically different
       }
-      if (isNaN(v) || isNaN(cjCoords[i])) return Infinity; // Other NaN cases are errors
+      if (Number.isNaN(v) || Number.isNaN(cjCoords[i])) return Infinity; // Other NaN cases are errors
       return Math.abs(v - cjCoords[i]);
     });
     maxDiff = Math.max(...diffs);
@@ -362,9 +378,7 @@ async function runConversion(
 }
 
 function generateCSV(results: ColorResult[]): string {
-  const lines = [
-    "Color,Space,ConversionPath,TS_C0,TS_C1,TS_C2,CJ_C0,CJ_C1,CJ_C2,MaxDiff,Status",
-  ];
+  const lines = ["Color,Space,ConversionPath,TS_C0,TS_C1,TS_C2,CJ_C0,CJ_C1,CJ_C2,MaxDiff,Status"];
 
   for (const result of results) {
     for (const conv of result.conversions) {
@@ -381,24 +395,12 @@ function generateCSV(results: ColorResult[]): string {
           result.name,
           conv.space,
           `"${conv.conversionPath}"`,
-          isNaN(conv.tokenScript.coords[0])
-            ? "NaN"
-            : conv.tokenScript.coords[0].toFixed(6),
-          isNaN(conv.tokenScript.coords[1])
-            ? "NaN"
-            : conv.tokenScript.coords[1].toFixed(6),
-          isNaN(conv.tokenScript.coords[2])
-            ? "NaN"
-            : conv.tokenScript.coords[2].toFixed(6),
-          isNaN(conv.colorJS.coords[0])
-            ? "NaN"
-            : conv.colorJS.coords[0].toFixed(6),
-          isNaN(conv.colorJS.coords[1])
-            ? "NaN"
-            : conv.colorJS.coords[1].toFixed(6),
-          isNaN(conv.colorJS.coords[2])
-            ? "NaN"
-            : conv.colorJS.coords[2].toFixed(6),
+          Number.isNaN(conv.tokenScript.coords[0]) ? "NaN" : conv.tokenScript.coords[0].toFixed(6),
+          Number.isNaN(conv.tokenScript.coords[1]) ? "NaN" : conv.tokenScript.coords[1].toFixed(6),
+          Number.isNaN(conv.tokenScript.coords[2]) ? "NaN" : conv.tokenScript.coords[2].toFixed(6),
+          Number.isNaN(conv.colorJS.coords[0]) ? "NaN" : conv.colorJS.coords[0].toFixed(6),
+          Number.isNaN(conv.colorJS.coords[1]) ? "NaN" : conv.colorJS.coords[1].toFixed(6),
+          Number.isNaN(conv.colorJS.coords[2]) ? "NaN" : conv.colorJS.coords[2].toFixed(6),
           conv.maxDiff.toExponential(2),
           status,
         ].join(","),
@@ -410,7 +412,7 @@ function generateCSV(results: ColorResult[]): string {
 }
 
 function formatCoord(v: number, precision: number = 4): string {
-  if (isNaN(v)) return "NaN";
+  if (Number.isNaN(v)) return "NaN";
   return v.toFixed(precision);
 }
 

@@ -1114,7 +1114,7 @@ start.to.oklch()</pre>
             ${r.steps.map((s, i) => {
               const labels = coordLabels[s.space] || ['0','1','2'];
               const diffClass = s.maxDiff < 1e-10 ? 'pass' : 'warn';
-              const diffText = s.maxDiff < 1e-10 ? '≡' : 'Δ' + s.maxDiff.toExponential(0);
+              const diffText = s.maxDiff < 1e-10 ? '≡' : `Δ${s.maxDiff.toExponential(0)}`;
               return `
                 ${i > 0 ? '<div class="connector"></div>' : ''}
                 <div class="step-card">

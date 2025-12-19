@@ -5,9 +5,9 @@
  * Validates against ColorJS for parity
  */
 
-import { describe, expect, it } from "vitest";
-import Color from "colorjs.io";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
+import Color from "colorjs.io";
+import { describe, expect, it } from "vitest";
 import type { ColorSpecification } from "@/bundler/types";
 
 // ColorJS reference tolerance
@@ -68,7 +68,7 @@ describe("HSV Color Schema", () => {
         );
 
         // ColorJS reference (uses 0-100 for S and V, we use 0-1)
-        const colorJS = new Color("srgb", srgb).to("hsv");
+        const colorJS = new Color("srgb", srgb as [number, number, number]).to("hsv");
         const cjS = colorJS.coords[1] / 100;
         const cjV = colorJS.coords[2] / 100;
 
@@ -84,15 +84,21 @@ describe("HSV Color Schema", () => {
 
         console.log(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
         console.log(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
-        console.log(`TokenScript: { h: ${tsH.toFixed(3)}, s: ${tsS.toFixed(6)}, v: ${tsV.toFixed(6)} }`);
-        console.log(`ColorJS:     { h: ${colorJS.coords[0].toFixed(3)}, s: ${cjS.toFixed(6)}, v: ${cjV.toFixed(6)} } (normalized)`);
+        console.log(
+          `TokenScript: { h: ${tsH.toFixed(3)}, s: ${tsS.toFixed(6)}, v: ${tsV.toFixed(6)} }`,
+        );
+        console.log(
+          `ColorJS:     { h: ${colorJS.coords[0].toFixed(3)}, s: ${cjS.toFixed(6)}, v: ${cjV.toFixed(6)} } (normalized)`,
+        );
         console.log(`Max Diff (S,V): ${maxDiff.toExponential(2)}`);
         console.log(`Hue Diff:       ${diffH.toExponential(2)}`);
-        console.log(`Status:         ${maxDiff < TOLERANCE && diffH < HUE_TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
+        console.log(
+          `Status:         ${maxDiff < TOLERANCE && diffH < HUE_TOLERANCE ? "✅ PASS" : "❌ FAIL"}`,
+        );
 
         expect(maxDiff).toBeLessThan(TOLERANCE);
         expect(diffH).toBeLessThan(HUE_TOLERANCE);
-        
+
         if (expectedH !== null) {
           expect(tsH).toBeCloseTo(expectedH, 5);
         }
@@ -153,5 +159,3 @@ describe("HSV Color Schema", () => {
     });
   });
 });
-
-

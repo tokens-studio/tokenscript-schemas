@@ -1,11 +1,34 @@
 /**
  * Color Functions Playground Generator
- * Visual testing and demo page for all color functions
+ *
+ * Generates an interactive HTML playground (`demo/functions-playground.html`)
+ * demonstrating all 32 color manipulation functions in the TokenScript schema registry.
+ *
+ * Features:
+ * - Live execution of each function through the real TokenScript interpreter
+ * - Color swatches showing function outputs
+ * - Grouped by category (Basic Adjustments, Harmony, Palettes, etc.)
+ * - Interactive examples with various input colors
+ *
+ * Function categories:
+ * - Basic Adjustments: lighten, darken, saturate, desaturate, grayscale
+ * - Harmony: complement, analogous, triadic, tetradic, split_complement
+ * - Palettes: shade_scale, tint_scale, steps, diverging, distributed
+ * - Color Manipulation: rotate_hue, set_lightness, set_chroma, set_hue, mix
+ * - Analysis: is_light, is_dark, luminance, contrast_ratio, best_contrast
+ * - UI States: hover_state, active_state, disabled_state, focus_ring, surface_pair
+ *
+ * Output: demo/functions-playground.html
+ *
+ * Usage:
+ *   npx tsx scripts/generate-functions-playground.ts
+ *
+ * @module scripts/generate-functions-playground
  */
 
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { executeWithSchema } from "../tests/helpers/schema-test-utils";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -301,34 +324,34 @@ async function runDemo(demo: FunctionDemo): Promise<{ colors: string[]; values: 
   try {
     // Use executeWithSchema which properly loads and registers the function
     const result = await executeWithSchema(demo.keyword, "function", demo.code);
-    
+
     // Convert result to displayable format
     const colors: string[] = [];
     const values: any[] = [];
-    
+
     if (result === null || result === undefined) {
       return { colors: [], values: [] };
     }
-    
+
     // Handle different result types
-    if (typeof result === 'number' || typeof result === 'boolean') {
+    if (typeof result === "number" || typeof result === "boolean") {
       values.push(result);
       return { colors, values };
     }
-    
+
     // Helper to extract color from ColorSymbol
     function extractColor(c: any): string | null {
       if (!c) return null;
       const v = c.value || c;
-      const subType = c.subType || '';
-      
+      const subType = c.subType || "";
+
       // Check if it's RGB (0-255) or sRGB (0-1) based on subType
-      const isRgb255 = subType === 'Rgb' || subType === 'RGB';
-      
+      const isRgb255 = subType === "Rgb" || subType === "RGB";
+
       let r = v.r?.value ?? v.r ?? 0;
       let g = v.g?.value ?? v.g ?? 0;
       let b = v.b?.value ?? v.b ?? 0;
-      
+
       // If it's sRGB (0-1), multiply by 255
       if (!isRgb255) {
         r = Math.round(r * 255);
@@ -339,28 +362,34 @@ async function runDemo(demo: FunctionDemo): Promise<{ colors: string[]; values: 
         g = Math.round(g);
         b = Math.round(b);
       }
-      
+
       // Clamp values
       r = Math.max(0, Math.min(255, r));
       g = Math.max(0, Math.min(255, g));
       b = Math.max(0, Math.min(255, b));
-      
+
       return `rgb(${r}, ${g}, ${b})`;
     }
-    
+
     // Recursive function to flatten nested lists and extract colors
     function flattenAndExtract(item: any): void {
       if (!item) return;
-      
-      if (item?.constructor?.name === 'ColorSymbol' || 
-          (item?.value && (item.value.r !== undefined || item.value.g !== undefined))) {
+
+      if (
+        item?.constructor?.name === "ColorSymbol" ||
+        (item?.value && (item.value.r !== undefined || item.value.g !== undefined))
+      ) {
         const color = extractColor(item);
         if (color) colors.push(color);
-      } else if (typeof item === 'number' || item?.constructor?.name === 'NumberSymbol') {
+      } else if (typeof item === "number" || item?.constructor?.name === "NumberSymbol") {
         values.push(item?.value ?? item);
-      } else if (typeof item === 'boolean' || item?.constructor?.name === 'BooleanSymbol') {
+      } else if (typeof item === "boolean" || item?.constructor?.name === "BooleanSymbol") {
         values.push(item?.value ?? item);
-      } else if (item?.constructor?.name === 'ListSymbol' || Array.isArray(item?.value) || Array.isArray(item)) {
+      } else if (
+        item?.constructor?.name === "ListSymbol" ||
+        Array.isArray(item?.value) ||
+        Array.isArray(item)
+      ) {
         // Recursively flatten
         const nested = item?.value || item;
         if (Array.isArray(nested)) {
@@ -370,10 +399,10 @@ async function runDemo(demo: FunctionDemo): Promise<{ colors: string[]; values: 
         }
       }
     }
-    
+
     // Start extraction
     flattenAndExtract(result);
-    
+
     return { colors, values };
   } catch (e: any) {
     console.error(`Error in ${demo.name}:`, e.message);
@@ -381,49 +410,54 @@ async function runDemo(demo: FunctionDemo): Promise<{ colors: string[]; values: 
   }
 }
 
-function generateHTML(results: Map<string, { colors: string[]; values: any[]; demo: FunctionDemo }>): string {
-  const categories = [...new Set(demos.map(d => d.category))];
-  
-  let sectionsHTML = '';
-  
+function generateHTML(
+  results: Map<string, { colors: string[]; values: any[]; demo: FunctionDemo }>,
+): string {
+  const categories = [...new Set(demos.map((d) => d.category))];
+
+  let sectionsHTML = "";
+
   for (const category of categories) {
-    const categoryDemos = demos.filter(d => d.category === category);
-    
+    const categoryDemos = demos.filter((d) => d.category === category);
+
     sectionsHTML += `
       <section class="category">
         <h2>${category}</h2>
         <div class="demos">
     `;
-    
+
     for (const demo of categoryDemos) {
       const result = results.get(demo.name);
       if (!result) continue;
-      
-      let swatchesHTML = '';
+
+      let swatchesHTML = "";
       if (result.colors.length > 0) {
         swatchesHTML = `
           <div class="swatches">
-            ${result.colors.map(c => `<div class="swatch" style="background: ${c}"></div>`).join('')}
+            ${result.colors.map((c) => `<div class="swatch" style="background: ${c}"></div>`).join("")}
           </div>
         `;
       }
-      
-      let valuesHTML = '';
+
+      let valuesHTML = "";
       if (result.values.length > 0) {
         valuesHTML = `
           <div class="values">
-            ${result.values.map(v => {
-              if (typeof v === 'boolean') return `<span class="value bool">${v ? '✓ true' : '✗ false'}</span>`;
-              if (typeof v === 'number') return `<span class="value num">${v.toFixed(4)}</span>`;
-              return `<span class="value">${v}</span>`;
-            }).join('')}
+            ${result.values
+              .map((v) => {
+                if (typeof v === "boolean")
+                  return `<span class="value bool">${v ? "✓ true" : "✗ false"}</span>`;
+                if (typeof v === "number") return `<span class="value num">${v.toFixed(4)}</span>`;
+                return `<span class="value">${v}</span>`;
+              })
+              .join("")}
           </div>
         `;
       }
-      
-      const status = result.colors.length > 0 || result.values.length > 0 ? '✓' : '✗';
-      const statusClass = status === '✓' ? 'pass' : 'fail';
-      
+
+      const status = result.colors.length > 0 || result.values.length > 0 ? "✓" : "✗";
+      const statusClass = status === "✓" ? "pass" : "fail";
+
       sectionsHTML += `
         <div class="demo-card">
           <div class="demo-header">
@@ -435,21 +469,23 @@ function generateHTML(results: Map<string, { colors: string[]; values: any[]; de
           ${valuesHTML}
           <details>
             <summary>Code</summary>
-            <pre class="demo-code">${demo.code.replace(/</g, '&lt;')}</pre>
+            <pre class="demo-code">${demo.code.replace(/</g, "&lt;")}</pre>
           </details>
         </div>
       `;
     }
-    
+
     sectionsHTML += `
         </div>
       </section>
     `;
   }
-  
-  const passCount = [...results.values()].filter(r => r.colors.length > 0 || r.values.length > 0).length;
+
+  const passCount = [...results.values()].filter(
+    (r) => r.colors.length > 0 || r.values.length > 0,
+  ).length;
   const totalCount = results.size;
-  
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -699,29 +735,30 @@ function generateHTML(results: Map<string, { colors: string[]; values: any[]; de
 async function main() {
   console.log("Testing color functions with TokenScript interpreter...");
   console.log(`Running ${demos.length} function demos...`);
-  
+
   const results = new Map<string, { colors: string[]; values: any[]; demo: FunctionDemo }>();
-  
+
   for (const demo of demos) {
     process.stdout.write(`  ${demo.name}... `);
     const result = await runDemo(demo);
     results.set(demo.name, { ...result, demo });
-    
+
     if (result.colors.length > 0 || result.values.length > 0) {
       console.log(`✓ (${result.colors.length} colors, ${result.values.length} values)`);
     } else {
       console.log(`✗ no output`);
     }
   }
-  
+
   const html = generateHTML(results);
   const outputPath = path.join(__dirname, "../demo/functions-playground.html");
   fs.writeFileSync(outputPath, html);
-  
-  const passCount = [...results.values()].filter(r => r.colors.length > 0 || r.values.length > 0).length;
+
+  const passCount = [...results.values()].filter(
+    (r) => r.colors.length > 0 || r.values.length > 0,
+  ).length;
   console.log(`\n✅ Playground generated: ${outputPath}`);
   console.log(`   ${passCount}/${demos.length} functions working`);
 }
 
 main().catch(console.error);
-

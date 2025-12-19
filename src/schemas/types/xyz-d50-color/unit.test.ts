@@ -5,9 +5,9 @@
  * Validates against ColorJS for parity
  */
 
-import { describe, expect, it } from "vitest";
-import Color from "colorjs.io";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
+import Color from "colorjs.io";
+import { describe, expect, it } from "vitest";
 import type { ColorSpecification } from "@/bundler/types";
 
 // ColorJS reference tolerance
@@ -39,8 +39,8 @@ describe("XYZ-D50 Color Schema", () => {
 
       expect(schema.conversions).toHaveLength(1);
 
-      const d65ToD50 = schema.conversions.find(
-        (c: { source: string }) => c.source.includes("xyz-d65-color"),
+      const d65ToD50 = schema.conversions.find((c: { source: string }) =>
+        c.source.includes("xyz-d65-color"),
       );
       expect(d65ToD50).toBeDefined();
       expect(d65ToD50?.lossless).toBe(true);
@@ -89,8 +89,12 @@ describe("XYZ-D50 Color Schema", () => {
 
       console.log(`\n=== D65 White → D50 ===`);
       console.log(`Input D65:   { x: 0.95047, y: 1.0, z: 1.08883 }`);
-      console.log(`TokenScript: { x: ${(result as any).value.x.value}, y: ${(result as any).value.y.value}, z: ${(result as any).value.z.value} }`);
-      console.log(`ColorJS:     { x: ${colorJS.coords[0]}, y: ${colorJS.coords[1]}, z: ${colorJS.coords[2]} }`);
+      console.log(
+        `TokenScript: { x: ${(result as any).value.x.value}, y: ${(result as any).value.y.value}, z: ${(result as any).value.z.value} }`,
+      );
+      console.log(
+        `ColorJS:     { x: ${colorJS.coords[0]}, y: ${colorJS.coords[1]}, z: ${colorJS.coords[2]} }`,
+      );
 
       expect((result as any).value.x.value).toBeCloseTo(colorJS.coords[0], 9);
       expect((result as any).value.y.value).toBeCloseTo(colorJS.coords[1], 9);
@@ -142,8 +146,12 @@ describe("XYZ-D50 Color Schema", () => {
       const colorJS = new Color("srgb", [1, 0, 0]).to("xyz-d50");
 
       console.log(`\n=== sRGB RED → XYZ-D50 (full chain) ===`);
-      console.log(`TokenScript: { x: ${(result as any).value.x.value}, y: ${(result as any).value.y.value}, z: ${(result as any).value.z.value} }`);
-      console.log(`ColorJS:     { x: ${colorJS.coords[0]}, y: ${colorJS.coords[1]}, z: ${colorJS.coords[2]} }`);
+      console.log(
+        `TokenScript: { x: ${(result as any).value.x.value}, y: ${(result as any).value.y.value}, z: ${(result as any).value.z.value} }`,
+      );
+      console.log(
+        `ColorJS:     { x: ${colorJS.coords[0]}, y: ${colorJS.coords[1]}, z: ${colorJS.coords[2]} }`,
+      );
 
       expect((result as any).value.x.value).toBeCloseTo(colorJS.coords[0], 9);
       expect((result as any).value.y.value).toBeCloseTo(colorJS.coords[1], 9);
@@ -182,7 +190,7 @@ describe("XYZ-D50 Color Schema", () => {
         );
 
         // ColorJS reference
-        const colorJS = new Color("srgb", srgb).to("xyz-d50");
+        const colorJS = new Color("srgb", srgb as [number, number, number]).to("xyz-d50");
 
         const tsX = (result as any).value.x.value;
         const tsY = (result as any).value.y.value;
@@ -195,8 +203,12 @@ describe("XYZ-D50 Color Schema", () => {
 
         console.log(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
         console.log(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
-        console.log(`TokenScript: { x: ${tsX.toFixed(9)}, y: ${tsY.toFixed(9)}, z: ${tsZ.toFixed(9)} }`);
-        console.log(`ColorJS:     { x: ${colorJS.coords[0].toFixed(9)}, y: ${colorJS.coords[1].toFixed(9)}, z: ${colorJS.coords[2].toFixed(9)} }`);
+        console.log(
+          `TokenScript: { x: ${tsX.toFixed(9)}, y: ${tsY.toFixed(9)}, z: ${tsZ.toFixed(9)} }`,
+        );
+        console.log(
+          `ColorJS:     { x: ${colorJS.coords[0].toFixed(9)}, y: ${colorJS.coords[1].toFixed(9)}, z: ${colorJS.coords[2].toFixed(9)} }`,
+        );
         console.log(`Max Diff:    ${maxDiff.toExponential(2)}`);
         console.log(`Status:      ${maxDiff < TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
 
@@ -225,5 +237,3 @@ describe("XYZ-D50 Color Schema", () => {
     });
   });
 });
-
-

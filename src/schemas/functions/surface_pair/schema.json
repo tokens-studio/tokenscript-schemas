@@ -20,6 +20,9 @@
     "type": "/api/v1/core/tokenscript/0/",
     "script": "./surface-pair.tokenscript"
   },
-  "requirements": ["/api/v1/core/oklch-color/0/", "/api/v1/core/srgb-linear-color/0/", "/api/v1/core/srgb-color/0/"]
+  "requirements": [
+    "/api/v1/core/oklch-color/0/",
+    "/api/v1/core/srgb-linear-color/0/",
+    "/api/v1/core/srgb-color/0/"
+  ]
 }
-

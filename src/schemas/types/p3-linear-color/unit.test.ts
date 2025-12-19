@@ -2,12 +2,10 @@
  * Linear P3 Color Schema Tests
  */
 
-import { describe, expect, it } from "vitest";
-import Color from "colorjs.io";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
+import Color from "colorjs.io";
+import { describe, expect, it } from "vitest";
 import type { ColorSpecification } from "@/bundler/types";
-
-const TOLERANCE = 1e-9;
 
 describe("Linear P3 Color Schema", () => {
   describe("Schema Definition", () => {
@@ -25,8 +23,8 @@ describe("Linear P3 Color Schema", () => {
   describe("Conversion from XYZ-D65", () => {
     const testCases = [
       { name: "red", xyz: [0.4124564, 0.2126729, 0.0193339] },
-      { name: "green", xyz: [0.3575761, 0.7151522, 0.1191920] },
-      { name: "blue", xyz: [0.1804375, 0.0721750, 0.9505041] },
+      { name: "green", xyz: [0.3575761, 0.7151522, 0.119192] },
+      { name: "blue", xyz: [0.1804375, 0.072175, 0.9505041] },
       { name: "white", xyz: [0.95047, 1.0, 1.08883] },
       { name: "P3 green primary", xyz: [0.2657, 0.6918, 0.0451] },
     ];
@@ -44,7 +42,7 @@ describe("Linear P3 Color Schema", () => {
         );
 
         // ColorJS reference
-        const colorJS = new Color("xyz-d65", xyz).to("p3-linear");
+        const colorJS = new Color("xyz-d65", xyz as [number, number, number]).to("p3-linear");
 
         const tsR = (result as any).value.r.value;
         const tsG = (result as any).value.g.value;
@@ -82,5 +80,3 @@ describe("Linear P3 Color Schema", () => {
     });
   });
 });
-
-

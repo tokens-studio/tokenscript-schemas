@@ -5,9 +5,9 @@
  * Validates against ColorJS for parity
  */
 
-import { describe, expect, it } from "vitest";
-import Color from "colorjs.io";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
+import Color from "colorjs.io";
+import { describe, expect, it } from "vitest";
 import type { ColorSpecification } from "@/bundler/types";
 
 // ColorJS reference tolerance
@@ -40,8 +40,8 @@ describe("HSL Color Schema", () => {
 
       expect(schema.conversions).toHaveLength(1);
 
-      const srgbToHsl = schema.conversions.find(
-        (c: { source: string }) => c.source.includes("srgb-color"),
+      const srgbToHsl = schema.conversions.find((c: { source: string }) =>
+        c.source.includes("srgb-color"),
       );
       expect(srgbToHsl).toBeDefined();
     });
@@ -67,7 +67,9 @@ describe("HSL Color Schema", () => {
       const cjL = colorJS.coords[2] / 100;
 
       console.log(`\n=== sRGB RED → HSL ===`);
-      console.log(`TokenScript: { h: ${(result as any).value.h.value}, s: ${(result as any).value.s.value}, l: ${(result as any).value.l.value} }`);
+      console.log(
+        `TokenScript: { h: ${(result as any).value.h.value}, s: ${(result as any).value.s.value}, l: ${(result as any).value.l.value} }`,
+      );
       console.log(`ColorJS:     { h: ${colorJS.coords[0]}, s: ${cjS}, l: ${cjL} } (normalized)`);
 
       expect((result as any).value.h.value).toBeCloseTo(colorJS.coords[0], 6);
@@ -102,7 +104,7 @@ describe("HSL Color Schema", () => {
         );
 
         // ColorJS reference (uses 0-100 for S and L, we use 0-1)
-        const colorJS = new Color("srgb", srgb).to("hsl");
+        const colorJS = new Color("srgb", srgb as [number, number, number]).to("hsl");
 
         const tsH = (result as any).value.h.value;
         const tsS = (result as any).value.s.value;
@@ -120,15 +122,21 @@ describe("HSL Color Schema", () => {
 
         console.log(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
         console.log(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
-        console.log(`TokenScript: { h: ${tsH.toFixed(3)}, s: ${tsS.toFixed(6)}, l: ${tsL.toFixed(6)} }`);
-        console.log(`ColorJS:     { h: ${colorJS.coords[0].toFixed(3)}, s: ${cjS.toFixed(6)}, l: ${cjL.toFixed(6)} } (normalized from 0-100)`);
+        console.log(
+          `TokenScript: { h: ${tsH.toFixed(3)}, s: ${tsS.toFixed(6)}, l: ${tsL.toFixed(6)} }`,
+        );
+        console.log(
+          `ColorJS:     { h: ${colorJS.coords[0].toFixed(3)}, s: ${cjS.toFixed(6)}, l: ${cjL.toFixed(6)} } (normalized from 0-100)`,
+        );
         console.log(`Max Diff (S,L): ${maxDiff.toExponential(2)}`);
         console.log(`Hue Diff:       ${diffH.toExponential(2)}`);
-        console.log(`Status:         ${maxDiff < TOLERANCE && diffH < HUE_TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
+        console.log(
+          `Status:         ${maxDiff < TOLERANCE && diffH < HUE_TOLERANCE ? "✅ PASS" : "❌ FAIL"}`,
+        );
 
         expect(maxDiff).toBeLessThan(TOLERANCE);
         expect(diffH).toBeLessThan(HUE_TOLERANCE);
-        
+
         // For primary colors, also check expected hue
         if (expectedH !== null) {
           expect(tsH).toBeCloseTo(expectedH, 5);
@@ -190,4 +198,3 @@ describe("HSL Color Schema", () => {
     });
   });
 });
-

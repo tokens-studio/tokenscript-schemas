@@ -23,33 +23,152 @@ import Color from "colorjs.io";
 
 const SPACES = {
   // Core
-  srgb: { coords: ["r", "g", "b"], ranges: [[0, 1], [0, 1], [0, 1]] },
-  "srgb-linear": { coords: ["r", "g", "b"], ranges: [[0, 1], [0, 1], [0, 1]] },
+  srgb: {
+    coords: ["r", "g", "b"],
+    ranges: [
+      [0, 1],
+      [0, 1],
+      [0, 1],
+    ],
+  },
+  "srgb-linear": {
+    coords: ["r", "g", "b"],
+    ranges: [
+      [0, 1],
+      [0, 1],
+      [0, 1],
+    ],
+  },
 
   // XYZ
-  "xyz-d65": { coords: ["x", "y", "z"], ranges: [[0, 1], [0, 1], [0, 1]] },
-  "xyz-d50": { coords: ["x", "y", "z"], ranges: [[0, 1], [0, 1], [0, 1]] },
+  "xyz-d65": {
+    coords: ["x", "y", "z"],
+    ranges: [
+      [0, 1],
+      [0, 1],
+      [0, 1],
+    ],
+  },
+  "xyz-d50": {
+    coords: ["x", "y", "z"],
+    ranges: [
+      [0, 1],
+      [0, 1],
+      [0, 1],
+    ],
+  },
 
   // Perceptual
-  oklab: { coords: ["l", "a", "b"], ranges: [[0, 1], [-0.4, 0.4], [-0.4, 0.4]] },
-  oklch: { coords: ["l", "c", "h"], ranges: [[0, 1], [0, 0.4], [0, 360]] },
-  lab: { coords: ["l", "a", "b"], ranges: [[0, 100], [-125, 125], [-125, 125]] },
-  lch: { coords: ["l", "c", "h"], ranges: [[0, 100], [0, 150], [0, 360]] },
+  oklab: {
+    coords: ["l", "a", "b"],
+    ranges: [
+      [0, 1],
+      [-0.4, 0.4],
+      [-0.4, 0.4],
+    ],
+  },
+  oklch: {
+    coords: ["l", "c", "h"],
+    ranges: [
+      [0, 1],
+      [0, 0.4],
+      [0, 360],
+    ],
+  },
+  lab: {
+    coords: ["l", "a", "b"],
+    ranges: [
+      [0, 100],
+      [-125, 125],
+      [-125, 125],
+    ],
+  },
+  lch: {
+    coords: ["l", "c", "h"],
+    ranges: [
+      [0, 100],
+      [0, 150],
+      [0, 360],
+    ],
+  },
 
   // Legacy
-  hsl: { coords: ["h", "s", "l"], ranges: [[0, 360], [0, 100], [0, 100]] },
-  hsv: { coords: ["h", "s", "v"], ranges: [[0, 360], [0, 100], [0, 100]] },
-  hwb: { coords: ["h", "w", "b"], ranges: [[0, 360], [0, 100], [0, 100]] },
+  hsl: {
+    coords: ["h", "s", "l"],
+    ranges: [
+      [0, 360],
+      [0, 100],
+      [0, 100],
+    ],
+  },
+  hsv: {
+    coords: ["h", "s", "v"],
+    ranges: [
+      [0, 360],
+      [0, 100],
+      [0, 100],
+    ],
+  },
+  hwb: {
+    coords: ["h", "w", "b"],
+    ranges: [
+      [0, 360],
+      [0, 100],
+      [0, 100],
+    ],
+  },
 
   // Wide gamut
-  p3: { coords: ["r", "g", "b"], ranges: [[0, 1], [0, 1], [0, 1]] },
-  "p3-linear": { coords: ["r", "g", "b"], ranges: [[0, 1], [0, 1], [0, 1]] },
-  rec2020: { coords: ["r", "g", "b"], ranges: [[0, 1], [0, 1], [0, 1]] },
-  "rec2020-linear": { coords: ["r", "g", "b"], ranges: [[0, 1], [0, 1], [0, 1]] },
+  p3: {
+    coords: ["r", "g", "b"],
+    ranges: [
+      [0, 1],
+      [0, 1],
+      [0, 1],
+    ],
+  },
+  "p3-linear": {
+    coords: ["r", "g", "b"],
+    ranges: [
+      [0, 1],
+      [0, 1],
+      [0, 1],
+    ],
+  },
+  rec2020: {
+    coords: ["r", "g", "b"],
+    ranges: [
+      [0, 1],
+      [0, 1],
+      [0, 1],
+    ],
+  },
+  "rec2020-linear": {
+    coords: ["r", "g", "b"],
+    ranges: [
+      [0, 1],
+      [0, 1],
+      [0, 1],
+    ],
+  },
 
   // HDR
-  jzazbz: { coords: ["jz", "az", "bz"], ranges: [[0, 1], [-0.5, 0.5], [-0.5, 0.5]] },
-  jzczhz: { coords: ["jz", "cz", "hz"], ranges: [[0, 1], [0, 0.5], [0, 360]] },
+  jzazbz: {
+    coords: ["jz", "az", "bz"],
+    ranges: [
+      [0, 1],
+      [-0.5, 0.5],
+      [-0.5, 0.5],
+    ],
+  },
+  jzczhz: {
+    coords: ["jz", "cz", "hz"],
+    ranges: [
+      [0, 1],
+      [0, 0.5],
+      [0, 360],
+    ],
+  },
 } as const;
 
 const CONVERSION_GRAPH = {
@@ -263,15 +382,33 @@ function testRoundTrip(colorInput: string): void {
     ["srgb", "srgb-linear", "xyz-d65", "srgb-linear", "srgb"],
     ["srgb", "srgb-linear", "xyz-d65", "oklab", "xyz-d65", "srgb-linear", "srgb"],
     ["srgb", "srgb-linear", "xyz-d65", "oklab", "oklch", "oklab", "xyz-d65", "srgb-linear", "srgb"],
-    ["srgb", "srgb-linear", "xyz-d65", "xyz-d50", "lab", "lch", "lab", "xyz-d50", "xyz-d65", "srgb-linear", "srgb"],
+    [
+      "srgb",
+      "srgb-linear",
+      "xyz-d65",
+      "xyz-d50",
+      "lab",
+      "lch",
+      "lab",
+      "xyz-d50",
+      "xyz-d65",
+      "srgb-linear",
+      "srgb",
+    ],
     ["srgb", "hsl", "srgb"],
     ["srgb", "hsv", "srgb"],
     ["srgb", "hwb", "srgb"],
   ];
 
-  console.log("┌─────────────────────────────────────────────────────────────┬─────────────────────┬──────────────┐");
-  console.log("│ Round-trip Path                                             │ Result              │ Max Error    │");
-  console.log("├─────────────────────────────────────────────────────────────┼─────────────────────┼──────────────┤");
+  console.log(
+    "┌─────────────────────────────────────────────────────────────┬─────────────────────┬──────────────┐",
+  );
+  console.log(
+    "│ Round-trip Path                                             │ Result              │ Max Error    │",
+  );
+  console.log(
+    "├─────────────────────────────────────────────────────────────┼─────────────────────┼──────────────┤",
+  );
 
   for (const path of roundTrips) {
     let current = new Color("srgb", original);
@@ -290,10 +427,14 @@ function testRoundTrip(colorInput: string): void {
     const errorStr = maxError < 1e-10 ? "< 1e-10" : maxError.toExponential(2);
     const status = maxError < 1e-5 ? "✓" : "⚠";
 
-    console.log(`│ ${pathStr.padEnd(59)} │ ${resultStr.padEnd(19)} │ ${status} ${errorStr.padEnd(10)} │`);
+    console.log(
+      `│ ${pathStr.padEnd(59)} │ ${resultStr.padEnd(19)} │ ${status} ${errorStr.padEnd(10)} │`,
+    );
   }
 
-  console.log("└─────────────────────────────────────────────────────────────┴─────────────────────┴──────────────┘\n");
+  console.log(
+    "└─────────────────────────────────────────────────────────────┴─────────────────────┴──────────────┘\n",
+  );
 
   console.log("Legend:");
   console.log("  ✓ = Error < 1e-5 (acceptable)");
@@ -361,7 +502,6 @@ switch (command) {
   case "matrix":
     showAllConversions();
     break;
-  case "help":
   default:
     console.log(`
 ColorJS Comparison Tool
@@ -381,5 +521,3 @@ Examples:
   npx tsx scripts/compare-colorjs.ts matrix
 `);
 }
-
-

@@ -109,10 +109,7 @@ export const SPACE_COORDS: Record<string, string[]> = {
 /**
  * Create a ColorJS color from coordinates and space
  */
-export function createColorJSColor(
-  spaceId: string,
-  coords: number[],
-): Color {
+export function createColorJSColor(spaceId: string, coords: number[]): Color {
   // ColorJS expects exactly 3 coords, cast to satisfy TypeScript
   return new Color(spaceId, coords as [number, number, number]);
 }
@@ -263,14 +260,7 @@ export const CONVERSION_GRAPH: ConversionGraphNode[] = [
   // XYZ-D65 (the main hub)
   {
     space: "xyz-d65",
-    connections: [
-      "srgb-linear",
-      "xyz-d50",
-      "oklab",
-      "p3-linear",
-      "rec2020-linear",
-      "jzazbz",
-    ],
+    connections: ["srgb-linear", "xyz-d50", "oklab", "p3-linear", "rec2020-linear", "jzazbz"],
   },
 
   // XYZ-D50 (Lab connection)
@@ -487,9 +477,15 @@ export function visualizePath(path: string[]): string {
 export function formatComparisonTable(results: ComparisonResult[]): string {
   const lines: string[] = [];
 
-  lines.push("┌────────────────────┬────────────────────────────┬────────────────────────────┬────────┬───────────────┐");
-  lines.push("│ Space              │ TokenScript                │ ColorJS                    │ Match  │ Max Diff      │");
-  lines.push("├────────────────────┼────────────────────────────┼────────────────────────────┼────────┼───────────────┤");
+  lines.push(
+    "┌────────────────────┬────────────────────────────┬────────────────────────────┬────────┬───────────────┐",
+  );
+  lines.push(
+    "│ Space              │ TokenScript                │ ColorJS                    │ Match  │ Max Diff      │",
+  );
+  lines.push(
+    "├────────────────────┼────────────────────────────┼────────────────────────────┼────────┼───────────────┤",
+  );
 
   for (const result of results) {
     const tsStr = result.tokenScript
@@ -503,14 +499,17 @@ export function formatComparisonTable(results: ComparisonResult[]): string {
       .join(" ");
 
     const matchStr = result.matches ? "✓" : "✗";
-    const diffStr = result.maxDifference === Infinity ? "N/A" : result.maxDifference.toExponential(2);
+    const diffStr =
+      result.maxDifference === Infinity ? "N/A" : result.maxDifference.toExponential(2);
 
     lines.push(
       `│ ${result.space.padEnd(18)} │ ${tsStr.padEnd(26)} │ ${cjsStr.padEnd(26)} │ ${matchStr.padEnd(6)} │ ${diffStr.padEnd(13)} │`,
     );
   }
 
-  lines.push("└────────────────────┴────────────────────────────┴────────────────────────────┴────────┴───────────────┘");
+  lines.push(
+    "└────────────────────┴────────────────────────────┴────────────────────────────┴────────┴───────────────┘",
+  );
 
   return lines.join("\n");
 }
@@ -552,4 +551,3 @@ export default {
   visualizePath,
   formatComparisonTable,
 };
-

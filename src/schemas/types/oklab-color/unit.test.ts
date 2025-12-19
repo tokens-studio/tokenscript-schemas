@@ -5,9 +5,9 @@
  * Validates against ColorJS for parity
  */
 
-import { describe, expect, it } from "vitest";
-import Color from "colorjs.io";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
+import Color from "colorjs.io";
+import { describe, expect, it } from "vitest";
 import type { ColorSpecification } from "@/bundler/types";
 
 // ColorJS reference tolerance (OKLab is sensitive to precision)
@@ -40,8 +40,8 @@ describe("OKLab Color Schema", () => {
 
       expect(schema.conversions.length).toBeGreaterThanOrEqual(1);
 
-      const xyzToOklab = schema.conversions.find(
-        (c: { source: string }) => c.source.includes("xyz-d65-color"),
+      const xyzToOklab = schema.conversions.find((c: { source: string }) =>
+        c.source.includes("xyz-d65-color"),
       );
       expect(xyzToOklab).toBeDefined();
       expect(xyzToOklab?.lossless).toBe(true);
@@ -89,8 +89,12 @@ describe("OKLab Color Schema", () => {
       const colorJS = new Color("xyz-d65", [0.95047, 1.0, 1.08883]).to("oklab");
 
       console.log(`\n=== D65 WHITE → OKLab ===`);
-      console.log(`TokenScript: { l: ${(result as any).value.l.value}, a: ${(result as any).value.a.value}, b: ${(result as any).value.b.value} }`);
-      console.log(`ColorJS:     { l: ${colorJS.coords[0]}, a: ${colorJS.coords[1]}, b: ${colorJS.coords[2]} }`);
+      console.log(
+        `TokenScript: { l: ${(result as any).value.l.value}, a: ${(result as any).value.a.value}, b: ${(result as any).value.b.value} }`,
+      );
+      console.log(
+        `ColorJS:     { l: ${colorJS.coords[0]}, a: ${colorJS.coords[1]}, b: ${colorJS.coords[2]} }`,
+      );
 
       expect((result as any).value.l.value).toBeCloseTo(colorJS.coords[0], 6);
       expect((result as any).value.a.value).toBeCloseTo(colorJS.coords[1], 6);
@@ -117,8 +121,12 @@ describe("OKLab Color Schema", () => {
       const colorJS = redXYZ.to("oklab");
 
       console.log(`\n=== RED XYZ → OKLab ===`);
-      console.log(`TokenScript: { l: ${(result as any).value.l.value}, a: ${(result as any).value.a.value}, b: ${(result as any).value.b.value} }`);
-      console.log(`ColorJS:     { l: ${colorJS.coords[0]}, a: ${colorJS.coords[1]}, b: ${colorJS.coords[2]} }`);
+      console.log(
+        `TokenScript: { l: ${(result as any).value.l.value}, a: ${(result as any).value.a.value}, b: ${(result as any).value.b.value} }`,
+      );
+      console.log(
+        `ColorJS:     { l: ${colorJS.coords[0]}, a: ${colorJS.coords[1]}, b: ${colorJS.coords[2]} }`,
+      );
 
       expect((result as any).value.l.value).toBeCloseTo(colorJS.coords[0], 6);
       expect((result as any).value.a.value).toBeCloseTo(colorJS.coords[1], 6);
@@ -147,8 +155,12 @@ describe("OKLab Color Schema", () => {
       const colorJS = new Color("srgb", [1, 0, 0]).to("oklab");
 
       console.log(`\n=== sRGB RED → OKLab (full chain) ===`);
-      console.log(`TokenScript: { l: ${(result as any).value.l.value}, a: ${(result as any).value.a.value}, b: ${(result as any).value.b.value} }`);
-      console.log(`ColorJS:     { l: ${colorJS.coords[0]}, a: ${colorJS.coords[1]}, b: ${colorJS.coords[2]} }`);
+      console.log(
+        `TokenScript: { l: ${(result as any).value.l.value}, a: ${(result as any).value.a.value}, b: ${(result as any).value.b.value} }`,
+      );
+      console.log(
+        `ColorJS:     { l: ${colorJS.coords[0]}, a: ${colorJS.coords[1]}, b: ${colorJS.coords[2]} }`,
+      );
 
       expect((result as any).value.l.value).toBeCloseTo(colorJS.coords[0], 6);
       expect((result as any).value.a.value).toBeCloseTo(colorJS.coords[1], 6);
@@ -234,7 +246,7 @@ describe("OKLab Color Schema", () => {
         );
 
         // ColorJS reference
-        const colorJS = new Color("srgb", srgb).to("oklab");
+        const colorJS = new Color("srgb", srgb as [number, number, number]).to("oklab");
 
         const tsL = (result as any).value.l.value;
         const tsA = (result as any).value.a.value;
@@ -247,8 +259,12 @@ describe("OKLab Color Schema", () => {
 
         console.log(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
         console.log(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
-        console.log(`TokenScript: { l: ${tsL.toFixed(6)}, a: ${tsA.toFixed(6)}, b: ${tsB.toFixed(6)} }`);
-        console.log(`ColorJS:     { l: ${colorJS.coords[0].toFixed(6)}, a: ${colorJS.coords[1].toFixed(6)}, b: ${colorJS.coords[2].toFixed(6)} }`);
+        console.log(
+          `TokenScript: { l: ${tsL.toFixed(6)}, a: ${tsA.toFixed(6)}, b: ${tsB.toFixed(6)} }`,
+        );
+        console.log(
+          `ColorJS:     { l: ${colorJS.coords[0].toFixed(6)}, a: ${colorJS.coords[1].toFixed(6)}, b: ${colorJS.coords[2].toFixed(6)} }`,
+        );
         console.log(`Max Diff:    ${maxDiff.toExponential(2)}`);
         console.log(`Status:      ${maxDiff < TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
 
@@ -326,4 +342,3 @@ describe("OKLab Color Schema", () => {
     });
   });
 });
-

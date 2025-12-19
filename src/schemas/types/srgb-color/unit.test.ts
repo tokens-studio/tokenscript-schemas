@@ -5,9 +5,9 @@
  * Validates against ColorJS for parity
  */
 
-import { describe, expect, it } from "vitest";
-import Color from "colorjs.io";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
+import Color from "colorjs.io";
+import { describe, expect, it } from "vitest";
 import type { ColorSpecification } from "@/bundler/types";
 
 // ColorJS reference tolerance
@@ -40,8 +40,8 @@ describe("sRGB Color Schema", () => {
 
       expect(schema.conversions.length).toBeGreaterThanOrEqual(1);
 
-      const rgbToSrgb = schema.conversions.find(
-        (c: { source: string }) => c.source.includes("rgb-color"),
+      const rgbToSrgb = schema.conversions.find((c: { source: string }) =>
+        c.source.includes("rgb-color"),
       );
       expect(rgbToSrgb).toBeDefined();
       expect(rgbToSrgb?.lossless).toBe(true);
@@ -239,7 +239,7 @@ describe("sRGB Color Schema", () => {
         );
 
         // ColorJS reference
-        const colorJS = new Color("srgb", srgb);
+        const colorJS = new Color("srgb", srgb as [number, number, number]);
 
         const tsR = (result as any).value.r.value;
         const tsG = (result as any).value.g.value;
@@ -253,7 +253,9 @@ describe("sRGB Color Schema", () => {
         // Log for documentation
         console.log(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
         console.log(`TokenScript: { r: ${tsR}, g: ${tsG}, b: ${tsB} }`);
-        console.log(`ColorJS:     { r: ${colorJS.coords[0]}, g: ${colorJS.coords[1]}, b: ${colorJS.coords[2]} }`);
+        console.log(
+          `ColorJS:     { r: ${colorJS.coords[0]}, g: ${colorJS.coords[1]}, b: ${colorJS.coords[2]} }`,
+        );
         console.log(`Max Diff:    ${maxDiff.toExponential(2)}`);
         console.log(`Status:      ${maxDiff < TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
 
@@ -298,4 +300,3 @@ describe("sRGB Color Schema", () => {
     });
   });
 });
-

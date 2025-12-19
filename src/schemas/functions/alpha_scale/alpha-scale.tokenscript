@@ -14,15 +14,16 @@ if (input.length() > 1) [
 
 variable result: List;
 variable i: Number = 0;
+variable alpha: Number = 0;
+variable color: Color.SRGB;
 
 while (i < count) [
     // Alpha from 1.0 down to 0.1
-    variable alpha: Number = 1 - (i / count);
+    alpha = 1 - (i / count);
     
     // Create color with alpha
     // Note: This creates the color value; actual alpha handling
     // depends on how the consuming system processes the output
-    variable color: Color.SRGB;
     color.r = base.r;
     color.g = base.g;
     color.b = base.b;

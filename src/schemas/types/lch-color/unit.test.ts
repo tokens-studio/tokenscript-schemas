@@ -5,9 +5,9 @@
  * Validates against ColorJS for parity
  */
 
-import { describe, expect, it } from "vitest";
-import Color from "colorjs.io";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
+import Color from "colorjs.io";
+import { describe, expect, it } from "vitest";
 import type { ColorSpecification } from "@/bundler/types";
 
 // ColorJS reference tolerance
@@ -40,8 +40,8 @@ describe("CIE LCH Color Schema", () => {
 
       expect(schema.conversions).toHaveLength(1);
 
-      const labToLch = schema.conversions.find(
-        (c: { source: string }) => c.source.includes("lab-color"),
+      const labToLch = schema.conversions.find((c: { source: string }) =>
+        c.source.includes("lab-color"),
       );
       expect(labToLch).toBeDefined();
     });
@@ -70,8 +70,12 @@ describe("CIE LCH Color Schema", () => {
       const colorJS = new Color("srgb", [1, 0, 0]).to("lch");
 
       console.log(`\n=== sRGB RED → LCH (full chain) ===`);
-      console.log(`TokenScript: { l: ${(result as any).value.l.value}, c: ${(result as any).value.c.value}, h: ${(result as any).value.h.value} }`);
-      console.log(`ColorJS:     { l: ${colorJS.coords[0]}, c: ${colorJS.coords[1]}, h: ${colorJS.coords[2]} }`);
+      console.log(
+        `TokenScript: { l: ${(result as any).value.l.value}, c: ${(result as any).value.c.value}, h: ${(result as any).value.h.value} }`,
+      );
+      console.log(
+        `ColorJS:     { l: ${colorJS.coords[0]}, c: ${colorJS.coords[1]}, h: ${colorJS.coords[2]} }`,
+      );
 
       expect((result as any).value.l.value).toBeCloseTo(colorJS.coords[0], 5);
       expect((result as any).value.c.value).toBeCloseTo(colorJS.coords[1], 5);
@@ -109,7 +113,7 @@ describe("CIE LCH Color Schema", () => {
         );
 
         // ColorJS reference
-        const colorJS = new Color("srgb", srgb).to("lch");
+        const colorJS = new Color("srgb", srgb as [number, number, number]).to("lch");
 
         const tsL = (result as any).value.l.value;
         const tsC = (result as any).value.c.value;
@@ -124,11 +128,17 @@ describe("CIE LCH Color Schema", () => {
 
         console.log(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
         console.log(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
-        console.log(`TokenScript: { l: ${tsL.toFixed(4)}, c: ${tsC.toFixed(4)}, h: ${tsH.toFixed(3)} }`);
-        console.log(`ColorJS:     { l: ${colorJS.coords[0].toFixed(4)}, c: ${colorJS.coords[1].toFixed(4)}, h: ${colorJS.coords[2].toFixed(3)} }`);
+        console.log(
+          `TokenScript: { l: ${tsL.toFixed(4)}, c: ${tsC.toFixed(4)}, h: ${tsH.toFixed(3)} }`,
+        );
+        console.log(
+          `ColorJS:     { l: ${colorJS.coords[0].toFixed(4)}, c: ${colorJS.coords[1].toFixed(4)}, h: ${colorJS.coords[2].toFixed(3)} }`,
+        );
         console.log(`Max Diff (L,C): ${maxDiff.toExponential(2)}`);
         console.log(`Hue Diff:       ${diffH.toExponential(2)}`);
-        console.log(`Status:         ${maxDiff < TOLERANCE && diffH < HUE_TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
+        console.log(
+          `Status:         ${maxDiff < TOLERANCE && diffH < HUE_TOLERANCE ? "✅ PASS" : "❌ FAIL"}`,
+        );
 
         expect(maxDiff).toBeLessThan(TOLERANCE);
         expect(diffH).toBeLessThan(HUE_TOLERANCE);
@@ -160,5 +170,3 @@ describe("CIE LCH Color Schema", () => {
     });
   });
 });
-
-

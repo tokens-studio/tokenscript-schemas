@@ -1,13 +1,36 @@
 /**
- * Advanced Color Demo Generator
- * 
- * Tests edge cases, gamut mapping, round-trips, and problematic colors
+ * Advanced Color Science Test Demo Generator
+ *
+ * Generates an HTML page (`demo/advanced-tests.html`) that tests edge cases
+ * and challenging scenarios in color conversion, serving as a comprehensive
+ * test suite for color science accuracy.
+ *
+ * Test Categories:
+ * 1. Wide Gamut (P3 → sRGB): Colors outside sRGB gamut, testing clipping behavior
+ * 2. Round-Trip Precision: A→B→A conversions to verify reversibility
+ * 3. Problematic Hues: Blue-violet boundary, hue discontinuities
+ * 4. Maximum Chroma: Most saturated colors in each space
+ * 5. Gray Ramp: Neutral colors to verify achromatic handling
+ * 6. Edge Cases: Black, white, gamma threshold boundary
+ *
+ * Each test shows:
+ * - Input color with CSS swatch
+ * - Conversion result with swatch
+ * - ColorJS reference comparison
+ * - Pass/fail status with max error
+ *
+ * Output: demo/advanced-tests.html
+ *
+ * Usage:
+ *   npx tsx scripts/generate-advanced-demo.ts
+ *
+ * @module scripts/generate-advanced-demo
  */
 
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import Color from "colorjs.io";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -71,9 +94,7 @@ for (const color of wideGamutColors) {
     inGamut,
     css: {
       input: `color(display-p3 ${color.p3.join(" ")})`,
-      output: inGamut
-        ? `color(srgb ${srgbColor.coords.map((c) => c.toFixed(4)).join(" ")})`
-        : null,
+      output: inGamut ? `color(srgb ${srgbColor.coords.map((c) => c.toFixed(4)).join(" ")})` : null,
     },
     notes: inGamut
       ? "Within sRGB gamut"
@@ -90,7 +111,7 @@ const roundTripColors: Array<{ name: string; srgb: [number, number, number] }> =
   { name: "Pure Blue", srgb: [0, 0, 1] },
   { name: "Mid Gray", srgb: [0.5, 0.5, 0.5] },
   { name: "Coral", srgb: [1, 0.5, 0.31] },
-  { name: "Skin Tone Light", srgb: [0.96, 0.80, 0.69] },
+  { name: "Skin Tone Light", srgb: [0.96, 0.8, 0.69] },
   { name: "Skin Tone Medium", srgb: [0.78, 0.57, 0.44] },
   { name: "Skin Tone Dark", srgb: [0.36, 0.22, 0.15] },
 ];
@@ -101,9 +122,7 @@ for (const color of roundTripColors) {
   const oklch = original.to("oklch");
   const roundTrip = oklch.to("srgb");
 
-  const maxDiff = Math.max(
-    ...color.srgb.map((v, i) => Math.abs(v - roundTrip.coords[i])),
-  );
+  const maxDiff = Math.max(...color.srgb.map((v, i) => Math.abs(v - roundTrip.coords[i])));
 
   testCases.push({
     category: "Round-Trip (sRGB → OKLCH → sRGB)",
@@ -117,10 +136,7 @@ for (const color of roundTripColors) {
       input: `color(srgb ${color.srgb.join(" ")})`,
       output: `color(srgb ${roundTrip.coords.map((c) => c.toFixed(6)).join(" ")})`,
     },
-    notes:
-      maxDiff < 1e-10
-        ? "✅ Perfect round-trip"
-        : `⚠️ Δ max: ${maxDiff.toExponential(2)}`,
+    notes: maxDiff < 1e-10 ? "✅ Perfect round-trip" : `⚠️ Δ max: ${maxDiff.toExponential(2)}`,
   });
 }
 
@@ -173,10 +189,7 @@ for (const color of problematicColors) {
       input: `oklch(${color.oklch[0]} ${color.oklch[1]} ${color.oklch[2]})`,
       output: `oklch(${backToOklch.coords[0]?.toFixed(4)} ${backToOklch.coords[1]?.toFixed(4)} ${backToOklch.coords[2]?.toFixed(2) || "none"})`,
     },
-    notes:
-      hueDiff < 0.01
-        ? "✅ Hue preserved"
-        : `⚠️ Hue shift: ${hueDiff.toFixed(2)}°`,
+    notes: hueDiff < 0.01 ? "✅ Hue preserved" : `⚠️ Hue shift: ${hueDiff.toFixed(2)}°`,
   });
 }
 
@@ -459,8 +472,8 @@ function generateHTML(): string {
               }
             </div>
             <div class="coords">
-              <span class="label">${test.input.space}:</span> [${test.input.coords.map((c) => (isNaN(c) ? "NaN" : c.toFixed(4))).join(", ")}]<br>
-              <span class="label">${test.output.space}:</span> [${test.output.coords.map((c) => (isNaN(c) ? "NaN" : c.toFixed(4))).join(", ")}]
+              <span class="label">${test.input.space}:</span> [${test.input.coords.map((c) => (Number.isNaN(c) ? "NaN" : c.toFixed(4))).join(", ")}]<br>
+              <span class="label">${test.output.space}:</span> [${test.output.coords.map((c) => (Number.isNaN(c) ? "NaN" : c.toFixed(4))).join(", ")}]
             </div>
             <div class="notes ${noteClass}">${test.notes}</div>
           </div>
@@ -494,5 +507,3 @@ for (const cat of categories) {
   const count = testCases.filter((t) => t.category === cat).length;
   console.log(`   • ${cat}: ${count} tests`);
 }
-
-

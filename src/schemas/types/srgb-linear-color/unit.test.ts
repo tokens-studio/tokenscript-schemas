@@ -5,9 +5,9 @@
  * Validates against ColorJS for parity
  */
 
-import { describe, expect, it } from "vitest";
-import Color from "colorjs.io";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
+import Color from "colorjs.io";
+import { describe, expect, it } from "vitest";
 import type { ColorSpecification } from "@/bundler/types";
 
 // ColorJS reference tolerance
@@ -40,8 +40,8 @@ describe("Linear sRGB Color Schema", () => {
 
       expect(schema.conversions.length).toBeGreaterThanOrEqual(1);
 
-      const srgbToLinear = schema.conversions.find(
-        (c: { source: string }) => c.source.includes("srgb-color"),
+      const srgbToLinear = schema.conversions.find((c: { source: string }) =>
+        c.source.includes("srgb-color"),
       );
       expect(srgbToLinear).toBeDefined();
       expect(srgbToLinear?.lossless).toBe(true);
@@ -114,8 +114,12 @@ describe("Linear sRGB Color Schema", () => {
 
       console.log(`\n=== MID-GRAY Gamma Conversion ===`);
       console.log(`Input sRGB:       { r: 0.5, g: 0.5, b: 0.5 }`);
-      console.log(`TokenScript:      { r: ${(result as any).value.r.value}, g: ${(result as any).value.g.value}, b: ${(result as any).value.b.value} }`);
-      console.log(`ColorJS:          { r: ${colorJS.coords[0]}, g: ${colorJS.coords[1]}, b: ${colorJS.coords[2]} }`);
+      console.log(
+        `TokenScript:      { r: ${(result as any).value.r.value}, g: ${(result as any).value.g.value}, b: ${(result as any).value.b.value} }`,
+      );
+      console.log(
+        `ColorJS:          { r: ${colorJS.coords[0]}, g: ${colorJS.coords[1]}, b: ${colorJS.coords[2]} }`,
+      );
 
       expect((result as any).value.r.value).toBeCloseTo(colorJS.coords[0], 9);
       expect((result as any).value.g.value).toBeCloseTo(colorJS.coords[1], 9);
@@ -194,7 +198,7 @@ describe("Linear sRGB Color Schema", () => {
         );
 
         // ColorJS reference
-        const colorJS = new Color("srgb", srgb).to("srgb-linear");
+        const colorJS = new Color("srgb", srgb as [number, number, number]).to("srgb-linear");
 
         const tsR = (result as any).value.r.value;
         const tsG = (result as any).value.g.value;
@@ -207,8 +211,12 @@ describe("Linear sRGB Color Schema", () => {
 
         console.log(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
         console.log(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
-        console.log(`TokenScript: { r: ${tsR.toFixed(9)}, g: ${tsG.toFixed(9)}, b: ${tsB.toFixed(9)} }`);
-        console.log(`ColorJS:     { r: ${colorJS.coords[0].toFixed(9)}, g: ${colorJS.coords[1].toFixed(9)}, b: ${colorJS.coords[2].toFixed(9)} }`);
+        console.log(
+          `TokenScript: { r: ${tsR.toFixed(9)}, g: ${tsG.toFixed(9)}, b: ${tsB.toFixed(9)} }`,
+        );
+        console.log(
+          `ColorJS:     { r: ${colorJS.coords[0].toFixed(9)}, g: ${colorJS.coords[1].toFixed(9)}, b: ${colorJS.coords[2].toFixed(9)} }`,
+        );
         console.log(`Max Diff:    ${maxDiff.toExponential(2)}`);
         console.log(`Status:      ${maxDiff < TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
 
@@ -272,7 +280,7 @@ describe("Linear sRGB Color Schema", () => {
       );
 
       // ColorJS reference: RGB → sRGB → Linear sRGB
-      const colorJS = new Color("srgb", [1, 128/255, 64/255]).to("srgb-linear");
+      const colorJS = new Color("srgb", [1, 128 / 255, 64 / 255]).to("srgb-linear");
 
       expect((result as any).value.r.value).toBeCloseTo(colorJS.coords[0], 9);
       expect((result as any).value.g.value).toBeCloseTo(colorJS.coords[1], 9);
@@ -280,4 +288,3 @@ describe("Linear sRGB Color Schema", () => {
     });
   });
 });
-
