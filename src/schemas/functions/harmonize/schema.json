@@ -1,0 +1,53 @@
+{
+  "name": "harmonize",
+  "type": "function",
+  "description": "Harmonizes a color by shifting its hue toward a source color. Inspired by Material Design 3's color harmonization algorithm. This creates visual cohesion in design systems by making colors feel related while preserving their identity. The amount parameter controls how much the hue shifts (0 = no change, 1 = full shift to source hue).",
+  "keyword": "harmonize",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Color to harmonize",
+            "type": "color"
+          },
+          {
+            "description": "Source color (hue target)",
+            "type": "color"
+          },
+          {
+            "description": "Amount of harmonization (0-1, default 0.5)",
+            "type": "number"
+          }
+        ],
+        "minItems": 2,
+        "maxItems": 3
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "color",
+    "description": "Harmonized color with hue shifted toward source"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./harmonize.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Harmonize red toward blue",
+      "input": ["#ff0000", "#0000ff", 0.3],
+      "output": "Color with hue shifted toward blue"
+    },
+    {
+      "description": "Harmonize green toward brand color",
+      "input": ["#00ff00", "#6750a4"],
+      "output": "Green shifted toward purple brand"
+    }
+  ]
+}
+

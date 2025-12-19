@@ -1,0 +1,48 @@
+// harmonize: Shift hue of a color toward a source color
+// Inspired by Material Design 3's color harmonization
+// Uses OKLCH for perceptually uniform hue rotation
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+variable source: Color.OKLCH = input.get(1).to.oklch();
+
+// Default harmonization amount (0.5 = 50% shift)
+variable amount: Number = 0.5;
+if (input.length() > 2) [
+    amount = input.get(2);
+];
+
+// Get hues
+variable color_hue: Number = color.h;
+variable source_hue: Number = source.h;
+
+// Calculate shortest path around the hue circle
+variable diff: Number = source_hue - color_hue;
+
+// Normalize to -180 to 180 range for shortest path
+if (diff > 180) [
+    diff = diff - 360;
+];
+if (diff < -180) [
+    diff = diff + 360;
+];
+
+// Apply harmonization: shift hue by amount * difference
+variable new_hue: Number = color_hue + (diff * amount);
+
+// Normalize hue to 0-360
+if (new_hue < 0) [
+    new_hue = new_hue + 360;
+];
+if (new_hue >= 360) [
+    new_hue = new_hue - 360;
+];
+
+// Create result with shifted hue, preserving lightness and chroma
+variable result: Color.OKLCH;
+result.l = color.l;
+result.c = color.c;
+result.h = new_hue;
+
+return result.to.srgb();
+

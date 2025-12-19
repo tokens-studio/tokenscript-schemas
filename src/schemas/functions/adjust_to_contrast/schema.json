@@ -1,0 +1,53 @@
+{
+  "name": "adjust_to_contrast",
+  "type": "function",
+  "description": "Adjusts a foreground color's lightness to achieve a target WCAG contrast ratio against a background. Preserves hue and chroma while finding the optimal lightness. Uses binary search in OKLCH space for perceptually even adjustments. If target contrast cannot be achieved (e.g., trying to get 21:1 with mid-gray), returns the best possible result.",
+  "keyword": "adjust_to_contrast",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/", "/api/v1/core/xyz-d65-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Foreground color to adjust",
+            "type": "color"
+          },
+          {
+            "description": "Background color (fixed)",
+            "type": "color"
+          },
+          {
+            "description": "Target contrast ratio (default 4.5 for WCAG AA)",
+            "type": "number"
+          }
+        ],
+        "minItems": 2,
+        "maxItems": 3
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "color",
+    "description": "Adjusted foreground color meeting the target contrast"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./adjust-to-contrast.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Adjust light gray to meet AA on white",
+      "input": ["#cccccc", "#ffffff", 4.5],
+      "output": "Darkened gray meeting 4.5:1"
+    },
+    {
+      "description": "Adjust brand color for accessibility",
+      "input": ["#6750a4", "#ffffff", 4.5],
+      "output": "Adjusted purple meeting 4.5:1"
+    }
+  ]
+}
+

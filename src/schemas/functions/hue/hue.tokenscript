@@ -1,0 +1,9 @@
+// hue: Extract hue angle from any color
+// Uses OKLCH for perceptually uniform hue
+// Returns 0-360 degrees
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+
+return color.h;
+

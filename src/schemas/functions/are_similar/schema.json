@@ -1,0 +1,58 @@
+{
+  "name": "are_similar",
+  "type": "function",
+  "description": "Determines if two colors are perceptually similar using Delta E OK (Euclidean distance in OKLab space). Returns true if the colors are within the specified threshold. Default threshold of 0.02 corresponds to a 'just noticeable difference' (JND). Based on Björn Ottosson's OKLab color space which provides excellent perceptual uniformity.",
+  "keyword": "are_similar",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklab-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "First color",
+            "type": "color"
+          },
+          {
+            "description": "Second color",
+            "type": "color"
+          },
+          {
+            "description": "Delta E threshold (default 0.02 ≈ JND)",
+            "type": "number"
+          }
+        ],
+        "minItems": 2,
+        "maxItems": 3
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "boolean",
+    "description": "True if colors are perceptually similar (within threshold)"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./are-similar.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Nearly identical colors",
+      "input": ["#ff0000", "#ff0001"],
+      "output": true
+    },
+    {
+      "description": "Obviously different colors",
+      "input": ["#ff0000", "#00ff00"],
+      "output": false
+    },
+    {
+      "description": "Custom threshold for stricter comparison",
+      "input": ["#808080", "#818181", 0.01],
+      "output": true
+    }
+  ]
+}
+

@@ -1,0 +1,9 @@
+// chroma: Extract chroma (colorfulness) from any color
+// Uses OKLCH for perceptually meaningful chroma
+// Returns 0 (gray) to ~0.4 (most saturated)
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+
+return color.c;
+

@@ -1,0 +1,49 @@
+{
+  "name": "neutral_variant",
+  "type": "function",
+  "description": "Creates a neutral (gray) variant of a color while preserving its lightness. Optionally retains a hint of the original hue. Useful for creating subtle backgrounds, disabled states, or neutral UI elements that relate to a brand color. Uses OKLCH for accurate lightness preservation.",
+  "keyword": "neutral_variant",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Source color",
+            "type": "color"
+          },
+          {
+            "description": "Optional chroma retention (0-1, default 0 for pure gray)",
+            "type": "number"
+          }
+        ],
+        "minItems": 1,
+        "maxItems": 2
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "color",
+    "description": "Neutral variant with same lightness"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./neutral-variant.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Pure gray from blue",
+      "input": ["#0066cc"],
+      "output": "Gray with same lightness as blue"
+    },
+    {
+      "description": "Slightly tinted gray",
+      "input": ["#ff0000", 0.02],
+      "output": "Very subtle warm gray"
+    }
+  ]
+}
+

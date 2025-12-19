@@ -1,0 +1,50 @@
+{
+  "name": "relative_luminance",
+  "type": "function",
+  "description": "Returns the WCAG 2.1 relative luminance of a color. This is the Y value from the XYZ-D65 color space, ranging from 0 (black) to 1 (white). Used in contrast ratio calculations. Different from perceptual lightness - relative luminance is weighted toward green (which human eyes are most sensitive to). Essential for WCAG accessibility calculations.",
+  "keyword": "relative_luminance",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/xyz-d65-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Color to measure",
+            "type": "color"
+          }
+        ],
+        "minItems": 1,
+        "maxItems": 1
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "number",
+    "description": "Relative luminance (0-1)"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./relative-luminance.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "White has luminance 1",
+      "input": ["#ffffff"],
+      "output": 1
+    },
+    {
+      "description": "Black has luminance 0",
+      "input": ["#000000"],
+      "output": 0
+    },
+    {
+      "description": "Pure green is brighter than pure blue",
+      "input": ["#00ff00"],
+      "output": 0.7152
+    }
+  ]
+}
+

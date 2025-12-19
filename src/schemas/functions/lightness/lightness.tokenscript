@@ -1,0 +1,9 @@
+// lightness: Extract perceptual lightness from any color
+// Uses OKLCH for perceptually uniform lightness
+// Returns 0 (black) to 1 (white)
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+
+return color.l;
+

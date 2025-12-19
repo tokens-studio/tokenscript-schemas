@@ -1,0 +1,45 @@
+{
+  "name": "chroma",
+  "type": "function",
+  "description": "Extracts the chroma (colorfulness/saturation) value from any color using OKLCH. Returns a value from 0 (gray) to approximately 0.4 (most saturated colors). Chroma in OKLCH represents the colorfulness independent of lightness - higher values mean more vivid colors. Essential for creating consistent color scales and checking color vibrancy.",
+  "keyword": "chroma",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Color to extract chroma from",
+            "type": "color"
+          }
+        ],
+        "minItems": 1,
+        "maxItems": 1
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "number",
+    "description": "Chroma value (0 to ~0.4)"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./chroma.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Gray has chroma 0",
+      "input": ["#808080"],
+      "output": 0
+    },
+    {
+      "description": "Saturated red has high chroma",
+      "input": ["#ff0000"],
+      "output": 0.26
+    }
+  ]
+}
+

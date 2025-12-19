@@ -1,0 +1,25 @@
+// muted: Decrease chroma toward neutral (gray)
+// Preserves lightness and hue
+// Amount controls how much to reduce (0-1, 1 = fully gray)
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+
+// Default amount
+variable amount: Number = 0.5;
+if (input.length() > 1) [
+    amount = input.get(1);
+];
+
+// Move chroma toward 0 by the specified amount
+variable current_c: Number = color.c;
+variable new_c: Number = current_c * (1 - amount);
+
+// Create result
+variable result: Color.OKLCH;
+result.l = color.l;
+result.c = new_c;
+result.h = color.h;
+
+return result.to.srgb();
+

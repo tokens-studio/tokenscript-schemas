@@ -1,0 +1,9 @@
+// relative_luminance: Get WCAG 2.1 relative luminance
+// Returns Y value from XYZ-D65 (0 to 1)
+// Used for contrast ratio calculations
+
+variable input: List = {input};
+variable color: Color.XYZD65 = input.get(0).to.xyzd65();
+
+return color.y;
+

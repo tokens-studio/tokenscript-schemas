@@ -1,0 +1,34 @@
+// auto_text_color: Return black or white for best contrast on background
+// Uses WCAG relative luminance formula with configurable threshold
+// Default threshold 0.179 is derived from sqrt(1.05 * 0.05) - 0.05
+// which is the geometric mean of the luminance contrast ratios
+
+variable input: List = {input};
+
+// Default threshold based on WCAG luminance midpoint
+variable threshold: Number = 0.179;
+if (input.length() > 1) [
+    threshold = input.get(1);
+];
+
+// Convert to XYZ-D65 to get relative luminance (Y component)
+variable xyz: Color.XYZD65 = input.get(0).to.xyzd65();
+variable luminance: Number = xyz.y;
+
+// If luminance is above threshold, background is "light" -> use black text
+// If luminance is below threshold, background is "dark" -> use white text
+variable result: Color.SRGB;
+
+if (luminance > threshold) [
+    // Light background: return black
+    result.r = 0;
+    result.g = 0;
+    result.b = 0;
+] else [
+    // Dark background: return white
+    result.r = 1;
+    result.g = 1;
+    result.b = 1;
+];
+
+return result;

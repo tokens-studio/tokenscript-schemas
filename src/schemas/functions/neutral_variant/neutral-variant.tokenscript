@@ -1,0 +1,23 @@
+// neutral_variant: Create gray version of color preserving lightness
+// Optionally retain some chroma for subtle tinting
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+
+// Default to pure gray (0 chroma retention)
+variable retention: Number = 0;
+if (input.length() > 1) [
+    retention = input.get(1);
+];
+
+// Calculate retained chroma
+variable new_c: Number = color.c * retention;
+
+// Create result
+variable result: Color.OKLCH;
+result.l = color.l;
+result.c = new_c;
+result.h = color.h;  // Hue preserved for subtle tinting
+
+return result.to.srgb();
+

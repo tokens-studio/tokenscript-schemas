@@ -1,0 +1,116 @@
+// adjust_to_contrast: Adjust foreground lightness to meet target contrast
+// Preserves hue and chroma, uses binary search in OKLCH lightness
+// Based on WCAG 2.1 contrast ratio formula
+
+variable input: List = {input};
+variable foreground: Color.OKLCH = input.get(0).to.oklch();
+variable bg_xyz: Color.XYZD65 = input.get(1).to.xyzd65();
+
+// Default to WCAG AA for normal text
+variable target_ratio: Number = 4.5;
+if (input.length() > 2) [
+    target_ratio = input.get(2);
+];
+
+// Get background luminance
+variable bg_lum: Number = bg_xyz.y;
+
+// Determine if we need to go lighter or darker
+// Test with current foreground
+variable test_oklch: Color.OKLCH;
+test_oklch.l = foreground.l;
+test_oklch.c = foreground.c;
+test_oklch.h = foreground.h;
+
+variable test_xyz: Color.XYZD65 = test_oklch.to.srgb().to.xyzd65();
+variable fg_lum: Number = test_xyz.y;
+
+// Calculate current contrast
+variable l1: Number = fg_lum;
+variable l2: Number = bg_lum;
+if (l2 > l1) [
+    l1 = bg_lum;
+    l2 = fg_lum;
+];
+variable current_ratio: Number = (l1 + 0.05) / (l2 + 0.05);
+
+// If already meets target, return as-is
+if (current_ratio >= target_ratio) [
+    return foreground.to.srgb();
+];
+
+// Determine direction: if background is dark, we need lighter foreground and vice versa
+variable search_min: Number = 0;
+variable search_max: Number = 1;
+
+// Binary search for correct lightness
+variable epsilon: Number = 0.001;
+variable iterations: Number = 0;
+variable max_iterations: Number = 30;
+variable best_l: Number = foreground.l;
+variable best_ratio: Number = current_ratio;
+
+variable diff: Number = search_max - search_min;
+variable mid_l: Number = 0.5;
+variable test_ratio: Number = 1;
+
+while (diff > epsilon) [
+    if (iterations >= max_iterations) [
+        diff = 0;  // Force exit
+    ];
+    mid_l = (search_min + search_max) / 2;
+    
+    // Test this lightness
+    test_oklch.l = mid_l;
+    test_oklch.c = foreground.c;
+    test_oklch.h = foreground.h;
+    
+    // Convert to get luminance
+    test_xyz = test_oklch.to.srgb().to.xyzd65();
+    fg_lum = test_xyz.y;
+    
+    // Calculate contrast
+    l1 = fg_lum;
+    l2 = bg_lum;
+    if (l2 > l1) [
+        l1 = bg_lum;
+        l2 = fg_lum;
+    ];
+    test_ratio = (l1 + 0.05) / (l2 + 0.05);
+    
+    // Track best result
+    if (test_ratio >= target_ratio) [
+        // This lightness works, but can we get closer to original?
+        // If background is dark (low lum), we want darker foreground closer to original
+        // If background is light (high lum), we want lighter foreground closer to original
+        if (bg_lum < 0.18) [
+            // Dark background: search lower (darker)
+            search_max = mid_l;
+        ] else [
+            // Light background: search higher (lighter)
+            search_min = mid_l;
+        ];
+        best_l = mid_l;
+        best_ratio = test_ratio;
+    ] else [
+        // Not enough contrast, need more separation
+        if (bg_lum < 0.18) [
+            // Dark background: need lighter foreground
+            search_min = mid_l;
+        ] else [
+            // Light background: need darker foreground
+            search_max = mid_l;
+        ];
+    ];
+    
+    iterations = iterations + 1;
+    diff = search_max - search_min;
+];
+
+// Apply best lightness found
+variable result: Color.OKLCH;
+result.l = best_l;
+result.c = foreground.c;
+result.h = foreground.h;
+
+return result.to.srgb();
