@@ -43,6 +43,16 @@
         "type": "/api/v1/core/tokenscript/0/",
         "script": "./from-linear-srgb.tokenscript"
       }
+    },
+    {
+      "source": "/api/v1/core/p3-linear-color/0/",
+      "target": "$self",
+      "description": "Converts Linear P3 to XYZ-D65 using the P3 transformation matrix",
+      "lossless": true,
+      "script": {
+        "type": "/api/v1/core/tokenscript/0/",
+        "script": "./from-linear-p3.tokenscript"
+      }
     }
   ]
 }
