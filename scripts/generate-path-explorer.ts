@@ -114,25 +114,31 @@ async function setupInterpreter(): Promise<Config> {
     "oklab-color",
     "oklch-color",
     "hsl-color",
+    "css-color",
   ];
   return await setupColorManagerWithSchemas(allSchemas);
 }
 
+/**
+ * Generate CSS color string for a given color space and coordinates.
+ * Format matches css-color schema output (CSS Color Level 4 syntax).
+ */
 function getCss(spaceId: string, coords: number[]): string | null {
   const [c0, c1, c2] = coords.map((v) => (Number.isNaN(v) ? 0 : v));
   switch (spaceId) {
     case "srgb":
-      return `color(srgb ${c0.toFixed(3)} ${c1.toFixed(3)} ${c2.toFixed(3)})`;
+      return `color(srgb ${c0.toFixed(5)} ${c1.toFixed(5)} ${c2.toFixed(5)})`;
     case "srgb-linear":
-      return `color(srgb-linear ${c0.toFixed(3)} ${c1.toFixed(3)} ${c2.toFixed(3)})`;
+      return `color(srgb-linear ${c0.toFixed(5)} ${c1.toFixed(5)} ${c2.toFixed(5)})`;
     case "xyz-d65":
-      return `color(xyz-d65 ${c0.toFixed(3)} ${c1.toFixed(3)} ${c2.toFixed(3)})`;
+      return `color(xyz-d65 ${c0.toFixed(5)} ${c1.toFixed(5)} ${c2.toFixed(5)})`;
     case "oklab":
-      return `oklab(${c0.toFixed(3)} ${c1.toFixed(3)} ${c2.toFixed(3)})`;
+      return `oklab(${c0.toFixed(5)} ${c1.toFixed(5)} ${c2.toFixed(5)})`;
     case "oklch":
-      return `oklch(${c0.toFixed(3)} ${c1.toFixed(3)} ${c2.toFixed(1)})`;
+      return `oklch(${c0.toFixed(5)} ${c1.toFixed(5)} ${c2.toFixed(5)})`;
     case "hsl":
-      return `hsl(${c0.toFixed(1)} ${(c1 * 100).toFixed(1)}% ${(c2 * 100).toFixed(1)}%)`;
+      // HSL: s and l are 0-1 internally, output as percentages per CSS spec
+      return `hsl(${c0.toFixed(2)} ${(c1 * 100).toFixed(2)}% ${(c2 * 100).toFixed(2)}%)`;
     default:
       return null;
   }

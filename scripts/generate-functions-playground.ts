@@ -16,7 +16,6 @@
  * - Palettes: shade_scale, tint_scale, steps, diverging, distributed
  * - Color Manipulation: rotate_hue, set_lightness, set_chroma, set_hue, mix
  * - Analysis: is_light, is_dark, luminance, contrast_ratio, best_contrast
- * - UI States: hover_state, active_state, disabled_state, focus_ring, surface_pair
  *
  * Output: demo/functions-playground.html
  *
@@ -201,43 +200,6 @@ return diverging(cold, hot, 9);`,
     code: `return distributed(8, 0.7, 0.15, 30);`,
     category: "Design Token Scales",
   },
-  // Interactive States
-  {
-    name: "Hover State",
-    keyword: "hover_state",
-    description: "Generates hover feedback variant",
-    code: `variable light: Color.SRGB; light.r = 0.9; light.g = 0.9; light.b = 0.95;
-variable dark: Color.SRGB; dark.r = 0.2; dark.g = 0.3; dark.b = 0.5;
-variable accent: Color.SRGB; accent.r = 0.2; accent.g = 0.6; accent.b = 0.9;
-return light, hover_state(light), dark, hover_state(dark), accent, hover_state(accent);`,
-    category: "Interactive States",
-  },
-  {
-    name: "Active State",
-    keyword: "active_state",
-    description: "Generates pressed/active state variant",
-    code: `variable btn: Color.SRGB; btn.r = 0.2; btn.g = 0.6; btn.b = 0.9;
-return btn, active_state(btn), active_state(btn, 0.3);`,
-    category: "Interactive States",
-  },
-  {
-    name: "Disabled State",
-    keyword: "disabled_state",
-    description: "Generates muted disabled state",
-    code: `variable primary: Color.SRGB; primary.r = 0.2; primary.g = 0.6; primary.b = 0.9;
-variable danger: Color.SRGB; danger.r = 0.9; danger.g = 0.2; danger.b = 0.2;
-return primary, disabled_state(primary), danger, disabled_state(danger);`,
-    category: "Interactive States",
-  },
-  {
-    name: "Focus Ring",
-    keyword: "focus_ring",
-    description: "Accessible focus indicator color",
-    code: `variable light_bg: Color.SRGB; light_bg.r = 1; light_bg.g = 1; light_bg.b = 1;
-variable dark_bg: Color.SRGB; dark_bg.r = 0.1; dark_bg.g = 0.1; dark_bg.b = 0.15;
-return light_bg, focus_ring(light_bg), dark_bg, focus_ring(dark_bg);`,
-    category: "Interactive States",
-  },
   // Accessibility
   {
     name: "Contrast Ratio",
@@ -254,14 +216,6 @@ return contrast_ratio(bg, text);`,
     description: "Picks most readable color from list",
     code: `variable bg: Color.SRGB; bg.r = 0.2; bg.g = 0.5; bg.b = 0.8;
 return bg, best_contrast(bg);`,
-    category: "Accessibility",
-  },
-  {
-    name: "Surface Pair",
-    keyword: "surface_pair",
-    description: "Generates bg + readable text pair",
-    code: `variable surface: Color.SRGB; surface.r = 0.95; surface.g = 0.85; surface.b = 0.2;
-return surface_pair(surface);`,
     category: "Accessibility",
   },
   // Direct Manipulation

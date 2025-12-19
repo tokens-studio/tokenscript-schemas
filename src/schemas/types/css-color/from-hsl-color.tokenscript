@@ -1,0 +1,16 @@
+// HSL to CSS Conversion
+// Converts HSL to CSS hsl() syntax
+// CSS Color Level 4: hsl(h s l) where s and l are percentages
+//
+// Input: Color.HSL with h (0-360), s (0-1), l (0-1)
+// Output: Color.CSS with value like "hsl(120 50% 75%)"
+
+variable precision: Number = 100;
+variable h: Number = round({input}.h * precision) / precision;
+variable s: Number = round({input}.s * 100 * precision) / precision;
+variable l: Number = round({input}.l * 100 * precision) / precision;
+
+variable output: Color.CSS;
+output.value = "hsl(".concat(h.to_string()).concat(" ").concat(s.to_string()).concat("% ").concat(l.to_string()).concat("%)");
+return output;
+

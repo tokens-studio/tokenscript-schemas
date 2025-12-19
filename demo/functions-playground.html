@@ -223,11 +223,11 @@
     <p class="subtitle">Visual testing for TokenScript color manipulation functions</p>
     <div class="stats">
       <div class="stat">
-        <span class="stat-value">30/30</span>
+        <span class="stat-value">25/25</span>
         <span class="stat-label">passing</span>
       </div>
       <div class="stat">
-        <span class="stat-value">8</span>
+        <span class="stat-value">7</span>
         <span class="stat-label">categories</span>
       </div>
     </div>
@@ -605,93 +605,6 @@ return diverging(cold, hot, 9);</pre>
       </section>
     
       <section class="category">
-        <h2>Interactive States</h2>
-        <div class="demos">
-    
-        <div class="demo-card">
-          <div class="demo-header">
-            <span class="demo-name">Hover State</span>
-            <span class="demo-status pass">✓</span>
-          </div>
-          <p class="demo-desc">Generates hover feedback variant</p>
-          
-          <div class="swatches">
-            <div class="swatch" style="background: rgb(230, 230, 242)"></div><div class="swatch" style="background: rgb(213, 213, 226)"></div><div class="swatch" style="background: rgb(51, 77, 128)"></div><div class="swatch" style="background: rgb(63, 91, 144)"></div><div class="swatch" style="background: rgb(51, 153, 230)"></div><div class="swatch" style="background: rgb(20, 137, 215)"></div>
-          </div>
-        
-          
-          <details>
-            <summary>Code</summary>
-            <pre class="demo-code">variable light: Color.SRGB; light.r = 0.9; light.g = 0.9; light.b = 0.95;
-variable dark: Color.SRGB; dark.r = 0.2; dark.g = 0.3; dark.b = 0.5;
-variable accent: Color.SRGB; accent.r = 0.2; accent.g = 0.6; accent.b = 0.9;
-return light, hover_state(light), dark, hover_state(dark), accent, hover_state(accent);</pre>
-          </details>
-        </div>
-      
-        <div class="demo-card">
-          <div class="demo-header">
-            <span class="demo-name">Active State</span>
-            <span class="demo-status pass">✓</span>
-          </div>
-          <p class="demo-desc">Generates pressed/active state variant</p>
-          
-          <div class="swatches">
-            <div class="swatch" style="background: rgb(51, 153, 230)"></div><div class="swatch" style="background: rgb(0, 92, 160)"></div><div class="swatch" style="background: rgb(0, 63, 127)"></div>
-          </div>
-        
-          
-          <details>
-            <summary>Code</summary>
-            <pre class="demo-code">variable btn: Color.SRGB; btn.r = 0.2; btn.g = 0.6; btn.b = 0.9;
-return btn, active_state(btn), active_state(btn, 0.3);</pre>
-          </details>
-        </div>
-      
-        <div class="demo-card">
-          <div class="demo-header">
-            <span class="demo-name">Disabled State</span>
-            <span class="demo-status pass">✓</span>
-          </div>
-          <p class="demo-desc">Generates muted disabled state</p>
-          
-          <div class="swatches">
-            <div class="swatch" style="background: rgb(51, 153, 230)"></div><div class="swatch" style="background: rgb(103, 136, 165)"></div><div class="swatch" style="background: rgb(230, 51, 51)"></div><div class="swatch" style="background: rgb(165, 100, 93)"></div>
-          </div>
-        
-          
-          <details>
-            <summary>Code</summary>
-            <pre class="demo-code">variable primary: Color.SRGB; primary.r = 0.2; primary.g = 0.6; primary.b = 0.9;
-variable danger: Color.SRGB; danger.r = 0.9; danger.g = 0.2; danger.b = 0.2;
-return primary, disabled_state(primary), danger, disabled_state(danger);</pre>
-          </details>
-        </div>
-      
-        <div class="demo-card">
-          <div class="demo-header">
-            <span class="demo-name">Focus Ring</span>
-            <span class="demo-status pass">✓</span>
-          </div>
-          <p class="demo-desc">Accessible focus indicator color</p>
-          
-          <div class="swatches">
-            <div class="swatch" style="background: rgb(255, 255, 255)"></div><div class="swatch" style="background: rgb(0, 81, 189)"></div><div class="swatch" style="background: rgb(26, 26, 38)"></div><div class="swatch" style="background: rgb(0, 161, 255)"></div>
-          </div>
-        
-          
-          <details>
-            <summary>Code</summary>
-            <pre class="demo-code">variable light_bg: Color.SRGB; light_bg.r = 1; light_bg.g = 1; light_bg.b = 1;
-variable dark_bg: Color.SRGB; dark_bg.r = 0.1; dark_bg.g = 0.1; dark_bg.b = 0.15;
-return light_bg, focus_ring(light_bg), dark_bg, focus_ring(dark_bg);</pre>
-          </details>
-        </div>
-      
-        </div>
-      </section>
-    
-      <section class="category">
         <h2>Accessibility</h2>
         <div class="demos">
     
@@ -731,25 +644,6 @@ return contrast_ratio(bg, text);</pre>
             <summary>Code</summary>
             <pre class="demo-code">variable bg: Color.SRGB; bg.r = 0.2; bg.g = 0.5; bg.b = 0.8;
 return bg, best_contrast(bg);</pre>
-          </details>
-        </div>
-      
-        <div class="demo-card">
-          <div class="demo-header">
-            <span class="demo-name">Surface Pair</span>
-            <span class="demo-status pass">✓</span>
-          </div>
-          <p class="demo-desc">Generates bg + readable text pair</p>
-          
-          <div class="swatches">
-            <div class="swatch" style="background: rgb(242, 217, 51)"></div><div class="swatch" style="background: rgb(0, 0, 0)"></div>
-          </div>
-        
-          
-          <details>
-            <summary>Code</summary>
-            <pre class="demo-code">variable surface: Color.SRGB; surface.r = 0.95; surface.g = 0.85; surface.b = 0.2;
-return surface_pair(surface);</pre>
           </details>
         </div>
       

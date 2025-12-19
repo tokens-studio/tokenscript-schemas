@@ -16,7 +16,7 @@ variable a: Number = {input}.a;
 variable b: Number = {input}.b;
 
 // Constants
-variable pi: Number = 3.14159265358979323846;
+variable pi: Number = pi();
 variable rad_to_deg: Number = 180 / pi;
 
 // Calculate chroma (distance from neutral axis)

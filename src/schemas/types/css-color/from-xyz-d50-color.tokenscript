@@ -1,0 +1,16 @@
+// XYZ-D50 to CSS Conversion
+// Converts XYZ-D50 to CSS color(xyz-d50) syntax
+// CSS Color Level 4: color(xyz-d50 x y z)
+//
+// Input: Color.XYZD50 with x, y, z tristimulus values
+// Output: Color.CSS with value like "color(xyz-d50 0.4360 0.2225 0.0139)"
+
+variable precision: Number = 100000;
+variable x: Number = round({input}.x * precision) / precision;
+variable y: Number = round({input}.y * precision) / precision;
+variable z: Number = round({input}.z * precision) / precision;
+
+variable output: Color.CSS;
+output.value = "color(xyz-d50 ".concat(x.to_string()).concat(" ").concat(y.to_string()).concat(" ").concat(z.to_string()).concat(")");
+return output;
+

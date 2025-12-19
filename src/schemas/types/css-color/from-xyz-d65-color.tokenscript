@@ -1,0 +1,16 @@
+// XYZ-D65 to CSS Conversion
+// Converts XYZ-D65 to CSS color(xyz-d65) syntax
+// CSS Color Level 4: color(xyz-d65 x y z) or color(xyz x y z)
+//
+// Input: Color.XYZD65 with x, y, z tristimulus values
+// Output: Color.CSS with value like "color(xyz-d65 0.4124 0.2126 0.0193)"
+
+variable precision: Number = 100000;
+variable x: Number = round({input}.x * precision) / precision;
+variable y: Number = round({input}.y * precision) / precision;
+variable z: Number = round({input}.z * precision) / precision;
+
+variable output: Color.CSS;
+output.value = "color(xyz-d65 ".concat(x.to_string()).concat(" ").concat(y.to_string()).concat(" ").concat(z.to_string()).concat(")");
+return output;
+
