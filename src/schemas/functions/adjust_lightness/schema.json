@@ -1,0 +1,49 @@
+{
+  "name": "adjust_lightness",
+  "type": "function",
+  "description": "Adjusts a color's lightness by a relative amount. Positive values make it lighter, negative values make it darker. Unlike set_lightness which sets an absolute value, adjust_lightness adds to the current lightness. Result is clamped to valid range [0, 1].",
+  "keyword": "adjust_lightness",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Color to adjust",
+            "type": "color"
+          },
+          {
+            "description": "Amount to adjust lightness (+/-)",
+            "type": "number"
+          }
+        ],
+        "minItems": 2,
+        "maxItems": 2
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "color",
+    "description": "Color with adjusted lightness"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./adjust-lightness.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Lighten a color",
+      "input": ["#808080", 0.2],
+      "output": "Lighter gray"
+    },
+    {
+      "description": "Darken a color",
+      "input": ["#808080", -0.3],
+      "output": "Darker gray"
+    }
+  ]
+}
+

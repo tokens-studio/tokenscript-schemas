@@ -1,0 +1,21 @@
+// clamp_chroma: Constrain chroma to a range
+// Preserves hue and lightness
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+variable min_c: Number = input.get(1);
+variable max_c: Number = input.get(2);
+
+// Clamp chroma
+variable new_c: Number = color.c;
+if (new_c < min_c) [ new_c = min_c; ];
+if (new_c > max_c) [ new_c = max_c; ];
+
+// Create result
+variable result: Color.OKLCH;
+result.l = color.l;
+result.c = new_c;
+result.h = color.h;
+
+return result.to.srgb();
+

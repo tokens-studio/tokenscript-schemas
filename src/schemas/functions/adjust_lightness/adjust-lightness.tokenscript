@@ -1,0 +1,22 @@
+// adjust_lightness: Adjust lightness by relative amount
+// Preserves hue and chroma
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+variable amount: Number = input.get(1);
+
+// Calculate new lightness
+variable new_l: Number = color.l + amount;
+
+// Clamp to valid range
+if (new_l < 0) [ new_l = 0; ];
+if (new_l > 1) [ new_l = 1; ];
+
+// Create result
+variable result: Color.OKLCH;
+result.l = new_l;
+result.c = color.c;
+result.h = color.h;
+
+return result.to.srgb();
+

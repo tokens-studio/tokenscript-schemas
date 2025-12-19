@@ -1,0 +1,48 @@
+// interpolate: Blend between two colors in OKLCH perceptual space
+// Uses shortest-path hue interpolation
+
+variable input: List = {input};
+variable start: Color.OKLCH = input.get(0).to.oklch();
+variable end: Color.OKLCH = input.get(1).to.oklch();
+
+// Default to midpoint
+variable t: Number = 0.5;
+if (input.length() > 2) [
+    t = input.get(2);
+];
+
+// Clamp t to valid range
+if (t < 0) [ t = 0; ];
+if (t > 1) [ t = 1; ];
+
+// Interpolate lightness and chroma linearly
+variable result_l: Number = start.l + (end.l - start.l) * t;
+variable result_c: Number = start.c + (end.c - start.c) * t;
+
+// Interpolate hue using shortest path
+variable h1: Number = start.h;
+variable h2: Number = end.h;
+variable delta_h: Number = h2 - h1;
+
+// Normalize to shortest path around the circle
+if (delta_h > 180) [
+    delta_h = delta_h - 360;
+];
+if (delta_h < -180) [
+    delta_h = delta_h + 360;
+];
+
+variable result_h: Number = h1 + delta_h * t;
+
+// Normalize result hue to 0-360
+if (result_h < 0) [ result_h = result_h + 360; ];
+if (result_h >= 360) [ result_h = result_h - 360; ];
+
+// Create result
+variable result: Color.OKLCH;
+result.l = result_l;
+result.c = result_c;
+result.h = result_h;
+
+return result.to.srgb();
+

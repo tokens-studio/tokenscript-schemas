@@ -1,0 +1,49 @@
+{
+  "name": "adjust_hue",
+  "type": "function",
+  "description": "Adjusts a color's hue by a relative amount in degrees. Positive values rotate clockwise, negative values counter-clockwise. Unlike set_hue which sets an absolute value, adjust_hue adds to the current hue. Uses OKLCH for perceptually uniform hue rotation.",
+  "keyword": "adjust_hue",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Color to adjust",
+            "type": "color"
+          },
+          {
+            "description": "Degrees to rotate hue (+ or -)",
+            "type": "number"
+          }
+        ],
+        "minItems": 2,
+        "maxItems": 2
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "color",
+    "description": "Color with adjusted hue"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./adjust-hue.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Shift red toward orange",
+      "input": ["#ff0000", 30],
+      "output": "Orange color"
+    },
+    {
+      "description": "Shift blue toward green",
+      "input": ["#0000ff", -60],
+      "output": "Cyan color"
+    }
+  ]
+}
+

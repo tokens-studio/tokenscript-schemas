@@ -1,0 +1,53 @@
+{
+  "name": "clamp_chroma",
+  "type": "function",
+  "description": "Constrains a color's chroma (saturation) to a specified range while preserving hue and lightness. Useful for ensuring colors stay within brand guidelines or design constraints. Uses OKLCH for perceptually uniform clamping.",
+  "keyword": "clamp_chroma",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Color to clamp",
+            "type": "color"
+          },
+          {
+            "description": "Minimum chroma (0+)",
+            "type": "number"
+          },
+          {
+            "description": "Maximum chroma (typically 0-0.4)",
+            "type": "number"
+          }
+        ],
+        "minItems": 3,
+        "maxItems": 3
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "color",
+    "description": "Color with clamped chroma"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./clamp-chroma.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Limit maximum saturation",
+      "input": ["#ff0000", 0, 0.15],
+      "output": "Muted red with chroma 0.15"
+    },
+    {
+      "description": "Ensure minimum saturation",
+      "input": ["#808080", 0.05, 0.3],
+      "output": "Slightly colored gray"
+    }
+  ]
+}
+
