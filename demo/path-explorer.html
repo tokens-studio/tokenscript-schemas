@@ -3,103 +3,287 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Color Conversion Path Explorer</title>
+  <title>Color Path Explorer — Tokens Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://colorjs.io/dist/color.global.js"></script>
   <style>
+    :root {
+      --bg-primary: #09090b;
+      --bg-secondary: #18181b;
+      --bg-tertiary: #27272a;
+      --bg-elevated: #3f3f46;
+      --border-subtle: rgba(255,255,255,0.06);
+      --border-default: rgba(255,255,255,0.1);
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --accent: #a855f7;
+      --accent-muted: rgba(168, 85, 247, 0.15);
+      --success: #22c55e;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+    }
+    
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     body {
-      font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-      background: linear-gradient(145deg, #0d0d0d 0%, #1a1a2e 50%, #0d0d0d 100%);
-      color: #e0e0e0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
       min-height: 100vh;
-      padding: 2rem;
+      line-height: 1.5;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 48px 32px;
+    }
+    
+    /* Header */
+    header {
+      margin-bottom: 48px;
+    }
+    
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent), #ec4899);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .brand-icon svg {
+      width: 18px;
+      height: 18px;
+      fill: white;
     }
     
     h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
     }
     
     .subtitle {
-      color: #888;
-      margin-bottom: 2rem;
-      font-size: 0.9rem;
+      color: var(--text-tertiary);
+      font-size: 14px;
     }
     
+    /* Controls */
     .controls {
       display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 2rem;
-      padding: 1.25rem;
-      background: rgba(255,255,255,0.03);
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.1);
-      align-items: flex-end;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      margin-bottom: 32px;
     }
     
     .control-group {
       display: flex;
       flex-direction: column;
-      gap: 0.4rem;
+      gap: 6px;
     }
     
     .control-group label {
-      font-size: 0.7rem;
-      color: #888;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-tertiary);
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
     
-    select, input[type="text"] {
-      padding: 0.6rem 0.8rem;
-      border-radius: 6px;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(0,0,0,0.3);
-      color: #fff;
-      font-size: 0.9rem;
-      min-width: 130px;
+    select {
+      appearance: none;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-sm);
+      padding: 10px 32px 10px 12px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      min-width: 140px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      transition: border-color 0.15s, background-color 0.15s;
+    }
+    
+    select:hover {
+      background-color: var(--bg-elevated);
+    }
+    
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    
+    .color-input-group {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
     }
     
     input[type="color"] {
-      width: 50px;
-      height: 38px;
-      padding: 2px;
-      border-radius: 6px;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(0,0,0,0.3);
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      border: none;
+      border-radius: var(--radius-sm);
       cursor: pointer;
+      background: transparent;
+    }
+    
+    input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+    
+    input[type="color"]::-webkit-color-swatch {
+      border: 2px solid var(--border-default);
+      border-radius: var(--radius-sm);
+    }
+    
+    input[type="text"] {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--text-primary);
+      width: 90px;
+      transition: border-color 0.15s;
+    }
+    
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    
+    .spacer {
+      flex: 1;
     }
     
     button {
-      padding: 0.6rem 1.2rem;
-      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: var(--accent);
       border: none;
-      background: linear-gradient(135deg, #60a5fa, #a78bfa);
-      color: white;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 13px;
       font-weight: 600;
-      font-size: 0.85rem;
+      color: white;
       cursor: pointer;
-      transition: transform 0.1s, opacity 0.1s;
+      transition: opacity 0.15s, transform 0.1s;
     }
     
     button:hover {
       opacity: 0.9;
-      transform: translateY(-1px);
     }
     
-    /* Horizontal conversion chain */
-    .conversion-chain {
+    button:active {
+      transform: scale(0.98);
+    }
+    
+    button svg {
+      width: 14px;
+      height: 14px;
+    }
+    
+    /* Path visualization */
+    .path-section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    
+    .path-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(255,255,255,0.02);
+    }
+    
+    .path-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .path-steps {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    
+    .path-step {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--accent-muted);
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+    
+    .path-arrow {
+      color: var(--text-tertiary);
+      font-size: 11px;
+    }
+    
+    .step-count {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+    
+    /* Conversion chain */
+    .chain {
       display: flex;
       align-items: stretch;
+      padding: 24px;
       gap: 0;
       overflow-x: auto;
-      padding: 1rem 0;
+    }
+    
+    .chain::-webkit-scrollbar {
+      height: 6px;
+    }
+    
+    .chain::-webkit-scrollbar-track {
+      background: var(--bg-tertiary);
+      border-radius: 3px;
+    }
+    
+    .chain::-webkit-scrollbar-thumb {
+      background: var(--bg-elevated);
+      border-radius: 3px;
     }
     
     .chain-item {
@@ -108,297 +292,366 @@
     }
     
     .step-card {
-      background: rgba(255,255,255,0.04);
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.1);
-      padding: 1rem;
-      min-width: 140px;
-      max-width: 160px;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      min-width: 120px;
+      transition: border-color 0.15s;
     }
     
-    .step-header {
-      text-align: center;
+    .step-card:hover {
+      border-color: var(--accent);
     }
     
     .step-name {
-      font-size: 0.85rem;
+      font-size: 11px;
       font-weight: 600;
-      color: #fff;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
     }
     
-    .color-swatch {
+    .color-preview {
       width: 100%;
-      height: 50px;
-      border-radius: 6px;
-      border: 1px solid rgba(255,255,255,0.15);
+      aspect-ratio: 1;
+      border-radius: var(--radius-sm);
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
     }
     
-    .swatch-unavailable {
-      background: repeating-linear-gradient(45deg, #222, #222 4px, #333 4px, #333 8px);
+    .color-preview::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        linear-gradient(45deg, #333 25%, transparent 25%),
+        linear-gradient(-45deg, #333 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #333 75%),
+        linear-gradient(-45deg, transparent 75%, #333 75%);
+      background-size: 8px 8px;
+      background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
+      opacity: 0.5;
+      z-index: 0;
+    }
+    
+    .color-preview-inner {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+    
+    .no-css {
+      position: absolute;
+      inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.65rem;
-      color: #666;
+      font-size: 9px;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      z-index: 2;
     }
     
-    .step-values {
-      font-family: 'SF Mono', Monaco, 'Consolas', monospace;
-      font-size: 0.7rem;
+    .coords {
       display: flex;
       flex-direction: column;
-      gap: 0.2rem;
+      gap: 4px;
     }
     
     .coord-row {
       display: flex;
       justify-content: space-between;
-      color: #999;
+      align-items: baseline;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
     }
     
     .coord-label {
-      color: #666;
+      color: var(--text-tertiary);
     }
     
     .coord-value {
-      color: #60a5fa;
-    }
-    
-    /* Arrow connector between cards */
-    .arrow-connector {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 0 0.5rem;
-      min-width: 70px;
-    }
-    
-    .arrow-line {
-      width: 30px;
-      height: 2px;
-      background: linear-gradient(90deg, #60a5fa, #a78bfa);
-    }
-    
-    .arrow-head {
-      width: 0;
-      height: 0;
-      border-top: 5px solid transparent;
-      border-bottom: 5px solid transparent;
-      border-left: 8px solid #a78bfa;
-      margin-left: -1px;
-    }
-    
-    .arrow-top {
-      display: flex;
-      align-items: center;
-    }
-    
-    .transform-label {
-      font-size: 0.6rem;
-      color: #a78bfa;
-      text-align: center;
-      margin-top: 0.4rem;
-      line-height: 1.3;
-      max-width: 80px;
-    }
-    
-    /* Path header */
-    .path-header {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-    }
-    
-    .path-step {
-      padding: 0.25rem 0.5rem;
-      background: rgba(96, 165, 250, 0.15);
-      border-radius: 4px;
-      color: #60a5fa;
-      font-size: 0.75rem;
+      color: var(--text-primary);
       font-weight: 500;
     }
     
-    .path-arrow {
-      color: #666;
-      font-size: 0.8rem;
+    /* Arrow connector */
+    .connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 8px;
+      min-width: 60px;
     }
     
-    /* Graph section */
-    .graph-section {
-      margin-top: 2rem;
-      padding: 1.25rem;
-      background: rgba(255,255,255,0.03);
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.1);
+    .connector-line {
+      display: flex;
+      align-items: center;
     }
     
-    .graph-section h2 {
-      font-size: 1rem;
-      margin-bottom: 0.75rem;
-      color: #a78bfa;
+    .connector-line::before {
+      content: '';
+      width: 24px;
+      height: 1px;
+      background: var(--border-default);
     }
     
-    .graph-description {
-      font-size: 0.8rem;
-      color: #888;
-      line-height: 1.5;
-      margin-bottom: 1rem;
+    .connector-line::after {
+      content: '';
+      width: 0;
+      height: 0;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      border-left: 6px solid var(--text-tertiary);
     }
     
-    .space-grid {
+    .transform-name {
+      font-size: 9px;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-top: 6px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    
+    /* Empty state */
+    #no-path {
+      display: none;
+      padding: 48px;
+      text-align: center;
+      color: var(--text-tertiary);
+    }
+    
+    /* Footer info */
+    .info-section {
+      margin-top: 32px;
+      padding: 20px 24px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+    }
+    
+    .info-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+    
+    .info-text {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    
+    .space-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.4rem;
+      gap: 6px;
     }
     
-    .space-chip {
-      padding: 0.3rem 0.5rem;
-      background: rgba(96, 165, 250, 0.1);
-      border: 1px solid rgba(96, 165, 250, 0.25);
-      border-radius: 4px;
-      font-size: 0.7rem;
-      color: #60a5fa;
+    .space-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-secondary);
+      background: var(--bg-tertiary);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
     }
     
-    .space-chip.hub {
-      background: rgba(167, 139, 250, 0.15);
-      border-color: rgba(167, 139, 250, 0.35);
-      color: #a78bfa;
-      font-weight: 600;
-    }
-    
-    #no-path {
-      padding: 1.5rem;
-      text-align: center;
-      color: #ef4444;
-      background: rgba(239, 68, 68, 0.1);
-      border-radius: 10px;
-      display: none;
-      font-size: 0.9rem;
+    .space-tag.hub {
+      color: var(--accent);
+      background: var(--accent-muted);
+      border-color: transparent;
     }
     
     footer {
-      margin-top: 2rem;
-      text-align: center;
-      color: #555;
-      font-size: 0.75rem;
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+    
+    .footer-brand img {
+      height: 16px;
+      opacity: 0.5;
+    }
+    
+    .footer-links {
+      display: flex;
+      gap: 16px;
+    }
+    
+    .footer-links a {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    
+    .footer-links a:hover {
+      color: var(--text-secondary);
     }
   </style>
 </head>
 <body>
-  <h1>🔀 Color Conversion Path Explorer</h1>
-  <p class="subtitle">Visualize the automatic conversion chain between color spaces</p>
-  
-  <div class="controls">
-    <div class="control-group">
-      <label>From</label>
-      <select id="from-space">
-        <option value="srgb">sRGB</option>
-        <option value="srgb-linear">Linear sRGB</option>
-        <option value="xyz-d65">XYZ D65</option>
-        <option value="xyz-d50">XYZ D50</option>
-        <option value="oklab">OKLab</option>
-        <option value="oklch">OKLCH</option>
-        <option value="lab">CIE Lab</option>
-        <option value="lch">CIE LCH</option>
-        <option value="hsl">HSL</option>
-        <option value="hsv">HSV</option>
-        <option value="hwb">HWB</option>
-        <option value="p3">Display P3</option>
-      </select>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        </div>
+        <h1>Color Path Explorer</h1>
+      </div>
+      <p class="subtitle">Visualize color space conversion paths</p>
+    </header>
+    
+    <div class="controls">
+      <div class="control-group">
+        <label>From</label>
+        <select id="from-space">
+          <option value="srgb">sRGB</option>
+          <option value="srgb-linear">Linear sRGB</option>
+          <option value="xyz-d65">XYZ D65</option>
+          <option value="xyz-d50">XYZ D50</option>
+          <option value="oklab">OKLab</option>
+          <option value="oklch">OKLCH</option>
+          <option value="lab">Lab</option>
+          <option value="lch">LCH</option>
+          <option value="hsl">HSL</option>
+          <option value="hsv">HSV</option>
+          <option value="hwb">HWB</option>
+          <option value="p3">Display P3</option>
+        </select>
+      </div>
+      
+      <div class="control-group">
+        <label>To</label>
+        <select id="to-space">
+          <option value="srgb" >sRGB</option>
+          <option value="srgb-linear" >Linear sRGB</option>
+          <option value="xyz-d65" >XYZ D65</option>
+          <option value="xyz-d50" >XYZ D50</option>
+          <option value="oklab" >OKLab</option>
+          <option value="oklch" selected>OKLCH</option>
+          <option value="lab" >Lab</option>
+          <option value="lch" >LCH</option>
+          <option value="hsl" >HSL</option>
+          <option value="hsv" >HSV</option>
+          <option value="hwb" >HWB</option>
+          <option value="p3" >Display P3</option>
+        </select>
+      </div>
+      
+      <div class="control-group">
+        <label>Color</label>
+        <div class="color-input-group">
+          <input type="color" id="color-picker" value="#a855f7">
+          <input type="text" id="hex-input" value="#a855f7" spellcheck="false">
+        </div>
+      </div>
+      
+      <div class="spacer"></div>
+      
+      <button onclick="updateConversion()">
+        Convert
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
     </div>
     
-    <div class="control-group">
-      <label>To</label>
-      <select id="to-space">
-        <option value="srgb" >sRGB</option>
-        <option value="srgb-linear" >Linear sRGB</option>
-        <option value="xyz-d65" >XYZ D65</option>
-        <option value="xyz-d50" >XYZ D50</option>
-        <option value="oklab" >OKLab</option>
-        <option value="oklch" selected>OKLCH</option>
-        <option value="lab" >CIE Lab</option>
-        <option value="lch" >CIE LCH</option>
-        <option value="hsl" >HSL</option>
-        <option value="hsv" >HSV</option>
-        <option value="hwb" >HWB</option>
-        <option value="p3" >Display P3</option>
-      </select>
+    <div class="path-section">
+      <div class="path-header">
+        <span class="path-label">Path</span>
+        <div class="path-steps" id="path-steps"></div>
+        <span class="step-count" id="step-count"></span>
+      </div>
+      <div id="no-path">No conversion path available</div>
+      <div class="chain" id="chain"></div>
     </div>
     
-    <div class="control-group">
-      <label>Color</label>
-      <input type="color" id="color-picker" value="#ff6b6b">
+    <div class="info-section">
+      <div class="info-title">Conversion Graph</div>
+      <p class="info-text">
+        Colors are converted through a graph of color spaces. <strong>XYZ D65</strong> is the central hub connecting most perceptual spaces.
+        HSL, HSV, and HWB connect directly through sRGB.
+      </p>
+      <div class="space-tags">
+        <span class="space-tag ">sRGB</span>
+        <span class="space-tag ">Linear sRGB</span>
+        <span class="space-tag hub">XYZ D65</span>
+        <span class="space-tag ">XYZ D50</span>
+        <span class="space-tag ">OKLab</span>
+        <span class="space-tag ">OKLCH</span>
+        <span class="space-tag ">Lab</span>
+        <span class="space-tag ">LCH</span>
+        <span class="space-tag ">HSL</span>
+        <span class="space-tag ">HSV</span>
+        <span class="space-tag ">HWB</span>
+        <span class="space-tag ">Display P3</span>
+      </div>
     </div>
     
-    <div class="control-group">
-      <label>Hex</label>
-      <input type="text" id="hex-input" value="#ff6b6b" placeholder="#ff6b6b" style="width: 100px;">
-    </div>
-    
-    <button onclick="updateConversion()">Convert →</button>
+    <footer>
+      <div class="footer-brand">
+        <span>Tokens Studio</span>
+        <span>·</span>
+        <span>Color Schema Registry</span>
+      </div>
+      <div class="footer-links">
+        <a href="color-comparison.html">Parity Tests</a>
+        <a href="advanced-tests.html">Advanced Tests</a>
+      </div>
+    </footer>
   </div>
-  
-  <div class="path-header" id="path-header"></div>
-  <div id="no-path">No conversion path found between these spaces!</div>
-  <div class="conversion-chain" id="conversion-chain"></div>
-  
-  <div class="graph-section">
-    <h2>📊 Conversion Graph</h2>
-    <p class="graph-description">
-      <strong>XYZ D65</strong> is the central hub connecting most spaces. HSL, HSV, HWB connect directly through sRGB.
-    </p>
-    <div class="space-grid">
-      <span class="space-chip ">sRGB</span>
-      <span class="space-chip ">Linear sRGB</span>
-      <span class="space-chip hub">XYZ D65</span>
-      <span class="space-chip ">XYZ D50</span>
-      <span class="space-chip ">OKLab</span>
-      <span class="space-chip ">OKLCH</span>
-      <span class="space-chip ">CIE Lab</span>
-      <span class="space-chip ">CIE LCH</span>
-      <span class="space-chip ">HSL</span>
-      <span class="space-chip ">HSV</span>
-      <span class="space-chip ">HWB</span>
-      <span class="space-chip ">Display P3</span>
-    </div>
-  </div>
-  
-  <footer>TokenScript Color Schema Registry • Path Explorer</footer>
   
   <script>
     const allPaths = {"srgb":{"srgb":["srgb"],"srgb-linear":["srgb","srgb-linear"],"xyz-d65":["srgb","srgb-linear","xyz-d65"],"xyz-d50":["srgb","srgb-linear","xyz-d65","xyz-d50"],"oklab":["srgb","srgb-linear","xyz-d65","oklab"],"oklch":["srgb","srgb-linear","xyz-d65","oklab","oklch"],"lab":["srgb","srgb-linear","xyz-d65","xyz-d50","lab"],"lch":["srgb","srgb-linear","xyz-d65","xyz-d50","lab","lch"],"hsl":["srgb","hsl"],"hsv":["srgb","hsv"],"hwb":["srgb","hwb"],"p3":["srgb","srgb-linear","xyz-d65","p3"]},"srgb-linear":{"srgb":["srgb-linear","srgb"],"srgb-linear":["srgb-linear"],"xyz-d65":["srgb-linear","xyz-d65"],"xyz-d50":["srgb-linear","xyz-d65","xyz-d50"],"oklab":["srgb-linear","xyz-d65","oklab"],"oklch":["srgb-linear","xyz-d65","oklab","oklch"],"lab":["srgb-linear","xyz-d65","xyz-d50","lab"],"lch":["srgb-linear","xyz-d65","xyz-d50","lab","lch"],"hsl":["srgb-linear","srgb","hsl"],"hsv":["srgb-linear","srgb","hsv"],"hwb":["srgb-linear","srgb","hwb"],"p3":["srgb-linear","xyz-d65","p3"]},"xyz-d65":{"srgb":["xyz-d65","srgb-linear","srgb"],"srgb-linear":["xyz-d65","srgb-linear"],"xyz-d65":["xyz-d65"],"xyz-d50":["xyz-d65","xyz-d50"],"oklab":["xyz-d65","oklab"],"oklch":["xyz-d65","oklab","oklch"],"lab":["xyz-d65","xyz-d50","lab"],"lch":["xyz-d65","xyz-d50","lab","lch"],"hsl":["xyz-d65","srgb-linear","srgb","hsl"],"hsv":["xyz-d65","srgb-linear","srgb","hsv"],"hwb":["xyz-d65","srgb-linear","srgb","hwb"],"p3":["xyz-d65","p3"]},"xyz-d50":{"srgb":["xyz-d50","xyz-d65","srgb-linear","srgb"],"srgb-linear":["xyz-d50","xyz-d65","srgb-linear"],"xyz-d65":["xyz-d50","xyz-d65"],"xyz-d50":["xyz-d50"],"oklab":["xyz-d50","xyz-d65","oklab"],"oklch":["xyz-d50","xyz-d65","oklab","oklch"],"lab":["xyz-d50","lab"],"lch":["xyz-d50","lab","lch"],"hsl":["xyz-d50","xyz-d65","srgb-linear","srgb","hsl"],"hsv":["xyz-d50","xyz-d65","srgb-linear","srgb","hsv"],"hwb":["xyz-d50","xyz-d65","srgb-linear","srgb","hwb"],"p3":["xyz-d50","xyz-d65","p3"]},"oklab":{"srgb":["oklab","xyz-d65","srgb-linear","srgb"],"srgb-linear":["oklab","xyz-d65","srgb-linear"],"xyz-d65":["oklab","xyz-d65"],"xyz-d50":["oklab","xyz-d65","xyz-d50"],"oklab":["oklab"],"oklch":["oklab","oklch"],"lab":["oklab","xyz-d65","xyz-d50","lab"],"lch":["oklab","xyz-d65","xyz-d50","lab","lch"],"hsl":["oklab","xyz-d65","srgb-linear","srgb","hsl"],"hsv":["oklab","xyz-d65","srgb-linear","srgb","hsv"],"hwb":["oklab","xyz-d65","srgb-linear","srgb","hwb"],"p3":["oklab","xyz-d65","p3"]},"oklch":{"srgb":["oklch","oklab","xyz-d65","srgb-linear","srgb"],"srgb-linear":["oklch","oklab","xyz-d65","srgb-linear"],"xyz-d65":["oklch","oklab","xyz-d65"],"xyz-d50":["oklch","oklab","xyz-d65","xyz-d50"],"oklab":["oklch","oklab"],"oklch":["oklch"],"lab":["oklch","oklab","xyz-d65","xyz-d50","lab"],"lch":["oklch","oklab","xyz-d65","xyz-d50","lab","lch"],"hsl":["oklch","oklab","xyz-d65","srgb-linear","srgb","hsl"],"hsv":["oklch","oklab","xyz-d65","srgb-linear","srgb","hsv"],"hwb":["oklch","oklab","xyz-d65","srgb-linear","srgb","hwb"],"p3":["oklch","oklab","xyz-d65","p3"]},"lab":{"srgb":["lab","xyz-d50","xyz-d65","srgb-linear","srgb"],"srgb-linear":["lab","xyz-d50","xyz-d65","srgb-linear"],"xyz-d65":["lab","xyz-d50","xyz-d65"],"xyz-d50":["lab","xyz-d50"],"oklab":["lab","xyz-d50","xyz-d65","oklab"],"oklch":["lab","xyz-d50","xyz-d65","oklab","oklch"],"lab":["lab"],"lch":["lab","lch"],"hsl":["lab","xyz-d50","xyz-d65","srgb-linear","srgb","hsl"],"hsv":["lab","xyz-d50","xyz-d65","srgb-linear","srgb","hsv"],"hwb":["lab","xyz-d50","xyz-d65","srgb-linear","srgb","hwb"],"p3":["lab","xyz-d50","xyz-d65","p3"]},"lch":{"srgb":["lch","lab","xyz-d50","xyz-d65","srgb-linear","srgb"],"srgb-linear":["lch","lab","xyz-d50","xyz-d65","srgb-linear"],"xyz-d65":["lch","lab","xyz-d50","xyz-d65"],"xyz-d50":["lch","lab","xyz-d50"],"oklab":["lch","lab","xyz-d50","xyz-d65","oklab"],"oklch":["lch","lab","xyz-d50","xyz-d65","oklab","oklch"],"lab":["lch","lab"],"lch":["lch"],"hsl":["lch","lab","xyz-d50","xyz-d65","srgb-linear","srgb","hsl"],"hsv":["lch","lab","xyz-d50","xyz-d65","srgb-linear","srgb","hsv"],"hwb":["lch","lab","xyz-d50","xyz-d65","srgb-linear","srgb","hwb"],"p3":["lch","lab","xyz-d50","xyz-d65","p3"]},"hsl":{"srgb":["hsl","srgb"],"srgb-linear":["hsl","srgb","srgb-linear"],"xyz-d65":["hsl","srgb","srgb-linear","xyz-d65"],"xyz-d50":["hsl","srgb","srgb-linear","xyz-d65","xyz-d50"],"oklab":["hsl","srgb","srgb-linear","xyz-d65","oklab"],"oklch":["hsl","srgb","srgb-linear","xyz-d65","oklab","oklch"],"lab":["hsl","srgb","srgb-linear","xyz-d65","xyz-d50","lab"],"lch":["hsl","srgb","srgb-linear","xyz-d65","xyz-d50","lab","lch"],"hsl":["hsl"],"hsv":["hsl","srgb","hsv"],"hwb":["hsl","srgb","hwb"],"p3":["hsl","srgb","srgb-linear","xyz-d65","p3"]},"hsv":{"srgb":["hsv","srgb"],"srgb-linear":["hsv","srgb","srgb-linear"],"xyz-d65":["hsv","srgb","srgb-linear","xyz-d65"],"xyz-d50":["hsv","srgb","srgb-linear","xyz-d65","xyz-d50"],"oklab":["hsv","srgb","srgb-linear","xyz-d65","oklab"],"oklch":["hsv","srgb","srgb-linear","xyz-d65","oklab","oklch"],"lab":["hsv","srgb","srgb-linear","xyz-d65","xyz-d50","lab"],"lch":["hsv","srgb","srgb-linear","xyz-d65","xyz-d50","lab","lch"],"hsl":["hsv","srgb","hsl"],"hsv":["hsv"],"hwb":["hsv","srgb","hwb"],"p3":["hsv","srgb","srgb-linear","xyz-d65","p3"]},"hwb":{"srgb":["hwb","srgb"],"srgb-linear":["hwb","srgb","srgb-linear"],"xyz-d65":["hwb","srgb","srgb-linear","xyz-d65"],"xyz-d50":["hwb","srgb","srgb-linear","xyz-d65","xyz-d50"],"oklab":["hwb","srgb","srgb-linear","xyz-d65","oklab"],"oklch":["hwb","srgb","srgb-linear","xyz-d65","oklab","oklch"],"lab":["hwb","srgb","srgb-linear","xyz-d65","xyz-d50","lab"],"lch":["hwb","srgb","srgb-linear","xyz-d65","xyz-d50","lab","lch"],"hsl":["hwb","srgb","hsl"],"hsv":["hwb","srgb","hsv"],"hwb":["hwb"],"p3":["hwb","srgb","srgb-linear","xyz-d65","p3"]},"p3":{"srgb":["p3","xyz-d65","srgb-linear","srgb"],"srgb-linear":["p3","xyz-d65","srgb-linear"],"xyz-d65":["p3","xyz-d65"],"xyz-d50":["p3","xyz-d65","xyz-d50"],"oklab":["p3","xyz-d65","oklab"],"oklch":["p3","xyz-d65","oklab","oklch"],"lab":["p3","xyz-d65","xyz-d50","lab"],"lch":["p3","xyz-d65","xyz-d50","lab","lch"],"hsl":["p3","xyz-d65","srgb-linear","srgb","hsl"],"hsv":["p3","xyz-d65","srgb-linear","srgb","hsv"],"hwb":["p3","xyz-d65","srgb-linear","srgb","hwb"],"p3":["p3"]}};
-    
-    const colorSpaces = [{"id":"srgb","displayName":"sRGB","coords":["r","g","b"],"cssSupported":true},{"id":"srgb-linear","displayName":"Linear sRGB","coords":["r","g","b"],"cssSupported":true},{"id":"xyz-d65","displayName":"XYZ D65","coords":["x","y","z"],"cssSupported":true},{"id":"xyz-d50","displayName":"XYZ D50","coords":["x","y","z"],"cssSupported":true},{"id":"oklab","displayName":"OKLab","coords":["L","a","b"],"cssSupported":true},{"id":"oklch","displayName":"OKLCH","coords":["L","C","H"],"cssSupported":true},{"id":"lab","displayName":"CIE Lab","coords":["L","a","b"],"cssSupported":true},{"id":"lch","displayName":"CIE LCH","coords":["L","C","H"],"cssSupported":true},{"id":"hsl","displayName":"HSL","coords":["H","S","L"],"cssSupported":true},{"id":"hsv","displayName":"HSV","coords":["H","S","V"],"cssSupported":false},{"id":"hwb","displayName":"HWB","coords":["H","W","B"],"cssSupported":true},{"id":"p3","displayName":"Display P3","coords":["r","g","b"],"cssSupported":true}];
+    const colorSpaces = [{"id":"srgb","displayName":"sRGB","coords":["R","G","B"],"cssSupported":true},{"id":"srgb-linear","displayName":"Linear sRGB","coords":["R","G","B"],"cssSupported":true,"parent":"srgb"},{"id":"xyz-d65","displayName":"XYZ D65","coords":["X","Y","Z"],"cssSupported":true,"parent":"srgb-linear"},{"id":"xyz-d50","displayName":"XYZ D50","coords":["X","Y","Z"],"cssSupported":true,"parent":"xyz-d65"},{"id":"oklab","displayName":"OKLab","coords":["L","a","b"],"cssSupported":true,"parent":"xyz-d65"},{"id":"oklch","displayName":"OKLCH","coords":["L","C","H"],"cssSupported":true,"parent":"oklab"},{"id":"lab","displayName":"Lab","coords":["L","a","b"],"cssSupported":true,"parent":"xyz-d50"},{"id":"lch","displayName":"LCH","coords":["L","C","H"],"cssSupported":true,"parent":"lab"},{"id":"hsl","displayName":"HSL","coords":["H","S","L"],"cssSupported":true,"parent":"srgb"},{"id":"hsv","displayName":"HSV","coords":["H","S","V"],"cssSupported":false,"parent":"srgb"},{"id":"hwb","displayName":"HWB","coords":["H","W","B"],"cssSupported":true,"parent":"srgb"},{"id":"p3","displayName":"Display P3","coords":["R","G","B"],"cssSupported":true,"parent":"xyz-d65"}];
     
     const transforms = {
-      'srgb->srgb-linear': 'γ decode',
-      'srgb-linear->srgb': 'γ encode',
+      'srgb->srgb-linear': 'Linearize',
+      'srgb-linear->srgb': 'Gamma',
       'srgb-linear->xyz-d65': 'Matrix',
-      'xyz-d65->srgb-linear': 'Matrix⁻¹',
+      'xyz-d65->srgb-linear': 'Matrix',
       'xyz-d65->oklab': 'LMS',
       'oklab->xyz-d65': 'LMS⁻¹',
       'oklab->oklch': 'Polar',
-      'oklch->oklab': 'Cartesian',
+      'oklch->oklab': 'Rect',
       'xyz-d65->xyz-d50': 'Bradford',
-      'xyz-d50->xyz-d65': 'Bradford⁻¹',
-      'xyz-d50->lab': 'CIE Lab',
-      'lab->xyz-d50': 'CIE Lab⁻¹',
+      'xyz-d50->xyz-d65': 'Bradford',
+      'xyz-d50->lab': 'Lab',
+      'lab->xyz-d50': 'Lab⁻¹',
       'lab->lch': 'Polar',
-      'lch->lab': 'Cartesian',
+      'lch->lab': 'Rect',
       'srgb->hsl': 'HSL',
-      'hsl->srgb': 'HSL⁻¹',
+      'hsl->srgb': 'RGB',
       'srgb->hsv': 'HSV',
-      'hsv->srgb': 'HSV⁻¹',
+      'hsv->srgb': 'RGB',
       'srgb->hwb': 'HWB',
-      'hwb->srgb': 'HWB⁻¹',
-      'xyz-d65->p3': 'P3 Matrix',
-      'p3->xyz-d65': 'P3 Matrix⁻¹',
+      'hwb->srgb': 'RGB',
+      'xyz-d65->p3': 'Matrix',
+      'p3->xyz-d65': 'Matrix',
     };
     
     function getTransform(from, to) {
@@ -407,28 +660,28 @@
     
     function hexToRgb(hex) {
       const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-      return r ? [parseInt(r[1], 16)/255, parseInt(r[2], 16)/255, parseInt(r[3], 16)/255] : [1,0,0];
+      return r ? [parseInt(r[1],16)/255, parseInt(r[2],16)/255, parseInt(r[3],16)/255] : [0.66,0.33,0.97];
     }
     
     function fmt(v, d=4) {
-      if (v === undefined || v === null || isNaN(v)) return 'NaN';
+      if (v === undefined || v === null || isNaN(v)) return '—';
       return v.toFixed(d);
     }
     
     function getCss(spaceId, coords) {
       const c = coords.map(v => isNaN(v) ? 0 : v);
       switch (spaceId) {
-        case 'srgb': return `color(srgb ${c.map(v=>fmt(v,3)).join(' ')})`;
-        case 'srgb-linear': return `color(srgb-linear ${c.map(v=>fmt(v,3)).join(' ')})`;
-        case 'xyz-d65': return `color(xyz-d65 ${c.map(v=>fmt(v,3)).join(' ')})`;
-        case 'xyz-d50': return `color(xyz-d50 ${c.map(v=>fmt(v,3)).join(' ')})`;
-        case 'oklab': return `oklab(${fmt(c[0],3)} ${fmt(c[1],3)} ${fmt(c[2],3)})`;
-        case 'oklch': return `oklch(${fmt(c[0],3)} ${fmt(c[1],3)} ${fmt(c[2],1)})`;
-        case 'lab': return `lab(${fmt(c[0],1)} ${fmt(c[1],2)} ${fmt(c[2],2)})`;
-        case 'lch': return `lch(${fmt(c[0],1)} ${fmt(c[1],2)} ${fmt(c[2],1)})`;
-        case 'hsl': return `hsl(${fmt(c[0],1)} ${fmt(c[1]*100,1)}% ${fmt(c[2]*100,1)}%)`;
-        case 'hwb': return `hwb(${fmt(c[0],1)} ${fmt(c[1]*100,1)}% ${fmt(c[2]*100,1)}%)`;
-        case 'p3': return `color(display-p3 ${c.map(v=>fmt(v,3)).join(' ')})`;
+        case 'srgb': return `color(srgb ${c.map(v=>v.toFixed(3)).join(' ')})`;
+        case 'srgb-linear': return `color(srgb-linear ${c.map(v=>v.toFixed(3)).join(' ')})`;
+        case 'xyz-d65': return `color(xyz-d65 ${c.map(v=>v.toFixed(3)).join(' ')})`;
+        case 'xyz-d50': return `color(xyz-d50 ${c.map(v=>v.toFixed(3)).join(' ')})`;
+        case 'oklab': return `oklab(${c[0].toFixed(3)} ${c[1].toFixed(3)} ${c[2].toFixed(3)})`;
+        case 'oklch': return `oklch(${c[0].toFixed(3)} ${c[1].toFixed(3)} ${c[2].toFixed(1)})`;
+        case 'lab': return `lab(${c[0].toFixed(1)} ${c[1].toFixed(2)} ${c[2].toFixed(2)})`;
+        case 'lch': return `lch(${c[0].toFixed(1)} ${c[1].toFixed(2)} ${c[2].toFixed(1)})`;
+        case 'hsl': return `hsl(${c[0].toFixed(1)} ${(c[1]*100).toFixed(1)}% ${(c[2]*100).toFixed(1)}%)`;
+        case 'hwb': return `hwb(${c[0].toFixed(1)} ${(c[1]*100).toFixed(1)}% ${(c[2]*100).toFixed(1)}%)`;
+        case 'p3': return `color(display-p3 ${c.map(v=>v.toFixed(3)).join(' ')})`;
         default: return null;
       }
     }
@@ -439,25 +692,30 @@
       const hexInput = document.getElementById('hex-input').value;
       
       const path = allPaths[fromSpace]?.[toSpace];
-      const pathHeader = document.getElementById('path-header');
+      const pathSteps = document.getElementById('path-steps');
+      const stepCount = document.getElementById('step-count');
       const noPath = document.getElementById('no-path');
-      const chain = document.getElementById('conversion-chain');
+      const chain = document.getElementById('chain');
       
       if (!path) {
-        pathHeader.innerHTML = '';
+        pathSteps.innerHTML = '';
+        stepCount.textContent = '';
         noPath.style.display = 'block';
-        chain.innerHTML = '';
+        chain.style.display = 'none';
         return;
       }
       
       noPath.style.display = 'none';
+      chain.style.display = 'flex';
       
       // Path header
-      pathHeader.innerHTML = path.map((step, i) => {
+      pathSteps.innerHTML = path.map((step, i) => {
         const sp = colorSpaces.find(s => s.id === step);
         const html = `<span class="path-step">${sp?.displayName || step}</span>`;
         return i < path.length - 1 ? html + '<span class="path-arrow">→</span>' : html;
       }).join(' ');
+      
+      stepCount.textContent = `${path.length} step${path.length > 1 ? 's' : ''}`;
       
       // Build chain
       const rgb = hexToRgb(hexInput);
@@ -470,7 +728,6 @@
         const converted = currentColor.to(spaceId);
         const coords = [...converted.coords];
         
-        // Normalize HSL/HSV/HWB
         if (['hsl', 'hsv', 'hwb'].includes(spaceId)) {
           coords[1] = coords[1] / 100;
           coords[2] = coords[2] / 100;
@@ -479,16 +736,13 @@
         const css = getCss(spaceId, coords);
         const canShow = spaceInfo?.cssSupported && css;
         
-        // Add arrow before card (except first)
+        // Connector (except first)
         if (i > 0) {
           const transform = getTransform(path[i-1], spaceId);
           chainHTML += `
-            <div class="arrow-connector">
-              <div class="arrow-top">
-                <div class="arrow-line"></div>
-                <div class="arrow-head"></div>
-              </div>
-              <div class="transform-label">${transform}</div>
+            <div class="connector">
+              <div class="connector-line"></div>
+              <div class="transform-name">${transform}</div>
             </div>
           `;
         }
@@ -497,14 +751,14 @@
         chainHTML += `
           <div class="chain-item">
             <div class="step-card">
-              <div class="step-header">
-                <div class="step-name">${spaceInfo?.displayName || spaceId}</div>
+              <div class="step-name">${spaceInfo?.displayName || spaceId}</div>
+              <div class="color-preview">
+                ${canShow 
+                  ? `<div class="color-preview-inner" style="background: ${css}"></div>`
+                  : `<div class="no-css">No CSS</div>`
+                }
               </div>
-              ${canShow 
-                ? `<div class="color-swatch" style="background: ${css}"></div>`
-                : `<div class="color-swatch swatch-unavailable">No CSS</div>`
-              }
-              <div class="step-values">
+              <div class="coords">
                 ${spaceInfo?.coords.map((c, j) => `
                   <div class="coord-row">
                     <span class="coord-label">${c}</span>
@@ -523,12 +777,19 @@
     // Sync inputs
     document.getElementById('color-picker').addEventListener('input', e => {
       document.getElementById('hex-input').value = e.target.value;
+      updateConversion();
     });
+    
     document.getElementById('hex-input').addEventListener('input', e => {
       if (/^#[0-9A-Fa-f]{6}$/.test(e.target.value)) {
         document.getElementById('color-picker').value = e.target.value;
+        updateConversion();
       }
     });
+    
+    // Auto-update on select change
+    document.getElementById('from-space').addEventListener('change', updateConversion);
+    document.getElementById('to-space').addEventListener('change', updateConversion);
     
     updateConversion();
   </script>
