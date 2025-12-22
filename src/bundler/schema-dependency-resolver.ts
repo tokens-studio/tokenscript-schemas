@@ -2,13 +2,14 @@
  * Utilities for resolving schema dependencies automatically
  */
 
+import { join } from "node:path";
 import type {
   ColorSpecification,
   FunctionSpecification,
   SchemaSpecification,
 } from "@/bundler/types.js";
 import { extractSchemaName, parseSchemaUri } from "@/utils/schema-uri";
-import { bundleSchemaForRuntime } from "./schema-loader";
+import { bundleSchemaFromDirectory } from "./bundle-schema.js";
 
 export interface SchemaReference {
   slug: string;
@@ -16,10 +17,24 @@ export interface SchemaReference {
   uri: string;
 }
 
+export interface ExtractRequirementsOptions {
+  /**
+   * Whether to include type dependencies from color conversions
+   * Useful for testing to ensure all conversion types are loaded
+   * @default false
+   */
+  includeColorTypeDependencies?: boolean;
+}
+
 /**
  * Extract all required schema URIs from a schema specification
+ * Only extracts explicit requirements - not conversions (which are capabilities, not dependencies)
+ * However, for testing purposes, can optionally include color type dependencies from conversions
  */
-function extractRequirements(spec: SchemaSpecification): string[] {
+function extractRequirements(
+  spec: SchemaSpecification,
+  options: ExtractRequirementsOptions = {},
+): string[] {
   const requirements: string[] = [];
 
   if (spec.type === "function") {
@@ -28,8 +43,9 @@ function extractRequirements(spec: SchemaSpecification): string[] {
     if (funcSpec.requirements) {
       requirements.push(...funcSpec.requirements);
     }
-  } else if (spec.type === "color") {
-    // Color types have requirements through conversions
+  } else if (spec.type === "color" && options.includeColorTypeDependencies) {
+    // Color types have requirements through conversions (when flag is enabled)
+    // This is useful for testing to ensure all conversion types are loaded
     const colorSpec = spec as ColorSpecification;
     for (const conversion of colorSpec.conversions || []) {
       // Add source if it's not $self
@@ -42,6 +58,8 @@ function extractRequirements(spec: SchemaSpecification): string[] {
       }
     }
   }
+  // Note: By default, color types don't have dependencies via conversions
+  // Conversions are capabilities, not requirements
 
   return requirements;
 }
@@ -95,13 +113,24 @@ export interface ResolvedDependencies {
   functions: string[];
 }
 
+export interface DependencyNode {
+  slug: string;
+  type: "type" | "function";
+  dependencies: string[];
+}
+
+export interface CollectRequiredSchemasOptions extends ExtractRequirementsOptions {
+  baseUrl?: string;
+  schemasDir?: string;
+}
+
 /**
  * Recursively collect all required schemas for a given schema
  * Returns a flat list of all dependencies (including transitive ones)
  *
  * @param slugOrUri - Schema slug (e.g., "rgb-color") or full URI
  * @param type - Schema type ("type" or "function"), optional if URI is provided
- * @param baseUrl - Base URL for bundling, defaults to test registry
+ * @param options - Options for dependency collection
  * @returns Object with separated type and function dependencies
  *
  * @example
@@ -116,8 +145,9 @@ export interface ResolvedDependencies {
 export async function collectRequiredSchemas(
   slugOrUri: string,
   type?: "type" | "function",
-  baseUrl?: string,
+  options: CollectRequiredSchemasOptions = {},
 ): Promise<ResolvedDependencies> {
+  const { baseUrl, schemasDir, ...extractOptions } = options;
   const visited = new Set<string>();
   const typeSchemas = new Set<string>();
   const functionSchemas = new Set<string>();
@@ -144,14 +174,20 @@ export async function collectRequiredSchemas(
     // Try to load the schema
     let spec: SchemaSpecification;
     try {
-      spec = await bundleSchemaForRuntime(slug, effectiveType, baseUrl);
+      // Dynamically determine schema directory
+      const categoryDir = effectiveType === "type" ? "types" : "functions";
+      const resolvedSchemasDir =
+        schemasDir || process.env.SCHEMAS_DIR || join(process.cwd(), "src/schemas");
+      const schemaDir = join(resolvedSchemasDir, categoryDir, slug);
+
+      spec = await bundleSchemaFromDirectory(schemaDir, baseUrl ? { baseUrl } : undefined);
     } catch (error) {
       console.warn(`Failed to load schema ${slug} (${effectiveType}):`, error);
       return;
     }
 
     // Extract requirements from this schema
-    const requirements = extractRequirements(spec);
+    const requirements = extractRequirements(spec, extractOptions);
 
     // Recursively traverse requirements
     for (const reqUri of requirements) {
@@ -191,13 +227,13 @@ export async function collectRequiredSchemas(
  */
 export async function collectRequiredSchemasForList(
   schemas: Array<{ slug: string; type: "type" | "function" }>,
-  baseUrl?: string,
+  options: CollectRequiredSchemasOptions = {},
 ): Promise<ResolvedDependencies> {
   const allTypes = new Set<string>();
   const allFunctions = new Set<string>();
 
   for (const schema of schemas) {
-    const deps = await collectRequiredSchemas(schema.slug, schema.type, baseUrl);
+    const deps = await collectRequiredSchemas(schema.slug, schema.type, options);
 
     // Add the schema itself
     if (schema.type === "function") {
@@ -219,4 +255,44 @@ export async function collectRequiredSchemasForList(
     types: Array.from(allTypes),
     functions: Array.from(allFunctions),
   };
+}
+
+/**
+ * Collect dependency tree for schemas (non-recursive, shows direct dependencies only)
+ */
+export async function collectDependencyTree(
+  schemas: Array<{ slug: string; type: "type" | "function" }>,
+  options: CollectRequiredSchemasOptions = {},
+): Promise<Map<string, DependencyNode>> {
+  const { baseUrl, schemasDir, ...extractOptions } = options;
+  const tree = new Map<string, DependencyNode>();
+
+  for (const schema of schemas) {
+    const categoryDir = schema.type === "type" ? "types" : "functions";
+    const resolvedSchemasDir =
+      schemasDir || process.env.SCHEMAS_DIR || join(process.cwd(), "src/schemas");
+    const schemaDir = join(resolvedSchemasDir, categoryDir, schema.slug);
+
+    try {
+      const spec = await bundleSchemaFromDirectory(schemaDir, baseUrl ? { baseUrl } : undefined);
+      const requirements = extractRequirements(spec, extractOptions);
+
+      // Extract just the slugs from URIs
+      const dependencySlugs = requirements.map((uri) => {
+        const ref = resolveSchemaReference(uri);
+        return ref ? `${ref.type}:${ref.slug}` : uri;
+      });
+
+      const key = `${schema.type}:${schema.slug}`;
+      tree.set(key, {
+        slug: schema.slug,
+        type: schema.type,
+        dependencies: dependencySlugs,
+      });
+    } catch (error) {
+      console.warn(`Failed to load schema ${schema.slug} (${schema.type}):`, error);
+    }
+  }
+
+  return tree;
 }

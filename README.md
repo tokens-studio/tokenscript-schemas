@@ -13,6 +13,73 @@ This package provides a centralized registry of TokenScript schemas with tools t
 
 ## Usage
 
+### CLI Tool
+
+Bundle specific schemas for use in your projects with automatic dependency resolution:
+
+```bash
+# Bundle specific color schemas
+npx @tokenscript/schema-registry bundle oklch-color rgb-color -o ./schemas.js
+
+# Bundle with functions
+npx @tokenscript/schema-registry bundle rgb-color function:invert -o ./schemas.js
+
+# Use config file for repeatable builds
+npx @tokenscript/schema-registry bundle --config schemas.json
+
+# Preview what would be bundled (dry-run)
+npx @tokenscript/schema-registry bundle oklch-color rgb-color --dry-run
+
+# List available schemas
+npx @tokenscript/schema-registry list
+npx @tokenscript/schema-registry list --types
+npx @tokenscript/schema-registry list --functions
+```
+
+**Config File Format** (`schemas.json`):
+
+```json
+{
+  "schemas": ["oklch-color", "rgb-color", "function:invert"],
+  "output": "./src/generated/schemas.js"
+}
+```
+
+**Generated Output** (`schemas.js`):
+
+```javascript
+import { Config } from "@tokens-studio/tokenscript-interpreter";
+
+export const SCHEMAS = [
+  { uri: "https://schema.../rgb-color/0/", schema: { /* bundled schema */ } },
+  { uri: "https://schema.../oklch-color/0/", schema: { /* bundled schema */ } },
+  // ... all dependencies included
+];
+
+export function makeConfig() {
+  return new Config().registerSchemas(SCHEMAS);
+}
+```
+
+**Using in Your Code**:
+
+```javascript
+import { makeConfig } from "./schemas.js";
+import { Interpreter, Lexer, Parser } from "@tokens-studio/tokenscript-interpreter";
+
+const config = makeConfig();
+
+const code = `
+  variable c: Color.Rgb = rgb(255, 128, 64);
+  c.to.oklch()
+`;
+
+const lexer = new Lexer(code);
+const parser = new Parser(lexer);
+const interpreter = new Interpreter(parser, { config });
+const result = interpreter.interpret();
+```
+
 ## Structure
 
 Each schema is self-contained in its own folder with file-based script references:

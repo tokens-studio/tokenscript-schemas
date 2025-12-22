@@ -5,6 +5,9 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "tokenscript-schemas": "./dist/cli/index.js"
+  },
   "exports": {
     ".": {
       "import": {
@@ -61,7 +64,9 @@
   "license": "MPL-2.0",
   "dependencies": {
     "@tokens-studio/tokenscript-interpreter": "^0.16.0",
-    "arktype": "^2.1.25"
+    "arktype": "^2.1.25",
+    "cac": "^6.7.14",
+    "ulog": "^2.0.0-beta.19"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.4",
