@@ -17,7 +17,6 @@ import { describe, expect, it } from "vitest";
 import type { ColorSpecification } from "@/bundler/types";
 
 // Tolerance for ColorJS parity
-const _TOLERANCE = 0.01; // 1% tolerance for S and L
 const HUE_TOLERANCE = 1; // 1 degree tolerance for hue
 
 describe("OKHSL Color Schema", () => {

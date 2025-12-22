@@ -94,11 +94,13 @@ for (const color of wideGamutColors) {
     inGamut,
     css: {
       input: `color(display-p3 ${color.p3.join(" ")})`,
-      output: inGamut ? `color(srgb ${srgbColor.coords.map((c) => c.toFixed(4)).join(" ")})` : null,
+      output: inGamut
+        ? `color(srgb ${srgbColor.coords.map((c: number) => c.toFixed(4)).join(" ")})`
+        : null,
     },
     notes: inGamut
       ? "Within sRGB gamut"
-      : `Out of gamut! RGB has negative values: [${srgbColor.coords.map((c) => c.toFixed(3)).join(", ")}]`,
+      : `Out of gamut! RGB has negative values: [${srgbColor.coords.map((c: number) => c.toFixed(3)).join(", ")}]`,
   });
 }
 
@@ -134,7 +136,7 @@ for (const color of roundTripColors) {
     inGamut: true,
     css: {
       input: `color(srgb ${color.srgb.join(" ")})`,
-      output: `color(srgb ${roundTrip.coords.map((c) => c.toFixed(6)).join(" ")})`,
+      output: `color(srgb ${roundTrip.coords.map((c: number) => c.toFixed(6)).join(" ")})`,
     },
     notes: maxDiff < 1e-10 ? "✅ Perfect round-trip" : `⚠️ Δ max: ${maxDiff.toExponential(2)}`,
   });
@@ -222,7 +224,7 @@ for (const hue of maxChromaHues) {
     inGamut: true,
     css: {
       input: `oklch(0.7 ${maxChroma.toFixed(3)} ${hue})`,
-      output: `color(srgb ${srgbColor.coords.map((c) => c.toFixed(4)).join(" ")})`,
+      output: `color(srgb ${srgbColor.coords.map((c: number) => c.toFixed(4)).join(" ")})`,
     },
     notes: `Max chroma: ${maxChroma.toFixed(3)}`,
   });
@@ -305,7 +307,7 @@ for (const color of edgeCases) {
     inGamut: true,
     css: {
       input: `color(srgb ${color.srgb.join(" ")})`,
-      output: `color(xyz-d65 ${xyzColor.coords.map((c) => c.toFixed(6)).join(" ")})`,
+      output: `color(xyz-d65 ${xyzColor.coords.map((c: number) => c.toFixed(6)).join(" ")})`,
     },
     notes: "Boundary condition test",
   });
