@@ -10,10 +10,7 @@ import type { FunctionSpecification } from "@/bundler/types";
 describe("adjust_hue function", () => {
   describe("Schema Definition", () => {
     it("should have correct schema structure", async () => {
-      const schema = (await getBundledSchema(
-        "adjust_hue",
-        "function"
-      )) as FunctionSpecification;
+      const schema = (await getBundledSchema("adjust_hue", "function")) as FunctionSpecification;
 
       expect(schema.name).toBe("adjust_hue");
       expect(schema.type).toBe("function");
@@ -29,7 +26,7 @@ describe("adjust_hue function", () => {
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
         adjust_hue(red, 90).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -44,7 +41,7 @@ describe("adjust_hue function", () => {
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
         adjust_hue(red, -90).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -59,7 +56,7 @@ describe("adjust_hue function", () => {
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
         adjust_hue(red, 360).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -69,4 +66,3 @@ describe("adjust_hue function", () => {
     });
   });
 });
-

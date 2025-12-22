@@ -1,7 +1,5 @@
+import { executeWithSchema } from "@tests/helpers/schema-test-utils";
 import { describe, expect, it } from "vitest";
-import {
-  executeWithSchema,
-} from "@tests/helpers/schema-test-utils";
 
 describe("Hue Difference Function", () => {
   describe("Schema Definition", () => {
@@ -125,4 +123,3 @@ describe("Hue Difference Function", () => {
     });
   });
 });
-

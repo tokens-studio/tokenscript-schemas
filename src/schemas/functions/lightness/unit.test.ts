@@ -10,10 +10,7 @@ import type { FunctionSpecification } from "@/bundler/types";
 describe("lightness function", () => {
   describe("Schema Definition", () => {
     it("should have correct schema structure", async () => {
-      const schema = (await getBundledSchema(
-        "lightness",
-        "function"
-      )) as FunctionSpecification;
+      const schema = (await getBundledSchema("lightness", "function")) as FunctionSpecification;
 
       expect(schema.name).toBe("lightness");
       expect(schema.type).toBe("function");
@@ -29,7 +26,7 @@ describe("lightness function", () => {
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
         lightness(white)
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -45,7 +42,7 @@ describe("lightness function", () => {
         variable black: Color.SRGB;
         black.r = 0; black.g = 0; black.b = 0;
         lightness(black)
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -61,7 +58,7 @@ describe("lightness function", () => {
         variable gray: Color.SRGB;
         gray.r = 0.5; gray.g = 0.5; gray.b = 0.5;
         lightness(gray)
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -79,7 +76,7 @@ describe("lightness function", () => {
         variable yellow: Color.SRGB;
         yellow.r = 1; yellow.g = 1; yellow.b = 0;
         lightness(yellow)
-        `
+        `,
       );
 
       const blueResult = await executeWithSchema(
@@ -89,7 +86,7 @@ describe("lightness function", () => {
         variable blue: Color.SRGB;
         blue.r = 0; blue.g = 0; blue.b = 1;
         lightness(blue)
-        `
+        `,
       );
 
       const yellowL = (yellowResult as any).value ?? yellowResult;

@@ -10,10 +10,7 @@ import type { FunctionSpecification } from "@/bundler/types";
 describe("wcag_level function", () => {
   describe("Schema Definition", () => {
     it("should have correct schema structure", async () => {
-      const schema = (await getBundledSchema(
-        "wcag_level",
-        "function"
-      )) as FunctionSpecification;
+      const schema = (await getBundledSchema("wcag_level", "function")) as FunctionSpecification;
 
       expect(schema.name).toBe("wcag_level");
       expect(schema.type).toBe("function");
@@ -31,7 +28,7 @@ describe("wcag_level function", () => {
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
         wcag_level(black, white)
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -49,7 +46,7 @@ describe("wcag_level function", () => {
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
         wcag_level(white, black)
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -67,7 +64,7 @@ describe("wcag_level function", () => {
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
         wcag_level(light_gray, white)
-        `
+        `,
       );
 
       expect(result).toBeDefined();

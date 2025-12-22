@@ -10,10 +10,7 @@ import type { FunctionSpecification } from "@/bundler/types";
 describe("warmer function", () => {
   describe("Schema Definition", () => {
     it("should have correct schema structure", async () => {
-      const schema = (await getBundledSchema(
-        "warmer",
-        "function"
-      )) as FunctionSpecification;
+      const schema = (await getBundledSchema("warmer", "function")) as FunctionSpecification;
 
       expect(schema.name).toBe("warmer");
       expect(schema.type).toBe("function");
@@ -29,7 +26,7 @@ describe("warmer function", () => {
         variable blue: Color.SRGB;
         blue.r = 0; blue.g = 0; blue.b = 1;
         warmer(blue, 0.5).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -46,7 +43,7 @@ describe("warmer function", () => {
         variable green: Color.SRGB;
         green.r = 0; green.g = 1; green.b = 0;
         warmer(green, 0.5).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -63,11 +60,10 @@ describe("warmer function", () => {
         variable blue: Color.SRGB;
         blue.r = 0; blue.g = 0; blue.b = 1;
         warmer(blue).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
     });
   });
 });
-

@@ -12,7 +12,7 @@ describe("adjust_to_contrast function", () => {
     it("should have correct schema structure", async () => {
       const schema = (await getBundledSchema(
         "adjust_to_contrast",
-        "function"
+        "function",
       )) as FunctionSpecification;
 
       expect(schema.name).toBe("adjust_to_contrast");
@@ -31,7 +31,7 @@ describe("adjust_to_contrast function", () => {
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
         adjust_to_contrast(black, white, 4.5).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -50,7 +50,7 @@ describe("adjust_to_contrast function", () => {
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
         adjust_to_contrast(light_gray, white, 4.5).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -69,7 +69,7 @@ describe("adjust_to_contrast function", () => {
         variable black: Color.SRGB;
         black.r = 0; black.g = 0; black.b = 0;
         adjust_to_contrast(dark_gray, black, 4.5).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();

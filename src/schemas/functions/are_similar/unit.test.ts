@@ -10,10 +10,7 @@ import type { FunctionSpecification } from "@/bundler/types";
 describe("are_similar function", () => {
   describe("Schema Definition", () => {
     it("should have correct schema structure", async () => {
-      const schema = (await getBundledSchema(
-        "are_similar",
-        "function"
-      )) as FunctionSpecification;
+      const schema = (await getBundledSchema("are_similar", "function")) as FunctionSpecification;
 
       expect(schema.name).toBe("are_similar");
       expect(schema.type).toBe("function");
@@ -31,7 +28,7 @@ describe("are_similar function", () => {
         variable c2: Color.SRGB;
         c2.r = 0.5; c2.g = 0.5; c2.b = 0.5;
         are_similar(c1, c2)
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -49,7 +46,7 @@ describe("are_similar function", () => {
         variable green: Color.SRGB;
         green.r = 0; green.g = 1; green.b = 0;
         are_similar(red, green)
-        `
+        `,
       );
 
       expect(result).toBeDefined();

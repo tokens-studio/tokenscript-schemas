@@ -17,7 +17,7 @@ import { describe, expect, it } from "vitest";
 import type { ColorSpecification } from "@/bundler/types";
 
 // Tolerance for ColorJS parity
-const TOLERANCE = 0.01; // 1% tolerance for S and L
+const _TOLERANCE = 0.01; // 1% tolerance for S and L
 const HUE_TOLERANCE = 1; // 1 degree tolerance for hue
 
 describe("OKHSL Color Schema", () => {
@@ -137,7 +137,9 @@ describe("OKHSL Color Schema", () => {
       );
 
       // Hue should match (red ≈ 29° in OKHSL)
-      expect(Math.abs((result as any).value.h.value - colorJS.coords[0])).toBeLessThan(HUE_TOLERANCE);
+      expect(Math.abs((result as any).value.h.value - colorJS.coords[0])).toBeLessThan(
+        HUE_TOLERANCE,
+      );
     });
 
     it("should match ColorJS for sRGB green", async () => {
@@ -164,7 +166,9 @@ describe("OKHSL Color Schema", () => {
       );
 
       // Green ≈ 142° in OKHSL
-      expect(Math.abs((result as any).value.h.value - colorJS.coords[0])).toBeLessThan(HUE_TOLERANCE);
+      expect(Math.abs((result as any).value.h.value - colorJS.coords[0])).toBeLessThan(
+        HUE_TOLERANCE,
+      );
     });
 
     it("should match ColorJS for sRGB blue", async () => {
@@ -191,7 +195,9 @@ describe("OKHSL Color Schema", () => {
       );
 
       // Blue ≈ 264° in OKHSL
-      expect(Math.abs((result as any).value.h.value - colorJS.coords[0])).toBeLessThan(HUE_TOLERANCE);
+      expect(Math.abs((result as any).value.h.value - colorJS.coords[0])).toBeLessThan(
+        HUE_TOLERANCE,
+      );
     });
 
     it("should match ColorJS for mid-gray", async () => {
@@ -252,12 +258,7 @@ describe("OKHSL Color Schema", () => {
      * Helper to test sRGB → OKHSL conversion against ColorJS
      * Logs detailed comparison and asserts within tolerances
      */
-    async function testSRGBToOKHSL(
-      r: number,
-      g: number,
-      b: number,
-      label: string,
-    ) {
+    async function testSRGBToOKHSL(r: number, g: number, b: number, label: string) {
       const result = await executeWithSchema(
         "okhsl-color",
         "type",
@@ -281,8 +282,12 @@ describe("OKHSL Color Schema", () => {
       const cjL = colorJS.coords[2];
 
       console.log(`\n${label}: sRGB(${r}, ${g}, ${b})`);
-      console.log(`  TokenScript: h=${tsH?.toFixed(2)}, s=${tsS?.toFixed(4)}, l=${tsL?.toFixed(4)}`);
-      console.log(`  ColorJS:     h=${cjH?.toFixed(2) ?? "null"}, s=${cjS?.toFixed(4)}, l=${cjL?.toFixed(4)}`);
+      console.log(
+        `  TokenScript: h=${tsH?.toFixed(2)}, s=${tsS?.toFixed(4)}, l=${tsL?.toFixed(4)}`,
+      );
+      console.log(
+        `  ColorJS:     h=${cjH?.toFixed(2) ?? "null"}, s=${cjS?.toFixed(4)}, l=${cjL?.toFixed(4)}`,
+      );
 
       // Saturation comparison - with full findGamutIntersection, we achieve tight parity
       const satDiff = Math.abs(tsS - cjS);
@@ -290,7 +295,7 @@ describe("OKHSL Color Schema", () => {
         console.log(`  ⚠️ Saturation delta: ${satDiff.toFixed(4)}`);
       }
       expect(satDiff).toBeLessThan(0.05); // Tight tolerance with full algorithm
-      
+
       // Lightness should always match closely
       expect(tsL).toBeCloseTo(cjL, 1);
 
@@ -441,7 +446,7 @@ describe("OKHSL Color Schema", () => {
 
     describe("Problematic Hue Regions", () => {
       // These test regions where polynomial approximation might be less accurate
-      
+
       it("should handle orange (hue transition R→Y)", async () => {
         await testSRGBToOKHSL(1, 0.5, 0, "ORANGE");
       });

@@ -10,10 +10,7 @@ import type { FunctionSpecification } from "@/bundler/types";
 describe("hue function", () => {
   describe("Schema Definition", () => {
     it("should have correct schema structure", async () => {
-      const schema = (await getBundledSchema(
-        "hue",
-        "function"
-      )) as FunctionSpecification;
+      const schema = (await getBundledSchema("hue", "function")) as FunctionSpecification;
 
       expect(schema.name).toBe("hue");
       expect(schema.type).toBe("function");
@@ -29,7 +26,7 @@ describe("hue function", () => {
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
         hue(red)
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -47,7 +44,7 @@ describe("hue function", () => {
         variable green: Color.SRGB;
         green.r = 0; green.g = 1; green.b = 0;
         hue(green)
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -65,7 +62,7 @@ describe("hue function", () => {
         variable blue: Color.SRGB;
         blue.r = 0; blue.g = 0; blue.b = 1;
         hue(blue)
-        `
+        `,
       );
 
       expect(result).toBeDefined();

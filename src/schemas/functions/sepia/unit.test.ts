@@ -10,10 +10,7 @@ import type { FunctionSpecification } from "@/bundler/types";
 describe("sepia function", () => {
   describe("Schema Definition", () => {
     it("should have correct schema structure", async () => {
-      const schema = (await getBundledSchema(
-        "sepia",
-        "function"
-      )) as FunctionSpecification;
+      const schema = (await getBundledSchema("sepia", "function")) as FunctionSpecification;
 
       expect(schema.name).toBe("sepia");
       expect(schema.type).toBe("function");
@@ -29,7 +26,7 @@ describe("sepia function", () => {
         variable gray: Color.SRGB;
         gray.r = 0.5; gray.g = 0.5; gray.b = 0.5;
         sepia(gray, 1)
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -47,7 +44,7 @@ describe("sepia function", () => {
         variable gray: Color.SRGB;
         gray.r = 0.5; gray.g = 0.5; gray.b = 0.5;
         sepia(gray, 0.5)
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -65,7 +62,7 @@ describe("sepia function", () => {
         variable blue: Color.SRGB;
         blue.r = 0; blue.g = 0; blue.b = 1;
         sepia(blue, 0)
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -82,11 +79,10 @@ describe("sepia function", () => {
         variable gray: Color.SRGB;
         gray.r = 0.5; gray.g = 0.5; gray.b = 0.5;
         sepia(gray)
-        `
+        `,
       );
 
       expect(result).toBeDefined();
     });
   });
 });
-

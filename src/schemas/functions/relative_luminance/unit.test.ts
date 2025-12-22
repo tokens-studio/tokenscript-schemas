@@ -12,7 +12,7 @@ describe("relative_luminance function", () => {
     it("should have correct schema structure", async () => {
       const schema = (await getBundledSchema(
         "relative_luminance",
-        "function"
+        "function",
       )) as FunctionSpecification;
 
       expect(schema.name).toBe("relative_luminance");
@@ -29,7 +29,7 @@ describe("relative_luminance function", () => {
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
         relative_luminance(white)
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -45,7 +45,7 @@ describe("relative_luminance function", () => {
         variable black: Color.SRGB;
         black.r = 0; black.g = 0; black.b = 0;
         relative_luminance(black)
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -61,7 +61,7 @@ describe("relative_luminance function", () => {
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
         relative_luminance(red)
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -77,7 +77,7 @@ describe("relative_luminance function", () => {
         variable green: Color.SRGB;
         green.r = 0; green.g = 1; green.b = 0;
         relative_luminance(green)
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -93,7 +93,7 @@ describe("relative_luminance function", () => {
         variable blue: Color.SRGB;
         blue.r = 0; blue.g = 0; blue.b = 1;
         relative_luminance(blue)
-        `
+        `,
       );
 
       expect(result).toBeDefined();

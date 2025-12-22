@@ -1,8 +1,6 @@
-import { describe, expect, it } from "vitest";
-import {
-  executeWithSchema,
-} from "@tests/helpers/schema-test-utils";
+import { executeWithSchema } from "@tests/helpers/schema-test-utils";
 import Color from "colorjs.io";
+import { describe, expect, it } from "vitest";
 
 describe("APCA Contrast Function", () => {
   describe("Schema Definition", () => {

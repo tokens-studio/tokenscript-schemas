@@ -10,10 +10,7 @@ import type { FunctionSpecification } from "@/bundler/types";
 describe("to_gamut function", () => {
   describe("Schema Definition", () => {
     it("should have correct schema structure", async () => {
-      const schema = (await getBundledSchema(
-        "to_gamut",
-        "function"
-      )) as FunctionSpecification;
+      const schema = (await getBundledSchema("to_gamut", "function")) as FunctionSpecification;
 
       expect(schema.name).toBe("to_gamut");
       expect(schema.type).toBe("function");
@@ -29,7 +26,7 @@ describe("to_gamut function", () => {
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
         to_gamut(red)
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -45,7 +42,7 @@ describe("to_gamut function", () => {
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
         to_gamut(white)
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -65,7 +62,7 @@ describe("to_gamut function", () => {
         variable black: Color.SRGB;
         black.r = 0; black.g = 0; black.b = 0;
         to_gamut(black)
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -85,7 +82,7 @@ describe("to_gamut function", () => {
         variable gray: Color.SRGB;
         gray.r = 0.5; gray.g = 0.5; gray.b = 0.5;
         to_gamut(gray)
-        `
+        `,
       );
 
       expect(result).toBeDefined();

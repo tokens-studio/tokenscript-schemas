@@ -10,10 +10,7 @@ import type { FunctionSpecification } from "@/bundler/types";
 describe("muted function", () => {
   describe("Schema Definition", () => {
     it("should have correct schema structure", async () => {
-      const schema = (await getBundledSchema(
-        "muted",
-        "function"
-      )) as FunctionSpecification;
+      const schema = (await getBundledSchema("muted", "function")) as FunctionSpecification;
 
       expect(schema.name).toBe("muted");
       expect(schema.type).toBe("function");
@@ -29,7 +26,7 @@ describe("muted function", () => {
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
         muted(red).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -47,7 +44,7 @@ describe("muted function", () => {
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
         muted(red, 1).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -67,7 +64,7 @@ describe("muted function", () => {
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
         muted(red, 0).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -88,7 +85,7 @@ describe("muted function", () => {
         variable gray: Color.SRGB;
         gray.r = 0.5; gray.g = 0.5; gray.b = 0.5;
         muted(gray).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();

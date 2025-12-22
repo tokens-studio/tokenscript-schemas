@@ -7,9 +7,9 @@
  * Usage: npx tsx scripts/benchmark-all-conversions.ts
  */
 
-import { Interpreter, Lexer, Parser, type Config } from "@tokens-studio/tokenscript-interpreter";
+import * as fs from "node:fs";
 import { setupColorManagerWithSchemas } from "@tests/helpers/schema-test-utils";
-import * as fs from "fs";
+import { type Config, Interpreter, Lexer, Parser } from "@tokens-studio/tokenscript-interpreter";
 
 // ════════════════════════════════════════════════════════════════════════════
 // Configuration
@@ -73,9 +73,14 @@ function runSingleBenchmark(code: string, config: Config, iterations: number): n
   return times;
 }
 
-function calculateStats(times: number[]): { avg: number; stdDev: number; min: number; max: number } {
+function calculateStats(times: number[]): {
+  avg: number;
+  stdDev: number;
+  min: number;
+  max: number;
+} {
   const avg = times.reduce((a, b) => a + b, 0) / times.length;
-  const variance = times.reduce((sum, t) => sum + Math.pow(t - avg, 2), 0) / times.length;
+  const variance = times.reduce((sum, t) => sum + (t - avg) ** 2, 0) / times.length;
   const stdDev = Math.sqrt(variance);
   const min = Math.min(...times);
   const max = Math.max(...times);
@@ -85,7 +90,7 @@ function calculateStats(times: number[]): { avg: number; stdDev: number; min: nu
 async function benchmarkConversion(
   from: string,
   to: string,
-  config: Config
+  config: Config,
 ): Promise<BenchmarkResult> {
   const fromSpace = COLOR_SPACES[from];
   const toSpace = COLOR_SPACES[to];
@@ -223,9 +228,7 @@ function generateMarkdownReport(results: BenchmarkResult[], startTime: Date): st
   });
 
   // OKHSL/OKHSV specific section
-  const okConversions = successful.filter(
-    (r) => r.from.startsWith("ok") || r.to.startsWith("ok")
-  );
+  const okConversions = successful.filter((r) => r.from.startsWith("ok") || r.to.startsWith("ok"));
   if (okConversions.length > 0) {
     report += `
 ## OK* Color Space Performance (OKHSL, OKHSV, OKLab, OKLCH)
@@ -270,7 +273,11 @@ Comparing forward vs reverse conversion costs.
       const ratio = (forward.avgMs / reverse.avgMs).toFixed(2);
       const diff = Math.abs(forward.avgMs - reverse.avgMs);
       const note =
-        diff < 0.01 ? "≈ Equal" : forward.avgMs > reverse.avgMs ? `${a}→${b} slower` : `${b}→${a} slower`;
+        diff < 0.01
+          ? "≈ Equal"
+          : forward.avgMs > reverse.avgMs
+            ? `${a}→${b} slower`
+            : `${b}→${a} slower`;
       report += `| ${a} ↔ ${b} | ${forward.avgUs.toFixed(0)} | ${reverse.avgUs.toFixed(0)} | ${ratio} | ${note} |\n`;
     }
   });
@@ -324,9 +331,19 @@ All tested conversions sorted by source color space.
 `;
 
   const categories = [
-    { name: "Simple (HSL, HSV, HWB)", filter: (r: BenchmarkResult) => ["hsl", "hsv", "hwb"].includes(r.to) && r.from === "srgb" },
-    { name: "Medium (OKLCH, Lab, XYZ)", filter: (r: BenchmarkResult) => ["oklch", "oklab", "lab", "xyzd65"].includes(r.to) && r.from === "srgb" },
-    { name: "Complex (OKHSL, OKHSV)", filter: (r: BenchmarkResult) => ["okhsl", "okhsv"].includes(r.to) && r.from === "srgb" },
+    {
+      name: "Simple (HSL, HSV, HWB)",
+      filter: (r: BenchmarkResult) => ["hsl", "hsv", "hwb"].includes(r.to) && r.from === "srgb",
+    },
+    {
+      name: "Medium (OKLCH, Lab, XYZ)",
+      filter: (r: BenchmarkResult) =>
+        ["oklch", "oklab", "lab", "xyzd65"].includes(r.to) && r.from === "srgb",
+    },
+    {
+      name: "Complex (OKHSL, OKHSV)",
+      filter: (r: BenchmarkResult) => ["okhsl", "okhsv"].includes(r.to) && r.from === "srgb",
+    },
   ];
 
   categories.forEach((cat) => {
@@ -359,7 +376,7 @@ All tested conversions sorted by source color space.
 async function main() {
   const startTime = new Date();
 
-  console.log("\n" + "═".repeat(70));
+  console.log(`\n${"═".repeat(70)}`);
   console.log("  COMPREHENSIVE COLOR CONVERSION BENCHMARK");
   console.log("═".repeat(70));
   console.log(`\n  Iterations: ${BENCHMARK_ITERATIONS * CONFIDENCE_RUNS} per conversion`);
@@ -420,7 +437,7 @@ async function main() {
   const successful = results.filter((r) => r.success);
   const sortedBySpeed = [...successful].sort((a, b) => a.avgMs - b.avgMs);
 
-  console.log("\n" + "─".repeat(70));
+  console.log(`\n${"─".repeat(70)}`);
   console.log("  QUICK SUMMARY\n");
 
   console.log("  🏆 Top 5 Fastest:");
@@ -429,9 +446,12 @@ async function main() {
   });
 
   console.log("\n  🐢 Top 5 Slowest:");
-  sortedBySpeed.slice(-5).reverse().forEach((r, i) => {
-    console.log(`     ${i + 1}. ${r.from} → ${r.to}: ${r.avgUs.toFixed(0)} µs`);
-  });
+  sortedBySpeed
+    .slice(-5)
+    .reverse()
+    .forEach((r, i) => {
+      console.log(`     ${i + 1}. ${r.from} → ${r.to}: ${r.avgUs.toFixed(0)} µs`);
+    });
 
   // OK* specific
   const okhslToSrgb = successful.find((r) => r.from === "okhsl" && r.to === "srgb");
@@ -440,13 +460,16 @@ async function main() {
 
   if (srgbToOkhsl && oklchToSrgb) {
     console.log("\n  📊 OKHSL Performance:");
-    console.log(`     sRGB → OKHSL: ${srgbToOkhsl.avgUs.toFixed(0)} µs (${srgbToOkhsl.opsPerSec.toFixed(0)} ops/sec)`);
-    console.log(`     OKHSL → sRGB: ${okhslToSrgb?.avgUs.toFixed(0)} µs (${okhslToSrgb?.opsPerSec.toFixed(0)} ops/sec)`);
+    console.log(
+      `     sRGB → OKHSL: ${srgbToOkhsl.avgUs.toFixed(0)} µs (${srgbToOkhsl.opsPerSec.toFixed(0)} ops/sec)`,
+    );
+    console.log(
+      `     OKHSL → sRGB: ${okhslToSrgb?.avgUs.toFixed(0)} µs (${okhslToSrgb?.opsPerSec.toFixed(0)} ops/sec)`,
+    );
     console.log(`     vs OKLCH: ${(srgbToOkhsl.avgMs / oklchToSrgb.avgMs).toFixed(1)}x slower`);
   }
 
-  console.log("\n" + "═".repeat(70) + "\n");
+  console.log(`\n${"═".repeat(70)}\n`);
 }
 
 main().catch(console.error);
-

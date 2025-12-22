@@ -1,8 +1,6 @@
-import { describe, expect, it } from "vitest";
-import {
-  executeWithSchema,
-} from "@tests/helpers/schema-test-utils";
+import { executeWithSchema } from "@tests/helpers/schema-test-utils";
 import Color from "colorjs.io";
+import { describe, expect, it } from "vitest";
 
 describe("Delta E 76 Function", () => {
   describe("Schema Definition", () => {
@@ -123,4 +121,3 @@ describe("Delta E 76 Function", () => {
     });
   });
 });
-

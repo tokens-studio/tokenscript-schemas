@@ -1,7 +1,5 @@
+import { executeWithSchema } from "@tests/helpers/schema-test-utils";
 import { describe, expect, it } from "vitest";
-import {
-  executeWithSchema,
-} from "@tests/helpers/schema-test-utils";
 
 describe("Is Warm Function", () => {
   describe("Schema Definition", () => {
@@ -161,4 +159,3 @@ describe("Is Warm Function", () => {
     });
   });
 });
-

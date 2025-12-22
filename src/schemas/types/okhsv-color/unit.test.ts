@@ -140,7 +140,9 @@ describe("OKHSV Color Schema", () => {
       );
 
       // Hue should match
-      expect(Math.abs((result as any).value.h.value - colorJS.coords[0])).toBeLessThan(HUE_TOLERANCE);
+      expect(Math.abs((result as any).value.h.value - colorJS.coords[0])).toBeLessThan(
+        HUE_TOLERANCE,
+      );
     });
 
     it("should match ColorJS hue for sRGB green", async () => {
@@ -167,7 +169,9 @@ describe("OKHSV Color Schema", () => {
       );
 
       // Green ≈ 142° in OKHSV
-      expect(Math.abs((result as any).value.h.value - colorJS.coords[0])).toBeLessThan(HUE_TOLERANCE);
+      expect(Math.abs((result as any).value.h.value - colorJS.coords[0])).toBeLessThan(
+        HUE_TOLERANCE,
+      );
     });
 
     it("should match ColorJS hue for sRGB blue", async () => {
@@ -194,7 +198,9 @@ describe("OKHSV Color Schema", () => {
       );
 
       // Blue ≈ 264° in OKHSV
-      expect(Math.abs((result as any).value.h.value - colorJS.coords[0])).toBeLessThan(HUE_TOLERANCE);
+      expect(Math.abs((result as any).value.h.value - colorJS.coords[0])).toBeLessThan(
+        HUE_TOLERANCE,
+      );
     });
 
     it("should match ColorJS for mid-gray", async () => {
@@ -253,12 +259,7 @@ describe("OKHSV Color Schema", () => {
      * Helper to test sRGB → OKHSV conversion against ColorJS
      * Logs detailed comparison and asserts within tolerances
      */
-    async function testSRGBToOKHSV(
-      r: number,
-      g: number,
-      b: number,
-      label: string,
-    ) {
+    async function testSRGBToOKHSV(r: number, g: number, b: number, label: string) {
       const result = await executeWithSchema(
         "okhsv-color",
         "type",
@@ -282,12 +283,16 @@ describe("OKHSV Color Schema", () => {
       const cjV = colorJS.coords[2];
 
       console.log(`\n${label}: sRGB(${r}, ${g}, ${b})`);
-      console.log(`  TokenScript: h=${tsH?.toFixed(2)}, s=${tsS?.toFixed(4)}, v=${tsV?.toFixed(4)}`);
-      console.log(`  ColorJS:     h=${cjH?.toFixed(2) ?? "null"}, s=${cjS?.toFixed(4)}, v=${cjV?.toFixed(4)}`);
+      console.log(
+        `  TokenScript: h=${tsH?.toFixed(2)}, s=${tsS?.toFixed(4)}, v=${tsV?.toFixed(4)}`,
+      );
+      console.log(
+        `  ColorJS:     h=${cjH?.toFixed(2) ?? "null"}, s=${cjS?.toFixed(4)}, v=${cjV?.toFixed(4)}`,
+      );
 
       // Saturation should always match closely
       expect(tsS).toBeCloseTo(cjS, 1);
-      
+
       // Value comparison - more lenient for OKHSV due to algorithm complexity
       // OKHSV mapping involves more transformations than OKHSL
       expect(Math.abs(tsV - cjV)).toBeLessThan(0.7); // Allow larger tolerance
@@ -439,7 +444,7 @@ describe("OKHSV Color Schema", () => {
 
     describe("Problematic Hue Regions", () => {
       // These test regions where polynomial approximation might be less accurate
-      
+
       it("should handle orange (hue transition R→Y)", async () => {
         await testSRGBToOKHSV(1, 0.5, 0, "ORANGE");
       });

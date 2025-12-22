@@ -12,7 +12,7 @@ describe("neutral_variant function", () => {
     it("should have correct schema structure", async () => {
       const schema = (await getBundledSchema(
         "neutral_variant",
-        "function"
+        "function",
       )) as FunctionSpecification;
 
       expect(schema.name).toBe("neutral_variant");
@@ -29,7 +29,7 @@ describe("neutral_variant function", () => {
         variable blue: Color.SRGB;
         blue.r = 0; blue.g = 0.4; blue.b = 0.8;
         neutral_variant(blue).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -49,7 +49,7 @@ describe("neutral_variant function", () => {
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
         neutral_variant(red, 0.5).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -67,7 +67,7 @@ describe("neutral_variant function", () => {
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
         neutral_variant(white).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -87,7 +87,7 @@ describe("neutral_variant function", () => {
         variable black: Color.SRGB;
         black.r = 0; black.g = 0; black.b = 0;
         neutral_variant(black).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();

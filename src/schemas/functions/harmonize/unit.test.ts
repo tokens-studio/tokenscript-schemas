@@ -10,10 +10,7 @@ import type { FunctionSpecification } from "@/bundler/types";
 describe("harmonize function", () => {
   describe("Schema Definition", () => {
     it("should have correct schema structure", async () => {
-      const schema = (await getBundledSchema(
-        "harmonize",
-        "function"
-      )) as FunctionSpecification;
+      const schema = (await getBundledSchema("harmonize", "function")) as FunctionSpecification;
 
       expect(schema.name).toBe("harmonize");
       expect(schema.type).toBe("function");
@@ -31,7 +28,7 @@ describe("harmonize function", () => {
         variable source: Color.SRGB;
         source.r = 0; source.g = 0; source.b = 1;
         harmonize(color, source, 0.5).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -48,7 +45,7 @@ describe("harmonize function", () => {
         variable source: Color.SRGB;
         source.r = 0; source.g = 0; source.b = 1;
         harmonize(color, source, 0).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();

@@ -1,7 +1,5 @@
+import { executeWithSchema } from "@tests/helpers/schema-test-utils";
 import { describe, expect, it } from "vitest";
-import {
-  executeWithSchema,
-} from "@tests/helpers/schema-test-utils";
 
 describe("Is Cool Function", () => {
   describe("Schema Definition", () => {
@@ -189,4 +187,3 @@ describe("Is Cool Function", () => {
     });
   });
 });
-

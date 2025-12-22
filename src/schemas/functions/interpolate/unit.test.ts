@@ -10,10 +10,7 @@ import type { FunctionSpecification } from "@/bundler/types";
 describe("interpolate function", () => {
   describe("Schema Definition", () => {
     it("should have correct schema structure", async () => {
-      const schema = (await getBundledSchema(
-        "interpolate",
-        "function"
-      )) as FunctionSpecification;
+      const schema = (await getBundledSchema("interpolate", "function")) as FunctionSpecification;
 
       expect(schema.name).toBe("interpolate");
       expect(schema.type).toBe("function");
@@ -31,7 +28,7 @@ describe("interpolate function", () => {
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
         interpolate(black, white, 0).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -49,7 +46,7 @@ describe("interpolate function", () => {
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
         interpolate(black, white, 1).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -67,7 +64,7 @@ describe("interpolate function", () => {
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
         interpolate(black, white, 0.5).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -87,7 +84,7 @@ describe("interpolate function", () => {
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
         interpolate(black, white).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -97,4 +94,3 @@ describe("interpolate function", () => {
     });
   });
 });
-

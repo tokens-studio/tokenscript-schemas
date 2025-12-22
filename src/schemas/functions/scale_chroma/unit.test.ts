@@ -10,10 +10,7 @@ import type { FunctionSpecification } from "@/bundler/types";
 describe("scale_chroma function", () => {
   describe("Schema Definition", () => {
     it("should have correct schema structure", async () => {
-      const schema = (await getBundledSchema(
-        "scale_chroma",
-        "function"
-      )) as FunctionSpecification;
+      const schema = (await getBundledSchema("scale_chroma", "function")) as FunctionSpecification;
 
       expect(schema.name).toBe("scale_chroma");
       expect(schema.type).toBe("function");
@@ -29,7 +26,7 @@ describe("scale_chroma function", () => {
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
         scale_chroma(red, 0.5).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -47,7 +44,7 @@ describe("scale_chroma function", () => {
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
         scale_chroma(red, 0).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -67,7 +64,7 @@ describe("scale_chroma function", () => {
         variable gray: Color.SRGB;
         gray.r = 0.5; gray.g = 0.5; gray.b = 0.5;
         scale_chroma(gray, 2).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();

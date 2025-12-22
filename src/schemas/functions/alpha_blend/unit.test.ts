@@ -1,7 +1,5 @@
+import { executeWithSchema } from "@tests/helpers/schema-test-utils";
 import { describe, expect, it } from "vitest";
-import {
-  executeWithSchema,
-} from "@tests/helpers/schema-test-utils";
 
 describe("Alpha Blend Function", () => {
   describe("Schema Definition", () => {
@@ -135,4 +133,3 @@ describe("Alpha Blend Function", () => {
     });
   });
 });
-

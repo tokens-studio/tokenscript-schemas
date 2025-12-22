@@ -12,7 +12,7 @@ describe("scale_lightness function", () => {
     it("should have correct schema structure", async () => {
       const schema = (await getBundledSchema(
         "scale_lightness",
-        "function"
+        "function",
       )) as FunctionSpecification;
 
       expect(schema.name).toBe("scale_lightness");
@@ -29,7 +29,7 @@ describe("scale_lightness function", () => {
         variable gray: Color.SRGB;
         gray.r = 0.5; gray.g = 0.5; gray.b = 0.5;
         scale_lightness(gray, 1.2).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -45,7 +45,7 @@ describe("scale_lightness function", () => {
         variable white: Color.SRGB;
         white.r = 1; white.g = 1; white.b = 1;
         scale_lightness(white, 0.5).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -62,7 +62,7 @@ describe("scale_lightness function", () => {
         variable gray: Color.SRGB;
         gray.r = 0.5; gray.g = 0.5; gray.b = 0.5;
         scale_lightness(gray, 0).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();

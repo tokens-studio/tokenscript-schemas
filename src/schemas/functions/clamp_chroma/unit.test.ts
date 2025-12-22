@@ -10,10 +10,7 @@ import type { FunctionSpecification } from "@/bundler/types";
 describe("clamp_chroma function", () => {
   describe("Schema Definition", () => {
     it("should have correct schema structure", async () => {
-      const schema = (await getBundledSchema(
-        "clamp_chroma",
-        "function"
-      )) as FunctionSpecification;
+      const schema = (await getBundledSchema("clamp_chroma", "function")) as FunctionSpecification;
 
       expect(schema.name).toBe("clamp_chroma");
       expect(schema.type).toBe("function");
@@ -29,7 +26,7 @@ describe("clamp_chroma function", () => {
         variable red: Color.SRGB;
         red.r = 1; red.g = 0; red.b = 0;
         clamp_chroma(red, 0, 0.1).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -48,7 +45,7 @@ describe("clamp_chroma function", () => {
         variable gray: Color.SRGB;
         gray.r = 0.5; gray.g = 0.5; gray.b = 0.5;
         clamp_chroma(gray, 0, 0.3).to.srgb()
-        `
+        `,
       );
 
       expect(result).toBeDefined();
@@ -61,4 +58,3 @@ describe("clamp_chroma function", () => {
     });
   });
 });
-

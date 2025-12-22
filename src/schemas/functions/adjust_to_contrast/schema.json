@@ -3,7 +3,11 @@
   "type": "function",
   "description": "Adjusts a foreground color's lightness to achieve a target WCAG contrast ratio against a background. Preserves hue and chroma while finding the optimal lightness. Uses binary search in OKLCH space for perceptually even adjustments. If target contrast cannot be achieved (e.g., trying to get 21:1 with mid-gray), returns the best possible result.",
   "keyword": "adjust_to_contrast",
-  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/", "/api/v1/core/xyz-d65-color/0/"],
+  "requirements": [
+    "/api/v1/core/srgb-color/0/",
+    "/api/v1/core/oklch-color/0/",
+    "/api/v1/core/xyz-d65-color/0/"
+  ],
   "schema": {
     "type": "object",
     "properties": {
@@ -50,4 +54,3 @@
     }
   ]
 }
-

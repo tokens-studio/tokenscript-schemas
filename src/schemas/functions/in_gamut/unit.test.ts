@@ -1,7 +1,5 @@
+import { executeWithSchema } from "@tests/helpers/schema-test-utils";
 import { describe, expect, it } from "vitest";
-import {
-  executeWithSchema,
-} from "@tests/helpers/schema-test-utils";
 
 describe("In Gamut Function", () => {
   describe("Schema Definition", () => {
@@ -178,4 +176,3 @@ describe("In Gamut Function", () => {
     });
   });
 });
-
