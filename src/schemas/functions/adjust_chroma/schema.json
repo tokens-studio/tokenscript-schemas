@@ -1,0 +1,48 @@
+{
+  "name": "adjust_chroma",
+  "type": "function",
+  "description": "Adjusts a color's chroma by a relative amount. Positive values increase saturation, negative values decrease it. Unlike set_chroma which sets an absolute value, adjust_chroma adds to the current chroma. Result is clamped to valid range [0, ~0.4].",
+  "keyword": "adjust_chroma",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Color to adjust",
+            "type": "color"
+          },
+          {
+            "description": "Amount to adjust chroma (+/-)",
+            "type": "number"
+          }
+        ],
+        "minItems": 2,
+        "maxItems": 2
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "color",
+    "description": "Color with adjusted chroma"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./adjust-chroma.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Increase saturation",
+      "input": ["#808080", 0.1],
+      "output": "More saturated color"
+    },
+    {
+      "description": "Decrease saturation",
+      "input": ["#ff6600", -0.1],
+      "output": "Less saturated orange"
+    }
+  ]
+}

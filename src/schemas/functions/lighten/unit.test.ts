@@ -28,13 +28,14 @@ describe("Lighten Function", () => {
 
   describe("Function Execution", () => {
     it("should lighten a dark color", async () => {
+      // Note: lighten() returns OKLCH, we chain .to.srgb() to get RGB values
       const result = await executeWithSchema(
         "lighten",
         "function",
         `
         variable dark: Color.SRGB;
         dark.r = 0.2; dark.g = 0.2; dark.b = 0.4;
-        lighten(dark, 0.2)
+        lighten(dark, 0.2).to.srgb()
         `,
       );
 
@@ -55,7 +56,7 @@ describe("Lighten Function", () => {
         `
         variable color: Color.SRGB;
         color.r = 0.3; color.g = 0.3; color.b = 0.3;
-        lighten(color)
+        lighten(color).to.srgb()
         `,
       );
 
@@ -71,7 +72,7 @@ describe("Lighten Function", () => {
         `
         variable bright: Color.SRGB;
         bright.r = 0.9; bright.g = 0.9; bright.b = 0.9;
-        lighten(bright, 0.5)
+        lighten(bright, 0.5).to.srgb()
         `,
       );
 
@@ -92,7 +93,7 @@ describe("Lighten Function", () => {
         `
         variable red: Color.SRGB;
         red.r = 0.6; red.g = 0.1; red.b = 0.1;
-        lighten(red, 0.15)
+        lighten(red, 0.15).to.srgb()
         `,
       );
 

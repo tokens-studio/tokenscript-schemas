@@ -1,0 +1,49 @@
+// Meets Contrast (WCAG 2.1 Compliance Check)
+// Reference: WCAG 2.1 Success Criteria 1.4.3 and 1.4.6
+// Reference: https://www.w3.org/TR/WCAG21/#contrast-minimum
+//
+// WCAG 2.1 Contrast Levels:
+//   - Level AA (normal text):  4.5:1
+//   - Level AA (large text):   3:1
+//   - Level AAA (normal text): 7:1
+//   - Level AAA (large text):  4.5:1
+//
+// Large text is defined as:
+//   - 14pt (18.66px) bold
+//   - 18pt (24px) regular
+//
+// Returns true if the contrast ratio meets or exceeds the threshold.
+
+variable input: List = {input};
+variable color1: Color.LinearSRGB = input.get(0).to.linearsrgb();
+variable color2: Color.LinearSRGB = input.get(1).to.linearsrgb();
+
+// Default threshold is 4.5 (WCAG AA for normal text)
+variable threshold: Number = 4.5;
+if (input.length() > 2) [
+    threshold = input.get(2);
+];
+
+// Calculate relative luminance for each color
+// Formula: L = 0.2126 * R + 0.7152 * G + 0.0722 * B
+variable lum1: Number = 0.2126 * color1.r + 0.7152 * color1.g + 0.0722 * color1.b;
+variable lum2: Number = 0.2126 * color2.r + 0.7152 * color2.g + 0.0722 * color2.b;
+
+// Ensure non-negative luminance
+if (lum1 < 0) [ lum1 = 0; ];
+if (lum2 < 0) [ lum2 = 0; ];
+
+// Determine lighter and darker luminance
+variable lighter: Number = lum1;
+variable darker: Number = lum2;
+if (lum2 > lum1) [
+    lighter = lum2;
+    darker = lum1;
+];
+
+// Calculate contrast ratio: (L1 + 0.05) / (L2 + 0.05)
+variable ratio: Number = (lighter + 0.05) / (darker + 0.05);
+
+// Return whether it meets the threshold
+return ratio >= threshold;
+

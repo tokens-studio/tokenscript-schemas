@@ -1,0 +1,48 @@
+{
+  "name": "vibrant",
+  "type": "function",
+  "description": "Increases a color's chroma toward a vibrant level. Preserves lightness and hue while boosting colorfulness. The optional amount parameter controls the intensity (0-1, default 0.5). Uses OKLCH for perceptually uniform chroma adjustment. Useful for creating attention-grabbing accents or active states from muted base colors.",
+  "keyword": "vibrant",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Color to make vibrant",
+            "type": "color"
+          },
+          {
+            "description": "Amount (0-1, default 0.5). Higher = more vibrant.",
+            "type": "number"
+          }
+        ],
+        "minItems": 1,
+        "maxItems": 2
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "color",
+    "description": "More vibrant version of the color"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./vibrant.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Make muted blue more vibrant",
+      "input": ["#6688aa"],
+      "output": "More saturated blue"
+    },
+    {
+      "description": "Full vibrancy",
+      "input": ["#808080", 1],
+      "output": "Still gray (no hue to enhance)"
+    }
+  ]
+}

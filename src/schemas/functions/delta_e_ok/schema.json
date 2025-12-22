@@ -1,0 +1,24 @@
+{
+  "name": "Delta E OK",
+  "type": "function",
+  "description": "Calculates perceptual color difference using the OKLab color space (ΔE_OK). This is the Euclidean distance in OKLab space, providing excellent perceptual uniformity. Values: 0 = identical, <0.02 = imperceptible, <0.05 = very close, <0.1 = noticeable, >0.5 = very different.",
+  "keyword": "delta_e_ok",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color1": {
+        "type": "color",
+        "description": "First color (reference)"
+      },
+      "color2": {
+        "type": "color",
+        "description": "Second color (sample)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./delta-e-ok.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklab-color/0/"]
+}

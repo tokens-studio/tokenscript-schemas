@@ -1,0 +1,129 @@
+// APCA Contrast (Accessible Perceptual Contrast Algorithm)
+// Version: APCA 0.0.98G (W3C/WCAG 3.0 Draft)
+// Reference: https://github.com/Myndex/apca-w3
+// Reference: https://www.w3.org/TR/wcag-3.0/#visual-contrast-of-text
+//
+// Returns Lc (Lightness contrast) value:
+//   - Range: approximately -108 to +106
+//   - Positive values: light text on dark background
+//   - Negative values: dark text on light background
+//   - |Lc| >= 75: Preferred for body text
+//   - |Lc| >= 60: Minimum for body text
+//   - |Lc| >= 45: Minimum for large text (≥24px)
+//   - |Lc| >= 30: Minimum for non-text elements
+//
+// Algorithm:
+// 1. Convert to sRGB and linearize with simple 2.4 gamma
+// 2. Calculate screen luminance Y with sRGB coefficients
+// 3. Apply soft black clamp for flare compensation
+// 4. Calculate contrast with asymmetric formula (BoW vs WoB)
+// 5. Apply low clip and offset
+
+variable input: List = {input};
+variable text: Color.SRGB = input.get(0).to.srgb();
+variable bg: Color.SRGB = input.get(1).to.srgb();
+
+// APCA Constants (from specification)
+// Exponents
+variable norm_bg: Number = 0.56;
+variable norm_txt: Number = 0.57;
+variable rev_txt: Number = 0.62;
+variable rev_bg: Number = 0.65;
+
+// Soft black clamp constants
+variable blk_thrs: Number = 0.022;
+variable blk_clmp: Number = 1.414;
+
+// Low clip (noise gate)
+variable lo_clip: Number = 0.1;
+variable delta_y_min: Number = 0.0005;
+
+// Scalers and offset
+variable scale_bow: Number = 1.14;
+variable scale_wob: Number = 1.14;
+variable lo_offset: Number = 0.027;
+
+// Linearize sRGB with simple 2.4 gamma (NOT full sRGB transfer function)
+// This is per APCA specification which uses simplified gamma
+variable text_r: Number = text.r;
+variable text_g: Number = text.g;
+variable text_b: Number = text.b;
+variable bg_r: Number = bg.r;
+variable bg_g: Number = bg.g;
+variable bg_b: Number = bg.b;
+
+// Handle negative values (out of gamut)
+if (text_r < 0) [ text_r = 0 - text_r; ];
+if (text_g < 0) [ text_g = 0 - text_g; ];
+if (text_b < 0) [ text_b = 0 - text_b; ];
+if (bg_r < 0) [ bg_r = 0 - bg_r; ];
+if (bg_g < 0) [ bg_g = 0 - bg_g; ];
+if (bg_b < 0) [ bg_b = 0 - bg_b; ];
+
+// Linearize with 2.4 gamma
+variable lin_text_r: Number = pow(text_r, 2.4);
+variable lin_text_g: Number = pow(text_g, 2.4);
+variable lin_text_b: Number = pow(text_b, 2.4);
+variable lin_bg_r: Number = pow(bg_r, 2.4);
+variable lin_bg_g: Number = pow(bg_g, 2.4);
+variable lin_bg_b: Number = pow(bg_b, 2.4);
+
+// Calculate screen luminance Y using sRGB coefficients
+// Coefficients from Myndex/APCA spec (via Lindbloom)
+variable y_text: Number = 0.2126729 * lin_text_r + 0.7151522 * lin_text_g + 0.0721750 * lin_text_b;
+variable y_bg: Number = 0.2126729 * lin_bg_r + 0.7151522 * lin_bg_g + 0.0721750 * lin_bg_b;
+
+// Soft clamp for flare (low luminance adjustment)
+// If Y >= threshold, use Y as-is
+// Otherwise: Y + (threshold - Y)^1.414
+variable y_txt_clamped: Number = y_text;
+variable y_bg_clamped: Number = y_bg;
+
+if (y_text < blk_thrs) [
+    variable diff_txt: Number = blk_thrs - y_text;
+    y_txt_clamped = y_text + pow(diff_txt, blk_clmp);
+];
+
+if (y_bg < blk_thrs) [
+    variable diff_bg: Number = blk_thrs - y_bg;
+    y_bg_clamped = y_bg + pow(diff_bg, blk_clmp);
+];
+
+// Determine polarity: BoW (dark on light) or WoB (light on dark)
+variable sapc: Number = 0;
+variable s_contrast: Number = 0;
+
+// Noise gate check
+variable y_diff: Number = y_bg_clamped - y_txt_clamped;
+if (y_diff < 0) [ y_diff = 0 - y_diff; ];
+
+// Negative lo_clip for comparison (avoid parsing issues)
+variable neg_lo_clip: Number = 0 - lo_clip;
+
+if (y_diff >= delta_y_min) [
+    if (y_bg_clamped > y_txt_clamped) [
+        // BoW: Dark text on light background (returns POSITIVE per APCA spec)
+        s_contrast = pow(y_bg_clamped, norm_bg) - pow(y_txt_clamped, norm_txt);
+        sapc = s_contrast * scale_bow;
+        
+        if (sapc < lo_clip) [
+            sapc = 0;
+        ] else [
+            sapc = sapc - lo_offset;
+        ];
+    ] else [
+        // WoB: Light text on dark background (returns NEGATIVE per APCA spec)
+        s_contrast = pow(y_bg_clamped, rev_bg) - pow(y_txt_clamped, rev_txt);
+        sapc = s_contrast * scale_wob;
+        
+        if (sapc > neg_lo_clip) [
+            sapc = 0;
+        ] else [
+            sapc = sapc + lo_offset;
+        ];
+    ];
+];
+
+// Return Lc * 100 (standard APCA output format)
+return sapc * 100;
+

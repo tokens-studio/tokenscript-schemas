@@ -1,0 +1,27 @@
+// adjust_chroma: Adjust chroma by a relative amount
+//
+// Modifies the chroma (colorfulness) of a color by adding the
+// specified amount. Positive values increase saturation,
+// negative values decrease it. Result is clamped to [0, ∞).
+//
+// Uses OKLCH for perceptually uniform results.
+// Preserves lightness and hue.
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+variable amount: Number = input.get(1);
+
+// Calculate new chroma
+variable new_c: Number = color.c + amount;
+
+// Clamp to valid range (chroma cannot be negative)
+if (new_c < 0) [ new_c = 0; ];
+
+// Create result
+variable result: Color.OKLCH;
+result.l = color.l;
+result.c = new_c;
+result.h = color.h;
+
+return result;
+

@@ -1,0 +1,53 @@
+{
+  "name": "is_neutral",
+  "type": "function",
+  "description": "Determines if a color is achromatic (neutral/gray). Uses OKLCH chroma value - colors with very low chroma are considered neutral regardless of their hue. Default threshold of 0.02 allows for near-neutral colors that appear gray to human observers.",
+  "keyword": "is_neutral",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Color to test",
+            "type": "color"
+          },
+          {
+            "description": "Chroma threshold (default 0.02). Lower = stricter.",
+            "type": "number"
+          }
+        ],
+        "minItems": 1,
+        "maxItems": 2
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "boolean",
+    "description": "True if color is achromatic/neutral"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./is-neutral.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Pure gray is neutral",
+      "input": ["#808080"],
+      "output": true
+    },
+    {
+      "description": "Pure red is not neutral",
+      "input": ["#ff0000"],
+      "output": false
+    },
+    {
+      "description": "Desaturated color may be neutral",
+      "input": ["#7a7a7c"],
+      "output": true
+    }
+  ]
+}

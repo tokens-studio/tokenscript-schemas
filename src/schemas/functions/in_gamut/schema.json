@@ -1,0 +1,24 @@
+{
+  "name": "In Gamut",
+  "type": "function",
+  "description": "Checks if a color is within the sRGB gamut. Returns true if all RGB components are in [0,1] range, false otherwise. Useful for checking if colors from wider gamuts (P3, OKLab) can be displayed on standard monitors.",
+  "keyword": "in_gamut",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "Color to check"
+      },
+      "epsilon": {
+        "type": "number",
+        "description": "Tolerance for near-gamut colors (default 0.000075)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./in-gamut.tokenscript"
+  },
+  "requirements": ["/api/v1/core/srgb-color/0/"]
+}

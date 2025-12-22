@@ -1,0 +1,12 @@
+// chroma: Extract chroma (colorfulness) from a color
+// Reference: OKLCH Color Space (Björn Ottosson)
+// Reference: https://bottosson.github.io/posts/oklab/
+//
+// Returns the C component from OKLCH, which represents
+// colorfulness/saturation. Range: 0 (gray) to ~0.4 (most vivid).
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+
+return color.c;
+

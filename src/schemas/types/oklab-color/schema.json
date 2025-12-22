@@ -53,6 +53,26 @@
         "type": "/api/v1/core/tokenscript/0/",
         "script": "./from-oklch.tokenscript"
       }
+    },
+    {
+      "source": "/api/v1/core/okhsl-color/0/",
+      "target": "$self",
+      "description": "Converts OKHSL to OKLab",
+      "lossless": true,
+      "script": {
+        "type": "/api/v1/core/tokenscript/0/",
+        "script": "./from-okhsl.tokenscript"
+      }
+    },
+    {
+      "source": "/api/v1/core/okhsv-color/0/",
+      "target": "$self",
+      "description": "Converts OKHSV to OKLab",
+      "lossless": true,
+      "script": {
+        "type": "/api/v1/core/tokenscript/0/",
+        "script": "./from-okhsv.tokenscript"
+      }
     }
   ]
 }

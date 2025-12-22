@@ -1,0 +1,50 @@
+// wcag_level: Determine WCAG 2.1 compliance level for a color pair
+// Reference: WCAG 2.1 Success Criterion 1.4.3 (Contrast Minimum)
+// Reference: WCAG 2.1 Success Criterion 1.4.6 (Contrast Enhanced)
+// Reference: https://www.w3.org/TR/WCAG21/#contrast-minimum
+//
+// Returns one of:
+//   "AAA"      - Ratio >= 7:1 (enhanced contrast for normal text)
+//   "AA"       - Ratio >= 4.5:1 (minimum for normal text)
+//   "AA-large" - Ratio >= 3:1 (minimum for large text: 18pt or 14pt bold)
+//   "fail"     - Ratio < 3:1 (does not meet any criterion)
+
+variable input: List = {input};
+variable fg_xyz: Color.XYZD65 = input.get(0).to.xyzd65();
+variable bg_xyz: Color.XYZD65 = input.get(1).to.xyzd65();
+
+variable l1: Number = fg_xyz.y;
+variable l2: Number = bg_xyz.y;
+
+// Ensure l1 is the lighter of the two
+if (l2 > l1) [
+    variable temp: Number = l1;
+    l1 = l2;
+    l2 = temp;
+];
+
+// Calculate contrast ratio per WCAG formula
+// Ratio = (L1 + 0.05) / (L2 + 0.05)
+variable ratio: Number = (l1 + 0.05) / (l2 + 0.05);
+
+// Determine WCAG level
+// AAA: ratio >= 7:1 (enhanced contrast)
+// AA: ratio >= 4.5:1 (minimum for normal text)
+// AA-large: ratio >= 3:1 (minimum for large text, 18pt+ or 14pt+ bold)
+// fail: ratio < 3:1
+
+variable result: String = "fail";
+
+if (ratio >= 7) [
+    result = "AAA";
+] else [
+    if (ratio >= 4.5) [
+        result = "AA";
+    ] else [
+        if (ratio >= 3) [
+            result = "AA-large";
+        ];
+    ];
+];
+
+return result;

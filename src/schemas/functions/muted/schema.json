@@ -1,0 +1,48 @@
+{
+  "name": "muted",
+  "type": "function",
+  "description": "Decreases a color's chroma toward neutral (gray). Preserves lightness and hue while reducing colorfulness. The optional amount parameter controls the intensity (0-1, default 0.5). Uses OKLCH for perceptually uniform chroma adjustment. Useful for creating subtle backgrounds, disabled states, or calming variations of vibrant colors.",
+  "keyword": "muted",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Color to mute",
+            "type": "color"
+          },
+          {
+            "description": "Amount (0-1, default 0.5). Higher = more muted.",
+            "type": "number"
+          }
+        ],
+        "minItems": 1,
+        "maxItems": 2
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "color",
+    "description": "More muted version of the color"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./muted.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Mute vibrant red",
+      "input": ["#ff0000"],
+      "output": "Desaturated red"
+    },
+    {
+      "description": "Fully muted becomes gray",
+      "input": ["#ff0000", 1],
+      "output": "Gray with same lightness as red"
+    }
+  ]
+}

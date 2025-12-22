@@ -26,7 +26,7 @@ describe("Set Lightness Function", () => {
         `
         variable color: Color.SRGB;
         color.r = 0.8; color.g = 0.3; color.b = 0.5;
-        set_lightness(color, 0)
+        set_lightness(color, 0).to.srgb()
         `,
       );
 
@@ -45,7 +45,7 @@ describe("Set Lightness Function", () => {
         `
         variable color: Color.SRGB;
         color.r = 0.2; color.g = 0.5; color.b = 0.3;
-        set_lightness(color, 1)
+        set_lightness(color, 1).to.srgb()
         `,
       );
 
@@ -64,7 +64,7 @@ describe("Set Lightness Function", () => {
         `
         variable red: Color.SRGB;
         red.r = 0.9; red.g = 0.1; red.b = 0.1;
-        set_lightness(red, 0.7)
+        set_lightness(red, 0.7).to.srgb()
         `,
       );
 

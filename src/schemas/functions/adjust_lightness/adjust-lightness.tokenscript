@@ -1,0 +1,31 @@
+// adjust_lightness: Adjust lightness by a relative amount
+//
+// Modifies the lightness of a color by adding the specified
+// amount. Positive values lighten, negative values darken.
+// Result is clamped to [0, 1].
+//
+// Preserves hue and chroma.
+//
+// Input:  Any color space (converted to OKLCH internally)
+// Output: OKLCH (working space)
+// To get sRGB: adjust_lightness(color, 0.2).to.srgb()
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+variable amount: Number = input.get(1);
+
+// Calculate new lightness
+variable new_l: Number = color.l + amount;
+
+// Clamp to valid range
+if (new_l < 0) [ new_l = 0; ];
+if (new_l > 1) [ new_l = 1; ];
+
+// Create result
+variable result: Color.OKLCH;
+result.l = new_l;
+result.c = color.c;
+result.h = color.h;
+
+return result;
+

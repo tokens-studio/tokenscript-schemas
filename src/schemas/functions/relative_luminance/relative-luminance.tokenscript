@@ -1,0 +1,15 @@
+// relative_luminance: Get WCAG 2.1 relative luminance
+// Reference: WCAG 2.1 Definition of Relative Luminance
+// Reference: https://www.w3.org/TR/WCAG21/#dfn-relative-luminance
+//
+// Returns the Y component from CIE XYZ D65, which is the
+// relative luminance as defined by WCAG. Range is [0, 1]
+// where 0 = black and 1 = reference white.
+//
+// This value is used in WCAG contrast ratio calculations.
+
+variable input: List = {input};
+variable color: Color.XYZD65 = input.get(0).to.xyzd65();
+
+return color.y;
+

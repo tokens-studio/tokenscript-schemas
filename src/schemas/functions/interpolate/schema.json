@@ -1,0 +1,52 @@
+{
+  "name": "interpolate",
+  "type": "function",
+  "description": "Interpolates between two colors at a given position in perceptual OKLCH space. Position of 0 returns the first color, 1 returns the second color, 0.5 returns the midpoint. Uses shortest-path hue interpolation for natural color transitions.",
+  "keyword": "interpolate",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Start color",
+            "type": "color"
+          },
+          {
+            "description": "End color",
+            "type": "color"
+          },
+          {
+            "description": "Position (0-1, default 0.5)",
+            "type": "number"
+          }
+        ],
+        "minItems": 2,
+        "maxItems": 3
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "color",
+    "description": "Interpolated color"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./interpolate.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Midpoint between red and blue",
+      "input": ["#ff0000", "#0000ff", 0.5],
+      "output": "Purple-ish color in OKLCH"
+    },
+    {
+      "description": "Quarter way from black to white",
+      "input": ["#000000", "#ffffff", 0.25],
+      "output": "Dark gray"
+    }
+  ]
+}

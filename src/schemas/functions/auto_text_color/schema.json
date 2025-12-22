@@ -1,0 +1,53 @@
+{
+  "name": "auto_text_color",
+  "type": "function",
+  "description": "Returns black or white text color for optimal contrast against a background. Uses WCAG relative luminance to determine if the background is light or dark, then returns the opposite for maximum readability. Essential for generating accessible text colors in design systems.",
+  "keyword": "auto_text_color",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/xyz-d65-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Background color to test",
+            "type": "color"
+          },
+          {
+            "description": "Optional threshold (0-1, default 0.179 per WCAG). Higher values bias toward white text.",
+            "type": "number"
+          }
+        ],
+        "minItems": 1,
+        "maxItems": 2
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "color",
+    "description": "Either black (#000000) or white (#ffffff) for optimal contrast"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./auto-text-color.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Dark background returns white text",
+      "input": ["#1a1a1a"],
+      "output": "#ffffff"
+    },
+    {
+      "description": "Light background returns black text",
+      "input": ["#f0f0f0"],
+      "output": "#000000"
+    },
+    {
+      "description": "Mid-tone with custom threshold",
+      "input": ["#808080", 0.5],
+      "output": "#ffffff"
+    }
+  ]
+}

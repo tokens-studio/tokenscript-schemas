@@ -1,0 +1,24 @@
+{
+  "name": "APCA Contrast",
+  "type": "function",
+  "description": "Calculates APCA (Accessible Perceptual Contrast Algorithm) contrast between text and background colors. APCA is part of WCAG 3.0 draft and provides perceptually uniform contrast values. Returns Lc value from -108 to +106. Positive = light text on dark, negative = dark text on light. |Lc| ≥ 60 recommended for body text.",
+  "keyword": "apca_contrast",
+  "input": {
+    "type": "object",
+    "properties": {
+      "text": {
+        "type": "color",
+        "description": "Text/foreground color"
+      },
+      "background": {
+        "type": "color",
+        "description": "Background color"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./apca-contrast.tokenscript"
+  },
+  "requirements": ["/api/v1/core/srgb-color/0/"]
+}

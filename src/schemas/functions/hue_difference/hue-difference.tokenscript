@@ -1,0 +1,42 @@
+// Hue Difference
+// Calculates angular hue difference using shortest path
+//
+// The hue circle wraps at 360°, so we need to find
+// the shortest angular distance between two hues.
+//
+// Examples:
+//   hue_diff(350°, 10°) = 20° (not 340°)
+//   hue_diff(0°, 180°) = 180° (maximum difference)
+//   hue_diff(90°, 90°) = 0° (same hue)
+//
+// Returns value in range [0, 180]
+
+variable input: List = {input};
+variable color1: Color.OKLCH = input.get(0).to.oklch();
+variable color2: Color.OKLCH = input.get(1).to.oklch();
+
+// Get hue values
+variable h1: Number = color1.h;
+variable h2: Number = color2.h;
+
+// Normalize to 0-360
+if (h1 < 0) [ h1 = h1 + 360; ];
+if (h1 >= 360) [ h1 = h1 - 360; ];
+if (h2 < 0) [ h2 = h2 + 360; ];
+if (h2 >= 360) [ h2 = h2 - 360; ];
+
+// Calculate raw difference
+variable diff: Number = h1 - h2;
+
+// Make positive
+if (diff < 0) [
+    diff = 0 - diff;
+];
+
+// Take shortest path around circle
+if (diff > 180) [
+    diff = 360 - diff;
+];
+
+return diff;
+

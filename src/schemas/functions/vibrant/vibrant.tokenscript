@@ -1,0 +1,29 @@
+// vibrant: Increase chroma toward maximum colorfulness
+// Preserves lightness and hue
+// Amount controls how much to boost (0-1)
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+
+// Default amount
+variable amount: Number = 0.5;
+if (input.length() > 1) [
+    amount = input.get(1);
+];
+
+// Target maximum chroma for sRGB at this lightness (approximate)
+// Real max varies by hue and lightness, but 0.3 is a reasonable target
+variable max_chroma: Number = 0.3;
+
+// Increase chroma toward max
+variable current_c: Number = color.c;
+variable new_c: Number = current_c + (max_chroma - current_c) * amount;
+
+// Create result
+variable result: Color.OKLCH;
+result.l = color.l;
+result.c = new_c;
+result.h = color.h;
+
+return result;
+

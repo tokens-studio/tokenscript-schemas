@@ -1,0 +1,48 @@
+{
+  "name": "wcag_level",
+  "type": "function",
+  "description": "Returns the WCAG 2.1 compliance level for a foreground/background color pair. Returns 'AAA' (ratio >= 7:1), 'AA' (ratio >= 4.5:1), 'AA-large' (ratio >= 3:1), or 'fail' (ratio < 3:1). Based on W3C WCAG 2.1 Success Criteria 1.4.3 and 1.4.6.",
+  "keyword": "wcag_level",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/xyz-d65-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Foreground color (text)",
+            "type": "color"
+          },
+          {
+            "description": "Background color",
+            "type": "color"
+          }
+        ],
+        "minItems": 2,
+        "maxItems": 2
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "string",
+    "description": "WCAG level: 'AAA', 'AA', 'AA-large', or 'fail'"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./wcag-level.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Black on white passes AAA",
+      "input": ["#000000", "#ffffff"],
+      "output": "AAA"
+    },
+    {
+      "description": "Gray on white may only pass AA-large",
+      "input": ["#767676", "#ffffff"],
+      "output": "AA"
+    }
+  ]
+}

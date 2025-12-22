@@ -26,7 +26,7 @@ describe("Grayscale Function", () => {
         `
         variable red: Color.SRGB;
         red.r = 0.8; red.g = 0.2; red.b = 0.2;
-        grayscale(red)
+        grayscale(red).to.srgb()
         `,
       );
 
@@ -46,7 +46,7 @@ describe("Grayscale Function", () => {
         `
         variable bright: Color.SRGB;
         bright.r = 0.9; bright.g = 0.9; bright.b = 0.3;
-        grayscale(bright)
+        grayscale(bright).to.srgb()
         `,
       );
 
@@ -63,7 +63,7 @@ describe("Grayscale Function", () => {
         `
         variable gray: Color.SRGB;
         gray.r = 0.5; gray.g = 0.5; gray.b = 0.5;
-        grayscale(gray)
+        grayscale(gray).to.srgb()
         `,
       );
 

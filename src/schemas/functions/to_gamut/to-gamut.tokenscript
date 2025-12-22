@@ -1,0 +1,96 @@
+// to_gamut: Perceptual gamut mapping (CSS Color Level 4 algorithm)
+// Reference: CSS Color Level 4, Section 13.2 Gamut Mapping
+// Reference: https://www.w3.org/TR/css-color-4/#gamut-mapping
+//
+// Maps out-of-gamut colors into sRGB while preserving perceptual
+// intent. Uses OKLCH space with binary search on chroma:
+//   - Lightness and hue are preserved
+//   - Chroma is reduced until the color fits in gamut
+//
+// This is the CSS Gamut Mapping Algorithm (GMA) used by browsers.
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+
+// Target space (default sRGB) - currently only supports sRGB
+variable target_space: String = "srgb";
+if (input.length() > 1) [
+    target_space = input.get(1);
+];
+
+// Constants
+variable epsilon: Number = 0.0001;
+variable neg_epsilon: Number = 0 - epsilon;
+variable one_plus_eps: Number = 1 + epsilon;
+
+// Check if already in gamut by converting and checking bounds
+variable test_color: Color.SRGB = color.to.srgb();
+variable in_gamut: Boolean = true;
+
+// Check if sRGB values are in range [0, 1]
+if (test_color.r < neg_epsilon) [ in_gamut = false; ];
+if (test_color.r > one_plus_eps) [ in_gamut = false; ];
+if (test_color.g < neg_epsilon) [ in_gamut = false; ];
+if (test_color.g > one_plus_eps) [ in_gamut = false; ];
+if (test_color.b < neg_epsilon) [ in_gamut = false; ];
+if (test_color.b > one_plus_eps) [ in_gamut = false; ];
+
+// If already in gamut, return clamped version
+if (in_gamut) [
+    variable clamped: Color.SRGB;
+    clamped.r = min(1, max(0, test_color.r));
+    clamped.g = min(1, max(0, test_color.g));
+    clamped.b = min(1, max(0, test_color.b));
+    return clamped;
+];
+
+// Binary search: reduce chroma until in gamut
+variable min_c: Number = 0;
+variable max_c: Number = color.c;
+variable current: Color.OKLCH;
+current.l = color.l;
+current.h = color.h;
+
+variable iterations: Number = 0;
+variable max_iterations: Number = 25;
+
+while (max_c - min_c > epsilon) [
+    if (iterations >= max_iterations) [
+        max_c = min_c;  // Force exit
+    ];
+    
+    variable mid_c: Number = (min_c + max_c) / 2;
+    current.c = mid_c;
+    
+    variable test: Color.SRGB = current.to.srgb();
+    variable test_in_gamut: Boolean = true;
+    
+    if (test.r < neg_epsilon) [ test_in_gamut = false; ];
+    if (test.r > one_plus_eps) [ test_in_gamut = false; ];
+    if (test.g < neg_epsilon) [ test_in_gamut = false; ];
+    if (test.g > one_plus_eps) [ test_in_gamut = false; ];
+    if (test.b < neg_epsilon) [ test_in_gamut = false; ];
+    if (test.b > one_plus_eps) [ test_in_gamut = false; ];
+    
+    if (test_in_gamut) [
+        // We can try higher chroma
+        min_c = mid_c;
+    ] else [
+        // Need to reduce chroma
+        max_c = mid_c;
+    ];
+    
+    iterations = iterations + 1;
+];
+
+// Use the last valid chroma
+current.c = min_c;
+variable result: Color.SRGB = current.to.srgb();
+
+// Final clamp for any floating point errors
+variable final_result: Color.SRGB;
+final_result.r = min(1, max(0, result.r));
+final_result.g = min(1, max(0, result.g));
+final_result.b = min(1, max(0, result.b));
+
+return final_result;

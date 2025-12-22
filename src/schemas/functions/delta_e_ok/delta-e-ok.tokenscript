@@ -1,0 +1,43 @@
+// Delta E OK (ΔE_OK)
+// Perceptual color difference in OKLab space
+// Reference: Björn Ottosson's OKLab specification
+// Reference: Color.js deltaEOK implementation
+//
+// This is simply the Euclidean distance in OKLab space.
+// OKLab is designed to be perceptually uniform, making this
+// a reliable measure of perceived color difference.
+//
+// Interpretation:
+//   0.00       - Identical colors
+//   < 0.02     - Imperceptible difference (JND threshold)
+//   < 0.05     - Very close colors
+//   < 0.1      - Noticeable but small difference
+//   0.1 - 0.5  - Moderate difference
+//   > 0.5      - Very different colors
+//
+// Formula: sqrt((L1-L2)² + (a1-a2)² + (b1-b2)²)
+
+variable input: List = {input};
+variable color1: Color.OKLab = input.get(0).to.oklab();
+variable color2: Color.OKLab = input.get(1).to.oklab();
+
+// Get OKLab components
+variable l1: Number = color1.l;
+variable a1: Number = color1.a;
+variable b1: Number = color1.b;
+
+variable l2: Number = color2.l;
+variable a2: Number = color2.a;
+variable b2: Number = color2.b;
+
+// Calculate differences
+variable delta_l: Number = l1 - l2;
+variable delta_a: Number = a1 - a2;
+variable delta_b: Number = b1 - b2;
+
+// Calculate Euclidean distance (sqrt of sum of squares)
+variable sum_squares: Number = delta_l * delta_l + delta_a * delta_a + delta_b * delta_b;
+variable result: Number = sqrt(sum_squares);
+
+return result;
+

@@ -1,0 +1,51 @@
+// In Gamut Check
+// Checks if a color is within the sRGB gamut
+// Reference: Color.js inGamut implementation
+//
+// sRGB gamut is defined by all RGB components being in [0, 1]
+// This is critical for determining if colors can be displayed
+// on standard monitors without clipping.
+//
+// An epsilon tolerance is used to handle floating-point precision
+// issues near the gamut boundary.
+
+variable input: List = {input};
+variable color: Color.SRGB = input.get(0).to.srgb();
+
+// Default epsilon from Color.js
+variable epsilon: Number = 0.000075;
+if (input.length() > 1) [
+    epsilon = input.get(1);
+];
+
+// Get RGB values
+variable r: Number = color.r;
+variable g: Number = color.g;
+variable b: Number = color.b;
+
+// Check if within gamut bounds with epsilon tolerance
+variable min_bound: Number = 0 - epsilon;
+variable max_bound: Number = 1 + epsilon;
+
+// All channels must be within bounds
+variable r_in: Boolean = r >= min_bound;
+if (r_in) [ r_in = r <= max_bound; ];
+
+variable g_in: Boolean = g >= min_bound;
+if (g_in) [ g_in = g <= max_bound; ];
+
+variable b_in: Boolean = b >= min_bound;
+if (b_in) [ b_in = b <= max_bound; ];
+
+// Return true only if all channels are in gamut
+variable result: Boolean = false;
+if (r_in) [
+    if (g_in) [
+        if (b_in) [
+            result = true;
+        ];
+    ];
+];
+
+return result;
+

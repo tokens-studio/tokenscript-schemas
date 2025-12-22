@@ -1,0 +1,43 @@
+{
+  "name": "cooler",
+  "type": "function",
+  "description": "Shifts a color's hue towards cool colors (blue, ~260° in OKLCH). The amount parameter controls how much to shift, from 0 (no change) to 1 (fully cool). Preserves lightness and chroma.",
+  "keyword": "cooler",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Color to cool",
+            "type": "color"
+          },
+          {
+            "description": "Amount to shift (0-1), default 0.25",
+            "type": "number"
+          }
+        ],
+        "minItems": 1,
+        "maxItems": 2
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "color",
+    "description": "Color shifted towards cool hues"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./cooler.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Make orange cooler",
+      "input": ["#ff6600", 0.5],
+      "output": "Orange shifted towards neutral"
+    }
+  ]
+}

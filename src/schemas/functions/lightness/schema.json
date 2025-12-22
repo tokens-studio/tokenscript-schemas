@@ -1,0 +1,49 @@
+{
+  "name": "lightness",
+  "type": "function",
+  "description": "Extracts the perceptual lightness value from any color using OKLCH. Returns a value from 0 (black) to 1 (white). This is the 'L' in OKLCH, which is perceptually uniform - equal steps in L appear as equal steps in lightness to human vision. Essential for creating perceptually even color scales.",
+  "keyword": "lightness",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Color to extract lightness from",
+            "type": "color"
+          }
+        ],
+        "minItems": 1,
+        "maxItems": 1
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "number",
+    "description": "Perceptual lightness value (0-1)"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./lightness.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "White has lightness 1",
+      "input": ["#ffffff"],
+      "output": 1
+    },
+    {
+      "description": "Black has lightness 0",
+      "input": ["#000000"],
+      "output": 0
+    },
+    {
+      "description": "Mid-gray has lightness ~0.6",
+      "input": ["#808080"],
+      "output": 0.6
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "Is Warm",
+  "type": "function",
+  "description": "Checks if a color is perceptually warm. Uses OKLCH color space where warm colors have hues in the red-yellow range (roughly 0-130° and 320-360°). Returns true for warm colors (red, orange, yellow), false for cool colors (green, cyan, blue, purple). Achromatic colors are considered neutral/cool.",
+  "keyword": "is_warm",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "Color to check"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./is-warm.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklch-color/0/"]
+}

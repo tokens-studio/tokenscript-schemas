@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false
+  },
+  "include": ["scripts/**/*"],
+  "exclude": ["node_modules", "dist", "bundled"]
+}

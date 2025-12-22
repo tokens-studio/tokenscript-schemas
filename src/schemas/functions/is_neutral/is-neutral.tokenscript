@@ -1,0 +1,16 @@
+// is_neutral: Check if a color is achromatic (gray)
+// Uses OKLCH chroma - low chroma means neutral
+// Threshold of 0.02 allows for near-neutral colors
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+
+// Default chroma threshold
+variable threshold: Number = 0.02;
+if (input.length() > 1) [
+    threshold = input.get(1);
+];
+
+// Color is neutral if chroma is below threshold
+return color.c < threshold;
+

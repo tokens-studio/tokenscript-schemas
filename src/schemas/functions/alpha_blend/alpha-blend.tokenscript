@@ -1,0 +1,46 @@
+// Alpha Blend (Porter-Duff Over Compositing)
+// Reference: Porter & Duff "Compositing Digital Images" (1984)
+// Reference: W3C CSS Color Level 4 - Alpha Compositing
+//
+// Formula: result = foreground × α + background × (1 - α)
+// 
+// This is the standard "over" operation:
+// - α = 0: result is entirely background
+// - α = 1: result is entirely foreground
+// - 0 < α < 1: blend of both colors
+//
+// Used in:
+// - CSS opacity and rgba
+// - Semi-transparent overlays
+// - Gradient stops
+// - Glass/frosted effects
+
+variable input: List = {input};
+variable fg: Color.SRGB = input.get(0).to.srgb();
+variable bg: Color.SRGB = input.get(1).to.srgb();
+
+// Default alpha is 0.5 (50% opacity)
+variable alpha: Number = 0.5;
+if (input.length() > 2) [
+    alpha = input.get(2);
+];
+
+// Clamp alpha to valid range
+if (alpha < 0) [ alpha = 0; ];
+if (alpha > 1) [ alpha = 1; ];
+
+// Porter-Duff "over" compositing
+variable inv_alpha: Number = 1 - alpha;
+
+variable r: Number = fg.r * alpha + bg.r * inv_alpha;
+variable g: Number = fg.g * alpha + bg.g * inv_alpha;
+variable b: Number = fg.b * alpha + bg.b * inv_alpha;
+
+// Create result
+variable result: Color.SRGB;
+result.r = r;
+result.g = g;
+result.b = b;
+
+return result;
+

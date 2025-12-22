@@ -1,0 +1,28 @@
+{
+  "name": "Meets Contrast",
+  "type": "function",
+  "description": "Checks if two colors meet WCAG 2.1 contrast requirements. Returns true if contrast ratio meets the specified level: 'AA' (4.5:1 for normal text, 3:1 for large text), 'AAA' (7:1 for normal text, 4.5:1 for large text), or a custom ratio.",
+  "keyword": "meets_contrast",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color1": {
+        "type": "color",
+        "description": "First color"
+      },
+      "color2": {
+        "type": "color",
+        "description": "Second color"
+      },
+      "threshold": {
+        "type": "number",
+        "description": "Minimum contrast ratio required (default: 4.5 for AA)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./meets-contrast.tokenscript"
+  },
+  "requirements": ["/api/v1/core/srgb-linear-color/0/"]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "Delta E 76",
+  "type": "function",
+  "description": "Calculates color difference using CIE76 formula (ΔE*ab). Simple Euclidean distance in CIE Lab space. Less accurate than Delta E 2000 for small differences, but faster and adequate for many applications. Formula: sqrt((L1-L2)² + (a1-a2)² + (b1-b2)²).",
+  "keyword": "delta_e_76",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color1": {
+        "type": "color",
+        "description": "First color (reference)"
+      },
+      "color2": {
+        "type": "color",
+        "description": "Second color (sample)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./delta-e-76.tokenscript"
+  },
+  "requirements": ["/api/v1/core/lab-color/0/"]
+}

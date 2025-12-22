@@ -1,0 +1,24 @@
+// are_similar: Check if two colors are perceptually similar
+// Uses Delta E OK (OKLab Euclidean distance) for perceptual comparison
+// Default threshold 0.02 approximates "just noticeable difference"
+
+variable input: List = {input};
+variable color1: Color.OKLab = input.get(0).to.oklab();
+variable color2: Color.OKLab = input.get(1).to.oklab();
+
+// Default threshold for JND (just noticeable difference)
+variable threshold: Number = 0.02;
+if (input.length() > 2) [
+    threshold = input.get(2);
+];
+
+// Calculate Delta E OK (Euclidean distance in OKLab)
+variable delta_l: Number = color1.l - color2.l;
+variable delta_a: Number = color1.a - color2.a;
+variable delta_b: Number = color1.b - color2.b;
+
+variable delta_e: Number = sqrt(delta_l * delta_l + delta_a * delta_a + delta_b * delta_b);
+
+// Return true if within threshold
+return delta_e <= threshold;
+

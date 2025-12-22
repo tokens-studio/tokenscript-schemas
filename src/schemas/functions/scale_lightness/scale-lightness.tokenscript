@@ -1,0 +1,23 @@
+// scale_lightness: Multiply lightness by a factor
+// Uses OKLCH for perceptually uniform scaling
+// Clamps result to valid range [0, 1]
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+variable factor: Number = input.get(1);
+
+// Scale lightness
+variable new_l: Number = color.l * factor;
+
+// Clamp to valid range
+if (new_l < 0) [ new_l = 0; ];
+if (new_l > 1) [ new_l = 1; ];
+
+// Create result
+variable result: Color.OKLCH;
+result.l = new_l;
+result.c = color.c;
+result.h = color.h;
+
+return result;
+

@@ -1,0 +1,45 @@
+// cooler: Shift hue towards cool colors
+//
+// Cool colors are centered around blue (~260° in OKLCH).
+// The function interpolates the hue towards this target via
+// the shortest angular path on the hue wheel.
+//
+// Parameters:
+//   color  - Input color
+//   amount - Shift amount (0 = no change, 1 = fully cool), default 0.25
+//
+// Preserves lightness and chroma.
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+variable amount: Number = 0.25;
+
+if (input.length() > 1) [
+    amount = input.get(1);
+];
+
+// Cool hue target (blue in OKLCH is around 260°)
+variable cool_hue: Number = 260;
+
+// Calculate shortest path hue difference
+variable hue_diff: Number = cool_hue - color.h;
+
+// Wrap to shortest path
+if (hue_diff > 180) [ hue_diff = hue_diff - 360; ];
+if (hue_diff < -180) [ hue_diff = hue_diff + 360; ];
+
+// Apply interpolation
+variable new_hue: Number = color.h + (hue_diff * amount);
+
+// Normalize to 0-360
+if (new_hue < 0) [ new_hue = new_hue + 360; ];
+if (new_hue >= 360) [ new_hue = new_hue - 360; ];
+
+// Create result
+variable result: Color.OKLCH;
+result.l = color.l;
+result.c = color.c;
+result.h = new_hue;
+
+return result;
+

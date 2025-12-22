@@ -1,0 +1,52 @@
+{
+  "name": "clamp_lightness",
+  "type": "function",
+  "description": "Constrains a color's lightness to a specified range while preserving hue and chroma. Useful for ensuring colors stay within readable/accessible bounds. Uses OKLCH for perceptually uniform clamping.",
+  "keyword": "clamp_lightness",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Color to clamp",
+            "type": "color"
+          },
+          {
+            "description": "Minimum lightness (0-1)",
+            "type": "number"
+          },
+          {
+            "description": "Maximum lightness (0-1)",
+            "type": "number"
+          }
+        ],
+        "minItems": 3,
+        "maxItems": 3
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "color",
+    "description": "Color with clamped lightness"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./clamp-lightness.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Clamp too-dark color to minimum",
+      "input": ["#111111", 0.3, 0.9],
+      "output": "Color with lightness 0.3"
+    },
+    {
+      "description": "Clamp too-light color to maximum",
+      "input": ["#ffffff", 0.2, 0.8],
+      "output": "Color with lightness 0.8"
+    }
+  ]
+}

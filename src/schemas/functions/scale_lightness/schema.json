@@ -1,0 +1,48 @@
+{
+  "name": "scale_lightness",
+  "type": "function",
+  "description": "Scales a color's lightness by a factor. Unlike set_lightness which sets an absolute value, scale_lightness multiplies the current lightness. A factor of 1.2 increases lightness by 20%, while 0.8 decreases it by 20%. Uses OKLCH for perceptually uniform scaling. Result is clamped to valid lightness range [0, 1].",
+  "keyword": "scale_lightness",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Color to scale",
+            "type": "color"
+          },
+          {
+            "description": "Scale factor (e.g., 1.2 for +20%, 0.8 for -20%)",
+            "type": "number"
+          }
+        ],
+        "minItems": 2,
+        "maxItems": 2
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "color",
+    "description": "Color with scaled lightness"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./scale-lightness.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Brighten color by 20%",
+      "input": ["#808080", 1.2],
+      "output": "Lighter gray"
+    },
+    {
+      "description": "Dim color by 50%",
+      "input": ["#ffffff", 0.5],
+      "output": "Mid-gray"
+    }
+  ]
+}

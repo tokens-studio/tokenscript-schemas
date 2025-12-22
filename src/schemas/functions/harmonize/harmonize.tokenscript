@@ -1,0 +1,61 @@
+// harmonize: Shift hue towards a source color for visual harmony
+// Reference: Material Design 3 Color System
+// Reference: https://m3.material.io/styles/color/dynamic-color
+//
+// Shifts the input color's hue towards a source color by a specified
+// amount, creating a harmonized palette. Uses OKLCH for perceptually
+// uniform hue interpolation via the shortest angular path.
+//
+// Parameters:
+//   color  - Color to harmonize
+//   source - Target hue source
+//   amount - Shift amount (0 = no change, 1 = match source), default 0.5
+//
+// Input:  Any color space (converted to OKLCH internally)
+// Output: OKLCH (working space)
+// To get sRGB: harmonize(color, source, 0.5).to.srgb()
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+variable source: Color.OKLCH = input.get(1).to.oklch();
+
+// Default harmonization amount (0.5 = 50% shift)
+variable amount: Number = 0.5;
+if (input.length() > 2) [
+    amount = input.get(2);
+];
+
+// Get hues
+variable color_hue: Number = color.h;
+variable source_hue: Number = source.h;
+
+// Calculate shortest path around the hue circle
+variable diff: Number = source_hue - color_hue;
+
+// Normalize to -180 to 180 range for shortest path
+if (diff > 180) [
+    diff = diff - 360;
+];
+if (diff < -180) [
+    diff = diff + 360;
+];
+
+// Apply harmonization: shift hue by amount * difference
+variable new_hue: Number = color_hue + (diff * amount);
+
+// Normalize hue to 0-360
+if (new_hue < 0) [
+    new_hue = new_hue + 360;
+];
+if (new_hue >= 360) [
+    new_hue = new_hue - 360;
+];
+
+// Create result with shifted hue, preserving lightness and chroma
+variable result: Color.OKLCH;
+result.l = color.l;
+result.c = color.c;
+result.h = new_hue;
+
+return result;
+

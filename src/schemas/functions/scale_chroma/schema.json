@@ -1,0 +1,48 @@
+{
+  "name": "scale_chroma",
+  "type": "function",
+  "description": "Scales a color's chroma (saturation) by a factor. Unlike set_chroma which sets an absolute value, scale_chroma multiplies the current chroma. A factor of 1.5 increases colorfulness by 50%, while 0.5 decreases it by 50%. Uses OKLCH for perceptually uniform scaling. Useful for creating more or less vivid versions of a color.",
+  "keyword": "scale_chroma",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Color to scale",
+            "type": "color"
+          },
+          {
+            "description": "Scale factor (e.g., 1.5 for +50%, 0.5 for -50%)",
+            "type": "number"
+          }
+        ],
+        "minItems": 2,
+        "maxItems": 2
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "color",
+    "description": "Color with scaled chroma"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./scale-chroma.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Make color more vivid",
+      "input": ["#cc8080", 1.5],
+      "output": "More saturated red"
+    },
+    {
+      "description": "Desaturate color",
+      "input": ["#ff0000", 0.5],
+      "output": "Muted red"
+    }
+  ]
+}

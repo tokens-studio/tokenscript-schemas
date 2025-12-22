@@ -1,0 +1,44 @@
+{
+  "name": "hue",
+  "type": "function",
+  "description": "Extracts the hue angle from any color using OKLCH. Returns a value from 0 to 360 degrees representing the color's position on the hue wheel. Hue in OKLCH is perceptually uniform, meaning equal angular steps produce equally perceived hue changes. Essential for color harmony calculations and palette generation.",
+  "keyword": "hue",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Color to extract hue from",
+            "type": "color"
+          }
+        ],
+        "minItems": 1,
+        "maxItems": 1
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "number",
+    "description": "Hue angle (0-360 degrees)"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./hue.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Red has hue around 30° in OKLCH",
+      "input": ["#ff0000"],
+      "output": 29
+    },
+    {
+      "description": "Cyan has hue around 195°",
+      "input": ["#00ffff"],
+      "output": 195
+    }
+  ]
+}

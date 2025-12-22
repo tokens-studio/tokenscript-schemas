@@ -1,0 +1,22 @@
+// scale_chroma: Multiply chroma by a factor
+// Uses OKLCH for perceptually uniform scaling
+// Chroma cannot be negative; clamps to 0
+
+variable input: List = {input};
+variable color: Color.OKLCH = input.get(0).to.oklch();
+variable factor: Number = input.get(1);
+
+// Scale chroma
+variable new_c: Number = color.c * factor;
+
+// Clamp to valid range (no negative chroma)
+if (new_c < 0) [ new_c = 0; ];
+
+// Create result
+variable result: Color.OKLCH;
+result.l = color.l;
+result.c = new_c;
+result.h = color.h;
+
+return result;
+

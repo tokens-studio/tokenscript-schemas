@@ -10,7 +10,7 @@ result.l = color.l;
 result.c = 0;
 result.h = 0;
 
-return result.to.srgb();
+return result;
 
 
 

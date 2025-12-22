@@ -1,0 +1,41 @@
+// Clamp to Gamut (Simple Clipping)
+// Clips out-of-gamut sRGB values to [0, 1] range
+// Reference: Color.js toGamut with method="clip"
+//
+// This is the simplest gamut mapping approach:
+// - Fast and deterministic
+// - Preserves hue when only one channel clips
+// - Can cause hue shifts when multiple channels clip
+// - May lose saturation detail
+//
+// For perceptually better results, use toGamut() which
+// reduces chroma in OKLCH before clipping.
+
+variable input: List = {input};
+variable color: Color.SRGB = input.get(0).to.srgb();
+
+// Get RGB values
+variable r: Number = color.r;
+variable g: Number = color.g;
+variable b: Number = color.b;
+
+// Clamp R
+if (r < 0) [ r = 0; ];
+if (r > 1) [ r = 1; ];
+
+// Clamp G
+if (g < 0) [ g = 0; ];
+if (g > 1) [ g = 1; ];
+
+// Clamp B
+if (b < 0) [ b = 0; ];
+if (b > 1) [ b = 1; ];
+
+// Create clamped result
+variable result: Color.SRGB;
+result.r = r;
+result.g = g;
+result.b = b;
+
+return result;
+

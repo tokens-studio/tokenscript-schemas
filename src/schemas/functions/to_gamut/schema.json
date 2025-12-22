@@ -1,0 +1,48 @@
+{
+  "name": "to_gamut",
+  "type": "function",
+  "description": "Maps a color into a target gamut using the CSS Color Level 4 gamut mapping algorithm. This preserves the perceptual lightness and hue while reducing chroma until the color fits within the target color space. Uses OKLCH for perceptually uniform mapping and binary search with Delta E OK for convergence. Essential for wide-gamut to sRGB conversion in design systems.",
+  "keyword": "to_gamut",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Color to map into gamut",
+            "type": "color"
+          },
+          {
+            "description": "Target gamut/space (default 'srgb')",
+            "type": "string"
+          }
+        ],
+        "minItems": 1,
+        "maxItems": 2
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "color",
+    "description": "Color mapped into the target gamut"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./to-gamut.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Map out-of-gamut P3 color to sRGB",
+      "input": ["oklch(0.8 0.3 150)", "srgb"],
+      "output": "Color with reduced chroma that fits sRGB"
+    },
+    {
+      "description": "In-gamut color returns unchanged",
+      "input": ["#ff0000"],
+      "output": "#ff0000"
+    }
+  ]
+}

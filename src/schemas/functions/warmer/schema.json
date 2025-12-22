@@ -1,0 +1,43 @@
+{
+  "name": "warmer",
+  "type": "function",
+  "description": "Shifts a color's hue towards warm colors (orange, ~60° in OKLCH). The amount parameter controls how much to shift, from 0 (no change) to 1 (fully warm). Preserves lightness and chroma.",
+  "keyword": "warmer",
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklch-color/0/"],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Color to warm",
+            "type": "color"
+          },
+          {
+            "description": "Amount to shift (0-1), default 0.25",
+            "type": "number"
+          }
+        ],
+        "minItems": 1,
+        "maxItems": 2
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "color",
+    "description": "Color shifted towards warm hues"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./warmer.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Make blue warmer",
+      "input": ["#0000ff", 0.5],
+      "output": "Blue shifted towards purple/magenta"
+    }
+  ]
+}

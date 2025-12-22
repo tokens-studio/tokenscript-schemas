@@ -1,7 +1,11 @@
-// Mix two colors in OKLCH space with perceptually uniform interpolation
-// Uses shortest hue path for natural color blending
+// mix: Blend two colors in perceptual space
+// Uses shortest hue path for natural color blending.
 //
 // Algorithm: Linear interpolation on L, C, and shortest-path H
+//
+// Input:  Any color space (converted to OKLCH internally)
+// Output: OKLCH (working space)
+// To get sRGB: mix(color1, color2, 0.5).to.srgb()
 
 variable input: List = {input};
 variable color1: Color.OKLCH = input.get(0).to.oklch();
@@ -36,7 +40,7 @@ result.l = new_l;
 result.c = new_c;
 result.h = new_h;
 
-return result.to.srgb();
+return result;
 
 
 
