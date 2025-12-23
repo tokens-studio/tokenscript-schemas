@@ -5,6 +5,7 @@
  * Validates against ColorJS for parity
  */
 
+import { log } from "@tests/helpers/logger";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
 import Color from "colorjs.io";
 import { describe, expect, it } from "vitest";
@@ -88,11 +89,11 @@ describe("OKLab Color Schema", () => {
       // ColorJS reference
       const colorJS = new Color("xyz-d65", [0.95047, 1.0, 1.08883]).to("oklab");
 
-      console.log(`\n=== D65 WHITE → OKLab ===`);
-      console.log(
+      log.info(`\n=== D65 WHITE → OKLab ===`);
+      log.info(
         `TokenScript: { l: ${(result as any).value.l.value}, a: ${(result as any).value.a.value}, b: ${(result as any).value.b.value} }`,
       );
-      console.log(
+      log.info(
         `ColorJS:     { l: ${colorJS.coords[0]}, a: ${colorJS.coords[1]}, b: ${colorJS.coords[2]} }`,
       );
 
@@ -120,11 +121,11 @@ describe("OKLab Color Schema", () => {
 
       const colorJS = redXYZ.to("oklab");
 
-      console.log(`\n=== RED XYZ → OKLab ===`);
-      console.log(
+      log.info(`\n=== RED XYZ → OKLab ===`);
+      log.info(
         `TokenScript: { l: ${(result as any).value.l.value}, a: ${(result as any).value.a.value}, b: ${(result as any).value.b.value} }`,
       );
-      console.log(
+      log.info(
         `ColorJS:     { l: ${colorJS.coords[0]}, a: ${colorJS.coords[1]}, b: ${colorJS.coords[2]} }`,
       );
 
@@ -154,11 +155,11 @@ describe("OKLab Color Schema", () => {
       // ColorJS reference: sRGB red → OKLab
       const colorJS = new Color("srgb", [1, 0, 0]).to("oklab");
 
-      console.log(`\n=== sRGB RED → OKLab (full chain) ===`);
-      console.log(
+      log.info(`\n=== sRGB RED → OKLab (full chain) ===`);
+      log.info(
         `TokenScript: { l: ${(result as any).value.l.value}, a: ${(result as any).value.a.value}, b: ${(result as any).value.b.value} }`,
       );
-      console.log(
+      log.info(
         `ColorJS:     { l: ${colorJS.coords[0]}, a: ${colorJS.coords[1]}, b: ${colorJS.coords[2]} }`,
       );
 
@@ -257,16 +258,16 @@ describe("OKLab Color Schema", () => {
         const diffB = Math.abs(tsB - colorJS.coords[2]);
         const maxDiff = Math.max(diffL, diffA, diffB);
 
-        console.log(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
-        console.log(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
-        console.log(
+        log.info(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
+        log.info(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
+        log.info(
           `TokenScript: { l: ${tsL.toFixed(6)}, a: ${tsA.toFixed(6)}, b: ${tsB.toFixed(6)} }`,
         );
-        console.log(
+        log.info(
           `ColorJS:     { l: ${colorJS.coords[0].toFixed(6)}, a: ${colorJS.coords[1].toFixed(6)}, b: ${colorJS.coords[2].toFixed(6)} }`,
         );
-        console.log(`Max Diff:    ${maxDiff.toExponential(2)}`);
-        console.log(`Status:      ${maxDiff < TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
+        log.info(`Max Diff:    ${maxDiff.toExponential(2)}`);
+        log.info(`Status:      ${maxDiff < TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
 
         expect(maxDiff).toBeLessThan(TOLERANCE);
       });

@@ -10,6 +10,7 @@
  * - Cusp-based mapping for S and V coordinates
  */
 
+import { log } from "@tests/helpers/logger";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
 import Color from "colorjs.io";
 import "colorjs.io/fn"; // Register all color spaces including OKHSV
@@ -131,11 +132,11 @@ describe("OKHSV Color Schema", () => {
 
       const colorJS = new Color("srgb", [1, 0, 0]).to("okhsv");
 
-      console.log(`\n=== sRGB RED → OKHSV ===`);
-      console.log(
+      log.info(`\n=== sRGB RED → OKHSV ===`);
+      log.info(
         `TokenScript: { h: ${(result as any).value.h.value.toFixed(2)}, s: ${(result as any).value.s.value.toFixed(4)}, v: ${(result as any).value.v.value.toFixed(4)} }`,
       );
-      console.log(
+      log.info(
         `ColorJS:     { h: ${colorJS.coords[0].toFixed(2)}, s: ${colorJS.coords[1].toFixed(4)}, v: ${colorJS.coords[2].toFixed(4)} }`,
       );
 
@@ -160,11 +161,11 @@ describe("OKHSV Color Schema", () => {
 
       const colorJS = new Color("srgb", [0, 1, 0]).to("okhsv");
 
-      console.log(`\n=== sRGB GREEN → OKHSV ===`);
-      console.log(
+      log.info(`\n=== sRGB GREEN → OKHSV ===`);
+      log.info(
         `TokenScript: { h: ${(result as any).value.h.value.toFixed(2)}, s: ${(result as any).value.s.value.toFixed(4)}, v: ${(result as any).value.v.value.toFixed(4)} }`,
       );
-      console.log(
+      log.info(
         `ColorJS:     { h: ${colorJS.coords[0].toFixed(2)}, s: ${colorJS.coords[1].toFixed(4)}, v: ${colorJS.coords[2].toFixed(4)} }`,
       );
 
@@ -189,11 +190,11 @@ describe("OKHSV Color Schema", () => {
 
       const colorJS = new Color("srgb", [0, 0, 1]).to("okhsv");
 
-      console.log(`\n=== sRGB BLUE → OKHSV ===`);
-      console.log(
+      log.info(`\n=== sRGB BLUE → OKHSV ===`);
+      log.info(
         `TokenScript: { h: ${(result as any).value.h.value.toFixed(2)}, s: ${(result as any).value.s.value.toFixed(4)}, v: ${(result as any).value.v.value.toFixed(4)} }`,
       );
-      console.log(
+      log.info(
         `ColorJS:     { h: ${colorJS.coords[0].toFixed(2)}, s: ${colorJS.coords[1].toFixed(4)}, v: ${colorJS.coords[2].toFixed(4)} }`,
       );
 
@@ -218,12 +219,12 @@ describe("OKHSV Color Schema", () => {
 
       const colorJS = new Color("srgb", [0.5, 0.5, 0.5]).to("okhsv");
 
-      console.log(`\n=== sRGB MID-GRAY → OKHSV ===`);
-      console.log(
+      log.info(`\n=== sRGB MID-GRAY → OKHSV ===`);
+      log.info(
         `TokenScript: { h: ${(result as any).value.h.value.toFixed(2)}, s: ${(result as any).value.s.value.toFixed(4)}, v: ${(result as any).value.v.value.toFixed(4)} }`,
       );
       // ColorJS returns null hue for achromatic colors
-      console.log(
+      log.info(
         `ColorJS:     { h: ${colorJS.coords[0] ?? "null"}, s: ${colorJS.coords[1].toFixed(4)}, v: ${colorJS.coords[2].toFixed(4)} }`,
       );
 
@@ -282,11 +283,9 @@ describe("OKHSV Color Schema", () => {
       const cjS = colorJS.coords[1];
       const cjV = colorJS.coords[2];
 
-      console.log(`\n${label}: sRGB(${r}, ${g}, ${b})`);
-      console.log(
-        `  TokenScript: h=${tsH?.toFixed(2)}, s=${tsS?.toFixed(4)}, v=${tsV?.toFixed(4)}`,
-      );
-      console.log(
+      log.info(`\n${label}: sRGB(${r}, ${g}, ${b})`);
+      log.info(`  TokenScript: h=${tsH?.toFixed(2)}, s=${tsS?.toFixed(4)}, v=${tsV?.toFixed(4)}`);
+      log.info(
         `  ColorJS:     h=${cjH?.toFixed(2) ?? "null"}, s=${cjS?.toFixed(4)}, v=${cjV?.toFixed(4)}`,
       );
 

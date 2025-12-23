@@ -5,6 +5,7 @@
  * Validates against ColorJS for parity
  */
 
+import { log } from "@tests/helpers/logger";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
 import Color from "colorjs.io";
 import { describe, expect, it } from "vitest";
@@ -87,12 +88,12 @@ describe("XYZ-D50 Color Schema", () => {
       // ColorJS reference
       const colorJS = new Color("xyz-d65", [0.95047, 1.0, 1.08883]).to("xyz-d50");
 
-      console.log(`\n=== D65 White → D50 ===`);
-      console.log(`Input D65:   { x: 0.95047, y: 1.0, z: 1.08883 }`);
-      console.log(
+      log.info(`\n=== D65 White → D50 ===`);
+      log.info(`Input D65:   { x: 0.95047, y: 1.0, z: 1.08883 }`);
+      log.info(
         `TokenScript: { x: ${(result as any).value.x.value}, y: ${(result as any).value.y.value}, z: ${(result as any).value.z.value} }`,
       );
-      console.log(
+      log.info(
         `ColorJS:     { x: ${colorJS.coords[0]}, y: ${colorJS.coords[1]}, z: ${colorJS.coords[2]} }`,
       );
 
@@ -145,11 +146,11 @@ describe("XYZ-D50 Color Schema", () => {
       // ColorJS reference
       const colorJS = new Color("srgb", [1, 0, 0]).to("xyz-d50");
 
-      console.log(`\n=== sRGB RED → XYZ-D50 (full chain) ===`);
-      console.log(
+      log.info(`\n=== sRGB RED → XYZ-D50 (full chain) ===`);
+      log.info(
         `TokenScript: { x: ${(result as any).value.x.value}, y: ${(result as any).value.y.value}, z: ${(result as any).value.z.value} }`,
       );
-      console.log(
+      log.info(
         `ColorJS:     { x: ${colorJS.coords[0]}, y: ${colorJS.coords[1]}, z: ${colorJS.coords[2]} }`,
       );
 
@@ -201,16 +202,16 @@ describe("XYZ-D50 Color Schema", () => {
         const diffZ = Math.abs(tsZ - colorJS.coords[2]);
         const maxDiff = Math.max(diffX, diffY, diffZ);
 
-        console.log(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
-        console.log(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
-        console.log(
+        log.info(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
+        log.info(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
+        log.info(
           `TokenScript: { x: ${tsX.toFixed(9)}, y: ${tsY.toFixed(9)}, z: ${tsZ.toFixed(9)} }`,
         );
-        console.log(
+        log.info(
           `ColorJS:     { x: ${colorJS.coords[0].toFixed(9)}, y: ${colorJS.coords[1].toFixed(9)}, z: ${colorJS.coords[2].toFixed(9)} }`,
         );
-        console.log(`Max Diff:    ${maxDiff.toExponential(2)}`);
-        console.log(`Status:      ${maxDiff < TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
+        log.info(`Max Diff:    ${maxDiff.toExponential(2)}`);
+        log.info(`Status:      ${maxDiff < TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
 
         expect(maxDiff).toBeLessThan(TOLERANCE);
       });

@@ -3,7 +3,7 @@ import {
   collectRequiredSchemas,
   collectRequiredSchemasForList,
   resolveSchemaReference,
-} from "./schema-dependency-resolver.js";
+} from "@/bundler/schema-dependency-resolver.js";
 
 describe("Schema Dependency Resolver", () => {
   describe("resolveSchemaReference", () => {
@@ -52,25 +52,36 @@ describe("Schema Dependency Resolver", () => {
   });
 
   describe("collectRequiredSchemas", () => {
-    it("should collect dependencies for rgb-color type", async () => {
-      const deps = await collectRequiredSchemas("rgb-color", "type");
+    it("should collect dependencies for rgb-color type (with color type dependencies flag)", async () => {
+      const deps = await collectRequiredSchemas("rgb-color", "type", {
+        includeColorTypeDependencies: true,
+      });
 
       // rgb-color depends on hex-color through conversions
       expect(deps.types).toContain("hex-color");
       expect(deps.functions).toHaveLength(0);
     });
 
-    it("should collect dependencies for invert function", async () => {
-      const deps = await collectRequiredSchemas("invert", "function");
+    it("should NOT collect color type dependencies by default", async () => {
+      const deps = await collectRequiredSchemas("rgb-color", "type");
 
-      // invert requires rgb-color, which in turn requires hex-color
-      expect(deps.types).toContain("rgb-color");
-      expect(deps.types).toContain("hex-color");
+      // Without the flag, color conversions aren't treated as dependencies
+      expect(deps.types).toHaveLength(0);
       expect(deps.functions).toHaveLength(0);
     });
 
-    it("should work with URI input", async () => {
-      const deps = await collectRequiredSchemas("/api/v1/core/rgb-color/0/");
+    it("should collect dependencies for invert function", async () => {
+      const deps = await collectRequiredSchemas("invert", "function");
+
+      // invert requires rgb-color
+      expect(deps.types).toContain("rgb-color");
+      expect(deps.functions).toHaveLength(0);
+    });
+
+    it("should work with URI input and flag", async () => {
+      const deps = await collectRequiredSchemas("/api/v1/core/rgb-color/0/", undefined, {
+        includeColorTypeDependencies: true,
+      });
 
       expect(deps.types).toContain("hex-color");
     });
@@ -109,7 +120,21 @@ describe("Schema Dependency Resolver", () => {
       const rgbCount = deps.types.filter((s) => s === "rgb-color").length;
       expect(rgbCount).toBe(1);
 
-      // Should have both hex-color and rgb-color
+      // Should have rgb-color
+      expect(deps.types).toContain("rgb-color");
+      expect(deps.functions).toContain("invert");
+    });
+
+    it("should include color type dependencies when flag is set", async () => {
+      const deps = await collectRequiredSchemasForList(
+        [
+          { slug: "rgb-color", type: "type" },
+          { slug: "invert", type: "function" },
+        ],
+        { includeColorTypeDependencies: true },
+      );
+
+      // Should have both hex-color and rgb-color when flag is enabled
       expect(deps.types).toContain("hex-color");
       expect(deps.types).toContain("rgb-color");
       expect(deps.functions).toContain("invert");

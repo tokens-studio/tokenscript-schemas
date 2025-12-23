@@ -5,6 +5,7 @@
  * Validates against ColorJS for parity
  */
 
+import { log } from "@tests/helpers/logger";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
 import Color from "colorjs.io";
 import { describe, expect, it } from "vitest";
@@ -87,11 +88,11 @@ describe("CIE Lab Color Schema", () => {
       // ColorJS reference
       const colorJS = new Color("xyz-d50", [0.96429567, 1.0, 0.8251046]).to("lab");
 
-      console.log(`\n=== D50 WHITE → Lab ===`);
-      console.log(
+      log.info(`\n=== D50 WHITE → Lab ===`);
+      log.info(
         `TokenScript: { l: ${(result as any).value.l.value}, a: ${(result as any).value.a.value}, b: ${(result as any).value.b.value} }`,
       );
-      console.log(
+      log.info(
         `ColorJS:     { l: ${colorJS.coords[0]}, a: ${colorJS.coords[1]}, b: ${colorJS.coords[2]} }`,
       );
 
@@ -123,11 +124,11 @@ describe("CIE Lab Color Schema", () => {
       // ColorJS reference
       const colorJS = new Color("srgb", [1, 0, 0]).to("lab");
 
-      console.log(`\n=== sRGB RED → Lab (full chain) ===`);
-      console.log(
+      log.info(`\n=== sRGB RED → Lab (full chain) ===`);
+      log.info(
         `TokenScript: { l: ${(result as any).value.l.value}, a: ${(result as any).value.a.value}, b: ${(result as any).value.b.value} }`,
       );
-      console.log(
+      log.info(
         `ColorJS:     { l: ${colorJS.coords[0]}, a: ${colorJS.coords[1]}, b: ${colorJS.coords[2]} }`,
       );
 
@@ -180,16 +181,16 @@ describe("CIE Lab Color Schema", () => {
         const diffB = Math.abs(tsB - colorJS.coords[2]);
         const maxDiff = Math.max(diffL, diffA, diffB);
 
-        console.log(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
-        console.log(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
-        console.log(
+        log.info(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
+        log.info(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
+        log.info(
           `TokenScript: { l: ${tsL.toFixed(4)}, a: ${tsA.toFixed(4)}, b: ${tsB.toFixed(4)} }`,
         );
-        console.log(
+        log.info(
           `ColorJS:     { l: ${colorJS.coords[0].toFixed(4)}, a: ${colorJS.coords[1].toFixed(4)}, b: ${colorJS.coords[2].toFixed(4)} }`,
         );
-        console.log(`Max Diff:    ${maxDiff.toExponential(2)}`);
-        console.log(`Status:      ${maxDiff < TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
+        log.info(`Max Diff:    ${maxDiff.toExponential(2)}`);
+        log.info(`Status:      ${maxDiff < TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
 
         expect(maxDiff).toBeLessThan(TOLERANCE);
       });

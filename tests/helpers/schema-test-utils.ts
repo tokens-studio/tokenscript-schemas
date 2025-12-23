@@ -10,16 +10,17 @@ import {
   Lexer,
   Parser,
 } from "@tokens-studio/tokenscript-interpreter";
+import {
+  collectRequiredSchemas,
+  collectRequiredSchemasForList,
+  type ResolvedDependencies,
+} from "@/bundler/schema-dependency-resolver.js";
 import type {
   ColorSpecification,
   FunctionSpecification,
   SchemaSpecification,
 } from "@/bundler/types";
-import {
-  collectRequiredSchemas,
-  collectRequiredSchemasForList,
-  type ResolvedDependencies,
-} from "./schema-dependency-resolver";
+import { log } from "./logger";
 import { bundleSchemaForRuntime } from "./schema-loader";
 
 // Re-export Config and types for convenience
@@ -89,7 +90,7 @@ export async function setupColorManagerWithSchemas(
         colorManager.register(uri, colorSpec);
       }
     } catch (error) {
-      console.warn(`Failed to load schema ${slug}:`, error);
+      log.warn(`Failed to load schema ${slug}:`, error);
     }
   }
 
@@ -191,7 +192,11 @@ export async function setupConfigWithDependencies(
   const config = new Config({ colorManager, functionsManager });
 
   // Collect all required schemas
-  const deps = await collectRequiredSchemas(slugOrUri, type, DEFAULT_REGISTRY_URL);
+  // For tests, we include color type dependencies to ensure conversions work
+  const deps = await collectRequiredSchemas(slugOrUri, type, {
+    baseUrl: DEFAULT_REGISTRY_URL,
+    includeColorTypeDependencies: true,
+  });
 
   // Load all type dependencies
   for (const typeSlug of deps.types) {
@@ -202,7 +207,7 @@ export async function setupConfigWithDependencies(
         colorManager.register(uri, bundled as ColorSpecification);
       }
     } catch (error) {
-      console.warn(`Failed to load type schema ${typeSlug}:`, error);
+      log.warn(`Failed to load type schema ${typeSlug}:`, error);
     }
   }
 
@@ -214,14 +219,14 @@ export async function setupConfigWithDependencies(
         functionsManager.register(funcSlug, bundled as FunctionSpecification);
       }
     } catch (error) {
-      console.warn(`Failed to load function schema ${funcSlug}:`, error);
+      log.warn(`Failed to load function schema ${funcSlug}:`, error);
     }
   }
 
   // Load the main schema itself
   try {
     // Resolve to get the actual slug
-    const { resolveSchemaReference } = await import("./schema-dependency-resolver");
+    const { resolveSchemaReference } = await import("@/bundler/schema-dependency-resolver.js");
     const ref = resolveSchemaReference(slugOrUri);
 
     if (!ref) {
@@ -240,7 +245,7 @@ export async function setupConfigWithDependencies(
       colorManager.register(uri, mainSchema as ColorSpecification);
     }
   } catch (error) {
-    console.warn(`Failed to load main schema ${slugOrUri}:`, error);
+    log.warn(`Failed to load main schema ${slugOrUri}:`, error);
   }
 
   return config;
@@ -263,7 +268,11 @@ export async function setupConfigWithMultipleDependencies(
   const config = new Config({ colorManager, functionsManager });
 
   // Collect all required schemas (including dependencies)
-  const deps = await collectRequiredSchemasForList(schemas, DEFAULT_REGISTRY_URL);
+  // For tests, we include color type dependencies to ensure conversions work
+  const deps = await collectRequiredSchemasForList(schemas, {
+    baseUrl: DEFAULT_REGISTRY_URL,
+    includeColorTypeDependencies: true,
+  });
 
   // Load all type schemas
   for (const typeSlug of deps.types) {
@@ -274,7 +283,7 @@ export async function setupConfigWithMultipleDependencies(
         colorManager.register(uri, bundled as ColorSpecification);
       }
     } catch (error) {
-      console.warn(`Failed to load type schema ${typeSlug}:`, error);
+      log.warn(`Failed to load type schema ${typeSlug}:`, error);
     }
   }
 
@@ -286,7 +295,7 @@ export async function setupConfigWithMultipleDependencies(
         functionsManager.register(funcSlug, bundled as FunctionSpecification);
       }
     } catch (error) {
-      console.warn(`Failed to load function schema ${funcSlug}:`, error);
+      log.warn(`Failed to load function schema ${funcSlug}:`, error);
     }
   }
 

@@ -5,6 +5,7 @@
  * Validates against ColorJS for parity
  */
 
+import { log } from "@tests/helpers/logger";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
 import Color from "colorjs.io";
 import { describe, expect, it } from "vitest";
@@ -69,11 +70,11 @@ describe("CIE LCH Color Schema", () => {
       // ColorJS reference
       const colorJS = new Color("srgb", [1, 0, 0]).to("lch");
 
-      console.log(`\n=== sRGB RED → LCH (full chain) ===`);
-      console.log(
+      log.info(`\n=== sRGB RED → LCH (full chain) ===`);
+      log.info(
         `TokenScript: { l: ${(result as any).value.l.value}, c: ${(result as any).value.c.value}, h: ${(result as any).value.h.value} }`,
       );
-      console.log(
+      log.info(
         `ColorJS:     { l: ${colorJS.coords[0]}, c: ${colorJS.coords[1]}, h: ${colorJS.coords[2]} }`,
       );
 
@@ -126,17 +127,17 @@ describe("CIE LCH Color Schema", () => {
 
         const maxDiff = Math.max(diffL, diffC);
 
-        console.log(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
-        console.log(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
-        console.log(
+        log.info(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
+        log.info(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
+        log.info(
           `TokenScript: { l: ${tsL.toFixed(4)}, c: ${tsC.toFixed(4)}, h: ${tsH.toFixed(3)} }`,
         );
-        console.log(
+        log.info(
           `ColorJS:     { l: ${colorJS.coords[0].toFixed(4)}, c: ${colorJS.coords[1].toFixed(4)}, h: ${colorJS.coords[2].toFixed(3)} }`,
         );
-        console.log(`Max Diff (L,C): ${maxDiff.toExponential(2)}`);
-        console.log(`Hue Diff:       ${diffH.toExponential(2)}`);
-        console.log(
+        log.info(`Max Diff (L,C): ${maxDiff.toExponential(2)}`);
+        log.info(`Hue Diff:       ${diffH.toExponential(2)}`);
+        log.info(
           `Status:         ${maxDiff < TOLERANCE && diffH < HUE_TOLERANCE ? "✅ PASS" : "❌ FAIL"}`,
         );
 

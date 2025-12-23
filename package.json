@@ -1,10 +1,13 @@
 {
-  "name": "@tokenscript/schema-registry",
-  "version": "0.0.10",
+  "name": "@tokens-studio/tokenscript-schemas",
+  "version": "0.0.14",
   "description": "Schema registry for TokenScript with bundled schemas and validation",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "tokenscript-schemas": "./dist/cli/index.js"
+  },
   "exports": {
     ".": {
       "import": {
@@ -19,6 +22,7 @@
   },
   "files": [
     "dist",
+    "src",
     "bundled",
     "README.md"
   ],
@@ -33,6 +37,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:debug": "LOG_LEVEL=debug vitest run",
+    "test:verbose": "LOG_LEVEL=info vitest run",
     "check": "biome ci . --diagnostic-level=error",
     "lint": "biome lint --max-diagnostics=none .",
     "lint:fix": "biome lint --write .",
@@ -49,7 +55,8 @@
     "demo:functions": "tsx scripts/generate-functions-playground.ts",
     "demo:paths": "tsx scripts/generate-path-explorer.ts",
     "demo:all": "npm run demo:parity && npm run demo:advanced && npm run demo:functions && npm run demo:paths",
-    "colorjs:compare": "tsx scripts/compare-colorjs.ts"
+    "colorjs:compare": "tsx scripts/compare-colorjs.ts",
+    "release": "node scripts/release.js"
   },
   "keywords": [
     "tokenscript",
@@ -61,7 +68,9 @@
   "license": "MPL-2.0",
   "dependencies": {
     "@tokens-studio/tokenscript-interpreter": "^0.16.0",
-    "arktype": "^2.1.25"
+    "arktype": "^2.1.25",
+    "cac": "^6.7.14",
+    "ulog": "^2.0.0-beta.19"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.4",

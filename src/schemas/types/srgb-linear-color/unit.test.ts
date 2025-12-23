@@ -5,6 +5,7 @@
  * Validates against ColorJS for parity
  */
 
+import { log } from "@tests/helpers/logger";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
 import Color from "colorjs.io";
 import { describe, expect, it } from "vitest";
@@ -112,12 +113,12 @@ describe("Linear sRGB Color Schema", () => {
       // ColorJS reference
       const colorJS = new Color("srgb", [0.5, 0.5, 0.5]).to("srgb-linear");
 
-      console.log(`\n=== MID-GRAY Gamma Conversion ===`);
-      console.log(`Input sRGB:       { r: 0.5, g: 0.5, b: 0.5 }`);
-      console.log(
+      log.info(`\n=== MID-GRAY Gamma Conversion ===`);
+      log.info(`Input sRGB:       { r: 0.5, g: 0.5, b: 0.5 }`);
+      log.info(
         `TokenScript:      { r: ${(result as any).value.r.value}, g: ${(result as any).value.g.value}, b: ${(result as any).value.b.value} }`,
       );
-      console.log(
+      log.info(
         `ColorJS:          { r: ${colorJS.coords[0]}, g: ${colorJS.coords[1]}, b: ${colorJS.coords[2]} }`,
       );
 
@@ -209,16 +210,16 @@ describe("Linear sRGB Color Schema", () => {
         const diffB = Math.abs(tsB - colorJS.coords[2]);
         const maxDiff = Math.max(diffR, diffG, diffB);
 
-        console.log(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
-        console.log(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
-        console.log(
+        log.info(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
+        log.info(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
+        log.info(
           `TokenScript: { r: ${tsR.toFixed(9)}, g: ${tsG.toFixed(9)}, b: ${tsB.toFixed(9)} }`,
         );
-        console.log(
+        log.info(
           `ColorJS:     { r: ${colorJS.coords[0].toFixed(9)}, g: ${colorJS.coords[1].toFixed(9)}, b: ${colorJS.coords[2].toFixed(9)} }`,
         );
-        console.log(`Max Diff:    ${maxDiff.toExponential(2)}`);
-        console.log(`Status:      ${maxDiff < TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
+        log.info(`Max Diff:    ${maxDiff.toExponential(2)}`);
+        log.info(`Status:      ${maxDiff < TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
 
         expect(maxDiff).toBeLessThan(TOLERANCE);
       });

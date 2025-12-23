@@ -1,5 +1,5 @@
 /**
- * @tokenscript/schema-registry
+ * @tokens-studio/tokenscript-schemas
  *
  * Schema registry for TokenScript with bundled schemas and validation
  */
