@@ -1,6 +1,6 @@
 {
   "name": "@tokens-studio/tokenscript-schemas",
-  "version": "0.0.10",
+  "version": "0.0.12",
   "description": "Schema registry for TokenScript with bundled schemas and validation",
   "type": "module",
   "main": "./dist/index.js",
@@ -22,6 +22,7 @@
   },
   "files": [
     "dist",
+    "src",
     "bundled",
     "README.md"
   ],
