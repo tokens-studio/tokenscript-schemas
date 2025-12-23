@@ -5,7 +5,8 @@
 /// <reference types="../../../types/ulog" />
 
 import { readdir } from "node:fs/promises";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import anylogger from "ulog";
 
 const log = anylogger("list");
@@ -21,12 +22,43 @@ interface ListResult {
 }
 
 /**
+ * Find the schemas directory - works for both development/tests and installed package
+ */
+function findSchemasDir(): string {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+
+  // From compiled dist/cli/index.js (bundled) to src/schemas
+  const fromDist = join(__dirname, "../../src/schemas");
+
+  // From source src/cli/commands/list.ts to src/schemas (for tests/dev)
+  const fromSource = join(__dirname, "../../schemas");
+
+  // Try to detect which one exists
+  try {
+    const fs = require("node:fs");
+    if (fs.existsSync(fromDist)) {
+      return fromDist;
+    }
+    if (fs.existsSync(fromSource)) {
+      return fromSource;
+    }
+  } catch {
+    // If fs checks fail, default to dist structure
+  }
+
+  // Default to dist structure (for installed package)
+  return fromDist;
+}
+
+/**
  * List all available schemas
  */
 export async function listSchemas(
-  schemasDir: string = join(process.cwd(), "src/schemas"),
+  schemasDir?: string,
   options: ListOptions = {},
 ): Promise<ListResult> {
+  const resolvedSchemasDir = schemasDir || findSchemasDir();
   const showTypes = options.types || (!options.types && !options.functions);
   const showFunctions = options.functions || (!options.types && !options.functions);
 
@@ -36,7 +68,7 @@ export async function listSchemas(
   // List type schemas
   if (showTypes) {
     try {
-      const typesDir = join(schemasDir, "types");
+      const typesDir = join(resolvedSchemasDir, "types");
       const typeEntries = await readdir(typesDir, { withFileTypes: true });
       types.push(
         ...typeEntries
@@ -52,7 +84,7 @@ export async function listSchemas(
   // List function schemas
   if (showFunctions) {
     try {
-      const functionsDir = join(schemasDir, "functions");
+      const functionsDir = join(resolvedSchemasDir, "functions");
       const funcEntries = await readdir(functionsDir, { withFileTypes: true });
       functions.push(
         ...funcEntries
