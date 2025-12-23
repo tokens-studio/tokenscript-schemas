@@ -121,9 +121,27 @@ Bundles all schemas using the **shared bundling logic** from `@/bundler/bundle-s
 ### Run Tests
 
 ```bash
+# Run all tests (logs disabled by default)
 npm test
+
+# Run tests with verbose logging
+npm run test:verbose
+# or
+LOG_LEVEL=info npm test
+
+# Run tests with debug logging
+npm run test:debug
+# or
+LOG_LEVEL=debug npm test
+
+# Run specific test file
+npm test -- src/schemas/types/rgb-color/unit.test.ts
 ```
 
+**Test Logging:**
+- Logs are **disabled by default** to reduce noise (only errors shown)
+- Use `LOG_LEVEL` environment variable to enable logs: `debug`, `info`, `warn`, `error`
+- See [tests/helpers/LOGGING.md](tests/helpers/LOGGING.md) for detailed logging documentation
 - Tests use `bundleSchemaFromDirectory()` from `@/bundler/bundle-schema.ts`
 - No build step required - schemas are bundled on-demand
 - Same bundling logic as build-time for consistency

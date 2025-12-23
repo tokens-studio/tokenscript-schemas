@@ -18,6 +18,7 @@ import {
   TEST_COLORS,
   visualizePath,
 } from "@tests/helpers/colorjs-parity";
+import { log } from "@tests/helpers/logger";
 import Color from "colorjs.io";
 import { describe, expect, it } from "vitest";
 
@@ -240,31 +241,31 @@ describe("ColorJS Parity", () => {
     it("should visualize all paths from sRGB", () => {
       const paths = getAllConversionPaths("srgb");
 
-      console.log("\n=== All conversion paths from sRGB ===\n");
+      log.info("\n=== All conversion paths from sRGB ===\n");
       for (const [_target, path] of paths) {
-        console.log(`  ${visualizePath(path)}`);
+        log.info(`  ${visualizePath(path)}`);
       }
-      console.log("");
+      log.info("");
 
       // Verify we can reach all spaces
       expect(paths.size).toBe(CONVERSION_GRAPH.length);
     });
 
     it("should show full conversion graph", () => {
-      console.log("\n=== Conversion Graph (Mermaid) ===\n");
-      console.log(generateMermaidGraph());
-      console.log("");
+      log.info("\n=== Conversion Graph (Mermaid) ===\n");
+      log.info(generateMermaidGraph());
+      log.info("");
     });
   });
 
   describe("Reference Data Generation", () => {
     it("should generate reference values for test colors", () => {
-      console.log("\n=== ColorJS Reference Values for Testing ===\n");
+      log.info("\n=== ColorJS Reference Values for Testing ===\n");
 
       for (const [name, { space, coords }] of Object.entries(TEST_COLORS)) {
         const color = new Color(space, coords as [number, number, number]);
 
-        console.log(`\n${name.toUpperCase()} (${space}: [${coords.join(", ")}]):`);
+        log.info(`\n${name.toUpperCase()} (${space}: [${coords.join(", ")}]):`);
 
         // Show conversions to key spaces
         const keySpaces = ["srgb", "oklab", "oklch", "lab", "lch", "xyz-d65"];
@@ -275,14 +276,14 @@ describe("ColorJS Parity", () => {
             const values = coordNames
               .map((name, i) => `${name}: ${converted.coords[i].toFixed(6)}`)
               .join(", ");
-            console.log(`  → ${targetSpace}: { ${values} }`);
+            log.info(`  → ${targetSpace}: { ${values} }`);
           } catch (_e) {
-            console.log(`  → ${targetSpace}: [conversion failed]`);
+            log.info(`  → ${targetSpace}: [conversion failed]`);
           }
         }
       }
 
-      console.log("");
+      log.info("");
     });
   });
 });

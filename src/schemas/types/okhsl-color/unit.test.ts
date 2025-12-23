@@ -10,6 +10,7 @@
  * - Toe function for perceptually uniform lightness
  */
 
+import { log } from "@tests/helpers/logger";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
 import Color from "colorjs.io";
 import "colorjs.io/fn"; // Register all color spaces including OKHSL
@@ -127,11 +128,11 @@ describe("OKHSL Color Schema", () => {
 
       const colorJS = new Color("srgb", [1, 0, 0]).to("okhsl");
 
-      console.log(`\n=== sRGB RED → OKHSL ===`);
-      console.log(
+      log.info(`\n=== sRGB RED → OKHSL ===`);
+      log.info(
         `TokenScript: { h: ${(result as any).value.h.value.toFixed(2)}, s: ${(result as any).value.s.value.toFixed(4)}, l: ${(result as any).value.l.value.toFixed(4)} }`,
       );
-      console.log(
+      log.info(
         `ColorJS:     { h: ${colorJS.coords[0].toFixed(2)}, s: ${colorJS.coords[1].toFixed(4)}, l: ${colorJS.coords[2].toFixed(4)} }`,
       );
 
@@ -156,11 +157,11 @@ describe("OKHSL Color Schema", () => {
 
       const colorJS = new Color("srgb", [0, 1, 0]).to("okhsl");
 
-      console.log(`\n=== sRGB GREEN → OKHSL ===`);
-      console.log(
+      log.info(`\n=== sRGB GREEN → OKHSL ===`);
+      log.info(
         `TokenScript: { h: ${(result as any).value.h.value.toFixed(2)}, s: ${(result as any).value.s.value.toFixed(4)}, l: ${(result as any).value.l.value.toFixed(4)} }`,
       );
-      console.log(
+      log.info(
         `ColorJS:     { h: ${colorJS.coords[0].toFixed(2)}, s: ${colorJS.coords[1].toFixed(4)}, l: ${colorJS.coords[2].toFixed(4)} }`,
       );
 
@@ -185,11 +186,11 @@ describe("OKHSL Color Schema", () => {
 
       const colorJS = new Color("srgb", [0, 0, 1]).to("okhsl");
 
-      console.log(`\n=== sRGB BLUE → OKHSL ===`);
-      console.log(
+      log.info(`\n=== sRGB BLUE → OKHSL ===`);
+      log.info(
         `TokenScript: { h: ${(result as any).value.h.value.toFixed(2)}, s: ${(result as any).value.s.value.toFixed(4)}, l: ${(result as any).value.l.value.toFixed(4)} }`,
       );
-      console.log(
+      log.info(
         `ColorJS:     { h: ${colorJS.coords[0].toFixed(2)}, s: ${colorJS.coords[1].toFixed(4)}, l: ${colorJS.coords[2].toFixed(4)} }`,
       );
 
@@ -214,12 +215,12 @@ describe("OKHSL Color Schema", () => {
 
       const colorJS = new Color("srgb", [0.5, 0.5, 0.5]).to("okhsl");
 
-      console.log(`\n=== sRGB MID-GRAY → OKHSL ===`);
-      console.log(
+      log.info(`\n=== sRGB MID-GRAY → OKHSL ===`);
+      log.info(
         `TokenScript: { h: ${(result as any).value.h.value.toFixed(2)}, s: ${(result as any).value.s.value.toFixed(4)}, l: ${(result as any).value.l.value.toFixed(4)} }`,
       );
       // ColorJS returns null hue for achromatic colors
-      console.log(
+      log.info(
         `ColorJS:     { h: ${colorJS.coords[0] ?? "null"}, s: ${colorJS.coords[1].toFixed(4)}, l: ${colorJS.coords[2].toFixed(4)} }`,
       );
 
@@ -280,18 +281,16 @@ describe("OKHSL Color Schema", () => {
       const cjS = colorJS.coords[1];
       const cjL = colorJS.coords[2];
 
-      console.log(`\n${label}: sRGB(${r}, ${g}, ${b})`);
-      console.log(
-        `  TokenScript: h=${tsH?.toFixed(2)}, s=${tsS?.toFixed(4)}, l=${tsL?.toFixed(4)}`,
-      );
-      console.log(
+      log.info(`\n${label}: sRGB(${r}, ${g}, ${b})`);
+      log.info(`  TokenScript: h=${tsH?.toFixed(2)}, s=${tsS?.toFixed(4)}, l=${tsL?.toFixed(4)}`);
+      log.info(
         `  ColorJS:     h=${cjH?.toFixed(2) ?? "null"}, s=${cjS?.toFixed(4)}, l=${cjL?.toFixed(4)}`,
       );
 
       // Saturation comparison - with full findGamutIntersection, we achieve tight parity
       const satDiff = Math.abs(tsS - cjS);
       if (satDiff > 0.02) {
-        console.log(`  ⚠️ Saturation delta: ${satDiff.toFixed(4)}`);
+        log.info(`  ⚠️ Saturation delta: ${satDiff.toFixed(4)}`);
       }
       expect(satDiff).toBeLessThan(0.05); // Tight tolerance with full algorithm
 

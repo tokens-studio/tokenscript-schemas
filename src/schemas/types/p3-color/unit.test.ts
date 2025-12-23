@@ -2,6 +2,7 @@
  * Display-P3 Color Schema Tests
  */
 
+import { log } from "@tests/helpers/logger";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
 import Color from "colorjs.io";
 import { describe, expect, it } from "vitest";
@@ -79,11 +80,9 @@ describe("Display-P3 Color Schema", () => {
       const tsG = (result as any).value.g.value;
       const tsB = (result as any).value.b.value;
 
-      console.log(`\n=== sRGB Red → P3 ===`);
-      console.log(
-        `TokenScript: { r: ${tsR.toFixed(6)}, g: ${tsG.toFixed(6)}, b: ${tsB.toFixed(6)} }`,
-      );
-      console.log(
+      log.info(`\n=== sRGB Red → P3 ===`);
+      log.info(`TokenScript: { r: ${tsR.toFixed(6)}, g: ${tsG.toFixed(6)}, b: ${tsB.toFixed(6)} }`);
+      log.info(
         `ColorJS:     { r: ${colorJS.coords[0].toFixed(6)}, g: ${colorJS.coords[1].toFixed(6)}, b: ${colorJS.coords[2].toFixed(6)} }`,
       );
 
@@ -99,19 +98,19 @@ describe("Display-P3 Color Schema", () => {
 
       // sRGB red (1, 0, 0) in P3 space should have r < 1
       // because P3 red is more saturated
-      console.log(`\n=== sRGB Red expressed in P3 ===`);
-      console.log(
+      log.info(`\n=== sRGB Red expressed in P3 ===`);
+      log.info(
         `P3: { r: ${colorJS_srgbRed.coords[0].toFixed(6)}, g: ${colorJS_srgbRed.coords[1].toFixed(6)}, b: ${colorJS_srgbRed.coords[2].toFixed(6)} }`,
       );
-      console.log(`Note: R < 1 because P3 red primary is more saturated than sRGB red`);
+      log.info(`Note: R < 1 because P3 red primary is more saturated than sRGB red`);
 
       // P3 green primary is way outside sRGB gamut
       const colorJS_p3Green = new Color("p3", [0, 1, 0]).to("srgb");
-      console.log(`\n=== P3 Green expressed in sRGB (clipped) ===`);
-      console.log(
+      log.info(`\n=== P3 Green expressed in sRGB (clipped) ===`);
+      log.info(
         `sRGB: { r: ${colorJS_p3Green.coords[0].toFixed(6)}, g: ${colorJS_p3Green.coords[1].toFixed(6)}, b: ${colorJS_p3Green.coords[2].toFixed(6)} }`,
       );
-      console.log(`Note: Negative R value indicates out-of-sRGB-gamut color`);
+      log.info(`Note: Negative R value indicates out-of-sRGB-gamut color`);
 
       // P3 green in sRGB space has negative red
       expect(colorJS_p3Green.coords[0]).toBeLessThan(0);

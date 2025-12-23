@@ -7,6 +7,7 @@
  */
 
 import Color from "colorjs.io";
+import { log } from "./logger";
 
 // ============================================================================
 // Types
@@ -144,7 +145,7 @@ export function getColorJSReferenceValues(
       results.set(slug, convertColorJS(color, spaceId));
     } catch (error) {
       // Some conversions might fail for out-of-gamut colors
-      console.warn(`ColorJS conversion to ${spaceId} failed:`, error);
+      log.warn(`ColorJS conversion to ${spaceId} failed:`, error);
     }
   }
 

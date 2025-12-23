@@ -5,6 +5,7 @@
  * Validates against ColorJS for parity
  */
 
+import { log } from "@tests/helpers/logger";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
 import Color from "colorjs.io";
 import { describe, expect, it } from "vitest";
@@ -250,14 +251,14 @@ describe("sRGB Color Schema", () => {
         const diffB = Math.abs(tsB - colorJS.coords[2]);
         const maxDiff = Math.max(diffR, diffG, diffB);
 
-        // Log for documentation
-        console.log(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
-        console.log(`TokenScript: { r: ${tsR}, g: ${tsG}, b: ${tsB} }`);
-        console.log(
+        // Log for documentation (only shown when LOG_LEVEL is set)
+        log.info(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
+        log.info(`TokenScript: { r: ${tsR}, g: ${tsG}, b: ${tsB} }`);
+        log.info(
           `ColorJS:     { r: ${colorJS.coords[0]}, g: ${colorJS.coords[1]}, b: ${colorJS.coords[2]} }`,
         );
-        console.log(`Max Diff:    ${maxDiff.toExponential(2)}`);
-        console.log(`Status:      ${maxDiff < TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
+        log.info(`Max Diff:    ${maxDiff.toExponential(2)}`);
+        log.info(`Status:      ${maxDiff < TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
 
         expect(maxDiff).toBeLessThan(TOLERANCE);
       });

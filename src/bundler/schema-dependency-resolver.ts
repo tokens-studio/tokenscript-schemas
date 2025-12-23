@@ -3,6 +3,7 @@
  */
 
 import { join } from "node:path";
+import { log } from "@tests/helpers/logger.js";
 import type {
   ColorSpecification,
   FunctionSpecification,
@@ -156,7 +157,7 @@ export async function collectRequiredSchemas(
     // Resolve to a proper schema reference
     const ref = resolveSchemaReference(currentSlugOrUri);
     if (!ref) {
-      console.warn(`Could not resolve schema reference: ${currentSlugOrUri}`);
+      log.warn(`Could not resolve schema reference: ${currentSlugOrUri}`);
       return;
     }
 
@@ -182,7 +183,7 @@ export async function collectRequiredSchemas(
 
       spec = await bundleSchemaFromDirectory(schemaDir, baseUrl ? { baseUrl } : undefined);
     } catch (error) {
-      console.warn(`Failed to load schema ${slug} (${effectiveType}):`, error);
+      log.warn(`Failed to load schema ${slug} (${effectiveType}):`, error);
       return;
     }
 
@@ -290,7 +291,7 @@ export async function collectDependencyTree(
         dependencies: dependencySlugs,
       });
     } catch (error) {
-      console.warn(`Failed to load schema ${schema.slug} (${schema.type}):`, error);
+      log.warn(`Failed to load schema ${schema.slug} (${schema.type}):`, error);
     }
   }
 

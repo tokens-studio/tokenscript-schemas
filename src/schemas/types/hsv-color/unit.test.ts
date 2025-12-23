@@ -5,6 +5,7 @@
  * Validates against ColorJS for parity
  */
 
+import { log } from "@tests/helpers/logger";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
 import Color from "colorjs.io";
 import { describe, expect, it } from "vitest";
@@ -82,17 +83,17 @@ describe("HSV Color Schema", () => {
         const diffV = Math.abs(tsV - cjV);
         const maxDiff = Math.max(diffS, diffV);
 
-        console.log(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
-        console.log(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
-        console.log(
+        log.info(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
+        log.info(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
+        log.info(
           `TokenScript: { h: ${tsH.toFixed(3)}, s: ${tsS.toFixed(6)}, v: ${tsV.toFixed(6)} }`,
         );
-        console.log(
+        log.info(
           `ColorJS:     { h: ${colorJS.coords[0].toFixed(3)}, s: ${cjS.toFixed(6)}, v: ${cjV.toFixed(6)} } (normalized)`,
         );
-        console.log(`Max Diff (S,V): ${maxDiff.toExponential(2)}`);
-        console.log(`Hue Diff:       ${diffH.toExponential(2)}`);
-        console.log(
+        log.info(`Max Diff (S,V): ${maxDiff.toExponential(2)}`);
+        log.info(`Hue Diff:       ${diffH.toExponential(2)}`);
+        log.info(
           `Status:         ${maxDiff < TOLERANCE && diffH < HUE_TOLERANCE ? "✅ PASS" : "❌ FAIL"}`,
         );
 

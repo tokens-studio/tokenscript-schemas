@@ -5,6 +5,7 @@
  * Validates against ColorJS for parity
  */
 
+import { log } from "@tests/helpers/logger";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
 import Color from "colorjs.io";
 import { describe, expect, it } from "vitest";
@@ -66,11 +67,11 @@ describe("HSL Color Schema", () => {
       const cjS = colorJS.coords[1] / 100;
       const cjL = colorJS.coords[2] / 100;
 
-      console.log(`\n=== sRGB RED → HSL ===`);
-      console.log(
+      log.info(`\n=== sRGB RED → HSL ===`);
+      log.info(
         `TokenScript: { h: ${(result as any).value.h.value}, s: ${(result as any).value.s.value}, l: ${(result as any).value.l.value} }`,
       );
-      console.log(`ColorJS:     { h: ${colorJS.coords[0]}, s: ${cjS}, l: ${cjL} } (normalized)`);
+      log.info(`ColorJS:     { h: ${colorJS.coords[0]}, s: ${cjS}, l: ${cjL} } (normalized)`);
 
       expect((result as any).value.h.value).toBeCloseTo(colorJS.coords[0], 6);
       expect((result as any).value.s.value).toBeCloseTo(cjS, 9);
@@ -120,17 +121,17 @@ describe("HSL Color Schema", () => {
         const diffL = Math.abs(tsL - cjL);
         const maxDiff = Math.max(diffS, diffL);
 
-        console.log(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
-        console.log(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
-        console.log(
+        log.info(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
+        log.info(`Input sRGB:  { r: ${srgb[0]}, g: ${srgb[1]}, b: ${srgb[2]} }`);
+        log.info(
           `TokenScript: { h: ${tsH.toFixed(3)}, s: ${tsS.toFixed(6)}, l: ${tsL.toFixed(6)} }`,
         );
-        console.log(
+        log.info(
           `ColorJS:     { h: ${colorJS.coords[0].toFixed(3)}, s: ${cjS.toFixed(6)}, l: ${cjL.toFixed(6)} } (normalized from 0-100)`,
         );
-        console.log(`Max Diff (S,L): ${maxDiff.toExponential(2)}`);
-        console.log(`Hue Diff:       ${diffH.toExponential(2)}`);
-        console.log(
+        log.info(`Max Diff (S,L): ${maxDiff.toExponential(2)}`);
+        log.info(`Hue Diff:       ${diffH.toExponential(2)}`);
+        log.info(
           `Status:         ${maxDiff < TOLERANCE && diffH < HUE_TOLERANCE ? "✅ PASS" : "❌ FAIL"}`,
         );
 

@@ -5,6 +5,7 @@
  * Validates correct CSS Color Level 4 syntax generation
  */
 
+import { log } from "@tests/helpers/logger";
 import {
   createInterpreter,
   getBundledSchema,
@@ -80,8 +81,8 @@ describe("CSS Color Schema", () => {
 
       // Result is a ColorSymbol with value.value containing the CSS string
       const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
-      console.log(`\n=== RGB → CSS ===`);
-      console.log(`Output: ${css}`);
+      log.info(`\n=== RGB → CSS ===`);
+      log.info(`Output: ${css}`);
 
       expect(css).toBe("rgb(255 128 64)");
     });
@@ -127,8 +128,8 @@ describe("CSS Color Schema", () => {
       );
 
       const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
-      console.log(`\n=== sRGB → CSS ===`);
-      console.log(`Output: ${css}`);
+      log.info(`\n=== sRGB → CSS ===`);
+      log.info(`Output: ${css}`);
 
       expect(css).toMatch(/^color\(srgb 1 0\.5 0\.25\)$/);
     });
@@ -148,8 +149,8 @@ describe("CSS Color Schema", () => {
       );
 
       const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
-      console.log(`\n=== HSL → CSS ===`);
-      console.log(`Output: ${css}`);
+      log.info(`\n=== HSL → CSS ===`);
+      log.info(`Output: ${css}`);
 
       // Should produce hsl(120 50% 75%)
       expect(css).toMatch(/^hsl\(120 50% 75%\)$/);
@@ -186,8 +187,8 @@ describe("CSS Color Schema", () => {
       );
 
       const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
-      console.log(`\n=== HWB → CSS ===`);
-      console.log(`Output: ${css}`);
+      log.info(`\n=== HWB → CSS ===`);
+      log.info(`Output: ${css}`);
 
       // Should produce hwb(120 10% 20%)
       expect(css).toMatch(/^hwb\(120 10% 20%\)$/);
@@ -208,8 +209,8 @@ describe("CSS Color Schema", () => {
       );
 
       const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
-      console.log(`\n=== Lab → CSS ===`);
-      console.log(`Output: ${css}`);
+      log.info(`\n=== Lab → CSS ===`);
+      log.info(`Output: ${css}`);
 
       // Should produce lab(75% 20 -30)
       expect(css).toMatch(/^lab\(75% 20 -30\)$/);
@@ -237,8 +238,8 @@ describe("CSS Color Schema", () => {
       );
 
       const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
-      console.log(`\n=== LCH → CSS ===`);
-      console.log(`Output: ${css}`);
+      log.info(`\n=== LCH → CSS ===`);
+      log.info(`Output: ${css}`);
 
       // Should produce lch(75% 50 180)
       expect(css).toMatch(/^lch\(75% 50 180\)$/);
@@ -259,8 +260,8 @@ describe("CSS Color Schema", () => {
       );
 
       const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
-      console.log(`\n=== OKLab → CSS ===`);
-      console.log(`Output: ${css}`);
+      log.info(`\n=== OKLab → CSS ===`);
+      log.info(`Output: ${css}`);
 
       // Should produce oklab(0.7 0.1 -0.05)
       expect(css).toMatch(/^oklab\(0\.7 0\.1 -0\.05\)$/);
@@ -281,8 +282,8 @@ describe("CSS Color Schema", () => {
       );
 
       const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
-      console.log(`\n=== OKLCH → CSS ===`);
-      console.log(`Output: ${css}`);
+      log.info(`\n=== OKLCH → CSS ===`);
+      log.info(`Output: ${css}`);
 
       // Should produce oklch(0.7 0.15 180)
       expect(css).toMatch(/^oklch\(0\.7 0\.15 180\)$/);
@@ -303,8 +304,8 @@ describe("CSS Color Schema", () => {
       );
 
       const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
-      console.log(`\n=== Linear sRGB → CSS ===`);
-      console.log(`Output: ${css}`);
+      log.info(`\n=== Linear sRGB → CSS ===`);
+      log.info(`Output: ${css}`);
 
       expect(css).toMatch(/^color\(srgb-linear 1 0\.25 0\.0625\)$/);
     });
@@ -324,8 +325,8 @@ describe("CSS Color Schema", () => {
       );
 
       const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
-      console.log(`\n=== XYZ-D65 → CSS ===`);
-      console.log(`Output: ${css}`);
+      log.info(`\n=== XYZ-D65 → CSS ===`);
+      log.info(`Output: ${css}`);
 
       expect(css).toMatch(/^color\(xyz-d65 0\.4124 0\.2126 0\.0193\)$/);
     });
@@ -345,8 +346,8 @@ describe("CSS Color Schema", () => {
       );
 
       const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
-      console.log(`\n=== XYZ-D50 → CSS ===`);
-      console.log(`Output: ${css}`);
+      log.info(`\n=== XYZ-D50 → CSS ===`);
+      log.info(`Output: ${css}`);
 
       expect(css).toMatch(/^color\(xyz-d50 0\.436 0\.2225 0\.0139\)$/);
     });
@@ -366,8 +367,8 @@ describe("CSS Color Schema", () => {
       );
 
       const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
-      console.log(`\n=== Display-P3 → CSS ===`);
-      console.log(`Output: ${css}`);
+      log.info(`\n=== Display-P3 → CSS ===`);
+      log.info(`Output: ${css}`);
 
       expect(css).toMatch(/^color\(display-p3 1 0\.5 0\.25\)$/);
     });
@@ -390,8 +391,8 @@ describe("CSS Color Schema", () => {
       );
 
       const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
-      console.log(`\n=== HSV → CSS (via path resolution) ===`);
-      console.log(`Output: ${css}`);
+      log.info(`\n=== HSV → CSS (via path resolution) ===`);
+      log.info(`Output: ${css}`);
 
       // Should produce valid CSS (exact format depends on path resolution)
       expect(css).toBeTruthy();

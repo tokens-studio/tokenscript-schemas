@@ -5,6 +5,7 @@
  * Validates against ColorJS for parity
  */
 
+import { log } from "@tests/helpers/logger";
 import { executeWithSchema, getBundledSchema } from "@tests/helpers/schema-test-utils";
 import Color from "colorjs.io";
 import { describe, expect, it } from "vitest";
@@ -156,11 +157,11 @@ describe("XYZ-D65 Color Schema", () => {
       const colorJS = new Color("srgb-linear", [1, 1, 1]).to("xyz-d65");
 
       // D65 white point should sum the matrix rows
-      console.log(`\n=== D65 WHITE POINT ===`);
-      console.log(
+      log.info(`\n=== D65 WHITE POINT ===`);
+      log.info(
         `TokenScript: { x: ${(result as any).value.x.value}, y: ${(result as any).value.y.value}, z: ${(result as any).value.z.value} }`,
       );
-      console.log(
+      log.info(
         `ColorJS:     { x: ${colorJS.coords[0]}, y: ${colorJS.coords[1]}, z: ${colorJS.coords[2]} }`,
       );
 
@@ -210,16 +211,16 @@ describe("XYZ-D65 Color Schema", () => {
         const diffZ = Math.abs(tsZ - colorJS.coords[2]);
         const maxDiff = Math.max(diffX, diffY, diffZ);
 
-        console.log(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
-        console.log(`Input Linear: { r: ${linear[0]}, g: ${linear[1]}, b: ${linear[2]} }`);
-        console.log(
+        log.info(`\n=== ${name.toUpperCase()} ColorJS Parity ===`);
+        log.info(`Input Linear: { r: ${linear[0]}, g: ${linear[1]}, b: ${linear[2]} }`);
+        log.info(
           `TokenScript:  { x: ${tsX.toFixed(9)}, y: ${tsY.toFixed(9)}, z: ${tsZ.toFixed(9)} }`,
         );
-        console.log(
+        log.info(
           `ColorJS:      { x: ${colorJS.coords[0].toFixed(9)}, y: ${colorJS.coords[1].toFixed(9)}, z: ${colorJS.coords[2].toFixed(9)} }`,
         );
-        console.log(`Max Diff:     ${maxDiff.toExponential(2)}`);
-        console.log(`Status:       ${maxDiff < TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
+        log.info(`Max Diff:     ${maxDiff.toExponential(2)}`);
+        log.info(`Status:       ${maxDiff < TOLERANCE ? "✅ PASS" : "❌ FAIL"}`);
 
         expect(maxDiff).toBeLessThan(TOLERANCE);
       });
@@ -268,11 +269,11 @@ describe("XYZ-D65 Color Schema", () => {
       // ColorJS reference
       const colorJS = new Color("srgb", [0.5, 0.5, 0.5]).to("xyz-d65");
 
-      console.log(`\n=== sRGB 50% GRAY → XYZ-D65 (full chain) ===`);
-      console.log(
+      log.info(`\n=== sRGB 50% GRAY → XYZ-D65 (full chain) ===`);
+      log.info(
         `TokenScript: { x: ${(result as any).value.x.value}, y: ${(result as any).value.y.value}, z: ${(result as any).value.z.value} }`,
       );
-      console.log(
+      log.info(
         `ColorJS:     { x: ${colorJS.coords[0]}, y: ${colorJS.coords[1]}, z: ${colorJS.coords[2]} }`,
       );
 
@@ -302,11 +303,11 @@ describe("XYZ-D65 Color Schema", () => {
       // ColorJS reference: #ff5733 → XYZ-D65
       const colorJS = new Color("#ff5733").to("xyz-d65");
 
-      console.log(`\n=== RGB #ff5733 → XYZ-D65 (full chain) ===`);
-      console.log(
+      log.info(`\n=== RGB #ff5733 → XYZ-D65 (full chain) ===`);
+      log.info(
         `TokenScript: { x: ${(result as any).value.x.value}, y: ${(result as any).value.y.value}, z: ${(result as any).value.z.value} }`,
       );
-      console.log(
+      log.info(
         `ColorJS:     { x: ${colorJS.coords[0]}, y: ${colorJS.coords[1]}, z: ${colorJS.coords[2]} }`,
       );
 

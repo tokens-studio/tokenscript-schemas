@@ -2,6 +2,13 @@
 
 > Guide for AI agents working with the TokenScript Schema Registry
 
+## Quick Reference
+
+**Most Important Rules:**
+1. ✅ Use path aliases: `@/` and `@tests/` (not relative paths)
+2. ✅ Use `log` from `@tests/helpers/logger` for all logging (NEVER `console.log`)
+3. ✅ Use snake_case in `.tokenscript` files (e.g., `rgb_color`, not `rgbColor`)
+
 ## Project Overview
 
 This repository manages TokenScript color schemas with validation and unit testing. Schemas define color spaces (e.g., sRGB, HSL) and their conversions using the TokenScript language.
@@ -276,6 +283,49 @@ Each schema type lives in its own directory with:
 - Multiple `.tokenscript` files (one per initializer/conversion)
 - ONE `unit.test.ts`
 
+### 7. **Logging in Tests**
+**NEVER** use `console.log`, `console.warn`, or `console.error` in test files. Always use the centralized logger:
+
+```typescript
+import { log } from "@tests/helpers/logger";
+
+// ✓ Correct
+log.debug("Detailed diagnostic info");
+log.info("Conversion result:", result);
+log.warn("Schema not found, using fallback");
+log.error("Critical error:", error);
+
+// ✗ Wrong - Do NOT use console
+console.log("Color conversion result:", result);
+console.warn("Schema not found");
+console.error("Error:", error);
+```
+
+**Why?**
+- Tests are **silent by default** to avoid log pollution
+- Logs only show when `LOG_LEVEL` is set: `LOG_LEVEL=info npm test`
+- Keeps test output clean and readable
+
+**Available log levels:**
+- `log.debug()` - Detailed diagnostics (shown with `LOG_LEVEL=debug`)
+- `log.info()` - Informational messages (shown with `LOG_LEVEL=info`)
+- `log.warn()` - Warnings (shown with `LOG_LEVEL=warn`)
+- `log.error()` - Errors (always shown, default level)
+
+**Testing with logs:**
+```bash
+# Silent tests (default)
+npm test
+
+# Show info logs (parity comparisons, etc.)
+LOG_LEVEL=info npm test
+
+# Show all debug logs
+LOG_LEVEL=debug npm test
+```
+
+See `tests/helpers/LOGGING.md` for complete documentation.
+
 ## Common Issues & Solutions
 
 ### Issue: "Method 'tostring' not found"
@@ -341,4 +391,5 @@ When working with this codebase, remember:
 3. Follow TokenScript syntax (snake_case for ALL variables and methods)
 4. Access Symbol values with `.value`
 5. Write comprehensive tests
-6. Never import from other repos
+6. **Use `log` from `@tests/helpers/logger` - NEVER use `console.log`**
+7. Never import from other repos

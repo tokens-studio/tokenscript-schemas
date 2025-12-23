@@ -36,6 +36,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:debug": "LOG_LEVEL=debug vitest run",
+    "test:verbose": "LOG_LEVEL=info vitest run",
     "check": "biome ci . --diagnostic-level=error",
     "lint": "biome lint --max-diagnostics=none .",
     "lint:fix": "biome lint --write .",

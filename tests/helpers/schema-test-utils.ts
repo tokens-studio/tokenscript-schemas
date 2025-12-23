@@ -20,6 +20,7 @@ import type {
   FunctionSpecification,
   SchemaSpecification,
 } from "@/bundler/types";
+import { log } from "./logger";
 import { bundleSchemaForRuntime } from "./schema-loader";
 
 // Re-export Config and types for convenience
@@ -89,7 +90,7 @@ export async function setupColorManagerWithSchemas(
         colorManager.register(uri, colorSpec);
       }
     } catch (error) {
-      console.warn(`Failed to load schema ${slug}:`, error);
+      log.warn(`Failed to load schema ${slug}:`, error);
     }
   }
 
@@ -206,7 +207,7 @@ export async function setupConfigWithDependencies(
         colorManager.register(uri, bundled as ColorSpecification);
       }
     } catch (error) {
-      console.warn(`Failed to load type schema ${typeSlug}:`, error);
+      log.warn(`Failed to load type schema ${typeSlug}:`, error);
     }
   }
 
@@ -218,7 +219,7 @@ export async function setupConfigWithDependencies(
         functionsManager.register(funcSlug, bundled as FunctionSpecification);
       }
     } catch (error) {
-      console.warn(`Failed to load function schema ${funcSlug}:`, error);
+      log.warn(`Failed to load function schema ${funcSlug}:`, error);
     }
   }
 
@@ -244,7 +245,7 @@ export async function setupConfigWithDependencies(
       colorManager.register(uri, mainSchema as ColorSpecification);
     }
   } catch (error) {
-    console.warn(`Failed to load main schema ${slugOrUri}:`, error);
+    log.warn(`Failed to load main schema ${slugOrUri}:`, error);
   }
 
   return config;
@@ -282,7 +283,7 @@ export async function setupConfigWithMultipleDependencies(
         colorManager.register(uri, bundled as ColorSpecification);
       }
     } catch (error) {
-      console.warn(`Failed to load type schema ${typeSlug}:`, error);
+      log.warn(`Failed to load type schema ${typeSlug}:`, error);
     }
   }
 
@@ -294,7 +295,7 @@ export async function setupConfigWithMultipleDependencies(
         functionsManager.register(funcSlug, bundled as FunctionSpecification);
       }
     } catch (error) {
-      console.warn(`Failed to load function schema ${funcSlug}:`, error);
+      log.warn(`Failed to load function schema ${funcSlug}:`, error);
     }
   }
 
