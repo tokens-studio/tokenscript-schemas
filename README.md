@@ -1,4 +1,4 @@
-# @tokenscript/schema-registry
+# @tokens-studio/tokenscript-schemas
 
 Schema registry test setup for TokenScript with bundled schemas and validation.
 
@@ -19,21 +19,21 @@ Bundle specific schemas for use in your projects with automatic dependency resol
 
 ```bash
 # Bundle specific color schemas
-npx @tokenscript/schema-registry bundle oklch-color rgb-color -o ./schemas.js
+npx @tokens-studio/tokenscript-schemas bundle oklch-color rgb-color -o ./schemas.js
 
 # Bundle with functions
-npx @tokenscript/schema-registry bundle rgb-color function:invert -o ./schemas.js
+npx @tokens-studio/tokenscript-schemas bundle rgb-color function:invert -o ./schemas.js
 
 # Use config file for repeatable builds
-npx @tokenscript/schema-registry bundle --config schemas.json
+npx @tokens-studio/tokenscript-schemas bundle --config schemas.json
 
 # Preview what would be bundled (dry-run)
-npx @tokenscript/schema-registry bundle oklch-color rgb-color --dry-run
+npx @tokens-studio/tokenscript-schemas bundle oklch-color rgb-color --dry-run
 
 # List available schemas
-npx @tokenscript/schema-registry list
-npx @tokenscript/schema-registry list --types
-npx @tokenscript/schema-registry list --functions
+npx @tokens-studio/tokenscript-schemas list
+npx @tokens-studio/tokenscript-schemas list --types
+npx @tokens-studio/tokenscript-schemas list --functions
 ```
 
 **Config File Format** (`schemas.json`):

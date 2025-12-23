@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * CLI entry point for @tokenscript/schema-registry
+ * CLI entry point for @tokens-studio/tokenscript-schemas
  */
 
 /// <reference types="../../types/ulog" />
