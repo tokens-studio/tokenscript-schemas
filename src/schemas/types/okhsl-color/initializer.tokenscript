@@ -9,8 +9,9 @@
 // - h: Hue angle (0-360 degrees), same as OKLCH hue
 // - s: Saturation (0-1), normalized to sRGB gamut boundary
 // - l: Lightness (0-1), perceptually uniform with toe function
+// - alpha: Optional alpha channel (0-1)
 //
-// Input: Object with h, s, l properties
+// Input: Object with h, s, l, and optional alpha properties
 // Output: Color.OKHSL
 
 variable h: Number = input.h;
@@ -21,4 +22,10 @@ variable output: Color.OKHSL;
 output.h = h;
 output.s = s;
 output.l = l;
+
+// Set alpha if provided
+if (input.alpha != null) [
+  output.alpha = input.alpha;
+];
+
 output

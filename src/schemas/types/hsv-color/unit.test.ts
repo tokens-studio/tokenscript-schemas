@@ -159,4 +159,48 @@ describe("HSV Color Schema", () => {
       expect((result as any).value.v.value).toBeCloseTo(0.5, 9);
     });
   });
+
+  describe("Alpha Channel Support", () => {
+    it("should accept optional 4th parameter for alpha", async () => {
+      const result = await executeWithSchema(
+        "hsv-color",
+        "type",
+        `
+        variable c: Color.HSV = hsv(180, 0.5, 0.5, 0.7);
+        c
+      `,
+      );
+
+      expect(result?.constructor.name).toBe("ColorSymbol");
+      expect((result as any).subType).toBe("HSV");
+      expect((result as any).alpha).toBe(0.7);
+    });
+
+    it("should get alpha property", async () => {
+      const result = await executeWithSchema(
+        "hsv-color",
+        "type",
+        `
+        variable c: Color.HSV = hsv(0, 1, 1, 0.5);
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.5);
+    });
+
+    it("should set alpha property", async () => {
+      const result = await executeWithSchema(
+        "hsv-color",
+        "type",
+        `
+        variable c: Color.HSV = hsv(0, 1, 1);
+        c.alpha = 0.8;
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.8);
+    });
+  });
 });

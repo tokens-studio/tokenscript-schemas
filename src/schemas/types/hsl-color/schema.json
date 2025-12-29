@@ -31,6 +31,15 @@
         "type": "/api/v1/core/tokenscript/0/",
         "script": "./initializer.tokenscript"
       }
+    },
+    {
+      "title": "HSLA Color Initializer",
+      "keyword": "hsla",
+      "description": "Creates an HSL color with alpha from H, S, L, A values",
+      "script": {
+        "type": "/api/v1/core/tokenscript/0/",
+        "script": "./hsla-initializer.tokenscript"
+      }
     }
   ],
   "conversions": [

@@ -31,6 +31,15 @@
         "type": "/api/v1/core/tokenscript/0/",
         "script": "./initializer.tokenscript"
       }
+    },
+    {
+      "title": "HWBA Color Initializer",
+      "keyword": "hwba",
+      "description": "Creates an HWB color with alpha from H, W, B, A values",
+      "script": {
+        "type": "/api/v1/core/tokenscript/0/",
+        "script": "./hwba-initializer.tokenscript"
+      }
     }
   ],
   "conversions": [

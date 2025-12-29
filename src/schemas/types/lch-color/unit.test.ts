@@ -170,4 +170,48 @@ describe("CIE LCH Color Schema", () => {
       expect((result as any).value.c.value).toBeLessThan(0.01);
     });
   });
+
+  describe("Alpha Channel Support", () => {
+    it("should accept optional 4th parameter for alpha", async () => {
+      const result = await executeWithSchema(
+        "lch-color",
+        "type",
+        `
+        variable c: Color.LCH = lch(50, 20, 180, 0.7);
+        c
+      `,
+      );
+
+      expect(result?.constructor.name).toBe("ColorSymbol");
+      expect((result as any).subType).toBe("LCH");
+      expect((result as any).alpha).toBe(0.7);
+    });
+
+    it("should get alpha property", async () => {
+      const result = await executeWithSchema(
+        "lch-color",
+        "type",
+        `
+        variable c: Color.LCH = lch(50, 20, 180, 0.5);
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.5);
+    });
+
+    it("should set alpha property", async () => {
+      const result = await executeWithSchema(
+        "lch-color",
+        "type",
+        `
+        variable c: Color.LCH = lch(50, 20, 180);
+        c.alpha = 0.8;
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.8);
+    });
+  });
 });

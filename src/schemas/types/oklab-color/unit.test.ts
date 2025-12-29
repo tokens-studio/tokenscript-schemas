@@ -342,4 +342,62 @@ describe("OKLab Color Schema", () => {
       expect(Math.abs((result as any).value.b.value)).toBeLessThan(1e-5);
     });
   });
+
+  describe("Alpha Channel Support", () => {
+    it("should accept optional 4th parameter for alpha", async () => {
+      const result = await executeWithSchema(
+        "oklab-color",
+        "type",
+        `
+        variable c: Color.OKLab = oklab(0.5, 0.1, 0.2, 0.7);
+        c
+      `,
+      );
+
+      expect(result?.constructor.name).toBe("ColorSymbol");
+      expect((result as any).subType).toBe("OKLab");
+      expect((result as any).alpha).toBe(0.7);
+    });
+
+    it("should get alpha property", async () => {
+      const result = await executeWithSchema(
+        "oklab-color",
+        "type",
+        `
+        variable c: Color.OKLab = oklab(0.5, 0.1, 0.2, 0.5);
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.5);
+    });
+
+    it("should set alpha property", async () => {
+      const result = await executeWithSchema(
+        "oklab-color",
+        "type",
+        `
+        variable c: Color.OKLab = oklab(0.5, 0.1, 0.2);
+        c.alpha = 0.8;
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.8);
+    });
+
+    it("should preserve alpha through conversions", async () => {
+      const result = await executeWithSchema(
+        "oklab-color",
+        "type",
+        `
+        variable c: Color.OKLab = oklab(0.5, 0.1, 0.2, 0.6);
+        variable oklch: Color.OKLCH = c.to.oklch();
+        oklch.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.6);
+    });
+  });
 });

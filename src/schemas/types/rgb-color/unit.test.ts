@@ -20,10 +20,13 @@ describe("RGB Color Schema", () => {
     it("should have initializers defined", async () => {
       const schema = (await getBundledSchema("rgb-color")) as ColorSpecification;
 
-      expect(schema.initializers).toHaveLength(1);
+      expect(schema.initializers).toHaveLength(2);
       expect(schema.initializers[0].keyword).toBe("rgb");
       expect(schema.initializers[0].script.script).toBeTruthy();
       expect(schema.initializers[0].script.script).not.toContain("./");
+      expect(schema.initializers[1].keyword).toBe("rgba");
+      expect(schema.initializers[1].script.script).toBeTruthy();
+      expect(schema.initializers[1].script.script).not.toContain("./");
     });
 
     it("should have conversions defined", async () => {
@@ -297,6 +300,112 @@ describe("RGB Color Schema", () => {
       expect((result as any).value.r.value).toBe(100);
       expect((result as any).value.g.value).toBe(150);
       expect((result as any).value.b.value).toBe(200);
+    });
+  });
+
+  describe("Alpha Channel Support", () => {
+    it("should accept optional 4th parameter for alpha using rgb()", async () => {
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
+        variable c: Color.Rgb = rgb(255, 128, 64, 0.5);
+        c
+      `,
+      );
+
+      expect(result?.constructor.name).toBe("ColorSymbol");
+      expect((result as any).subType).toBe("Rgb");
+      expect((result as any).value.r.value).toBe(255);
+      expect((result as any).value.g.value).toBe(128);
+      expect((result as any).value.b.value).toBe(64);
+      expect((result as any).alpha).toBe(0.5);
+    });
+
+    it("should create color with rgba() initializer", async () => {
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
+        variable c: Color.Rgb = rgba(200, 100, 50, 0.75);
+        c
+      `,
+      );
+
+      expect(result?.constructor.name).toBe("ColorSymbol");
+      expect((result as any).subType).toBe("Rgb");
+      expect((result as any).value.r.value).toBe(200);
+      expect((result as any).value.g.value).toBe(100);
+      expect((result as any).value.b.value).toBe(50);
+      expect((result as any).alpha).toBe(0.75);
+    });
+
+    it("should get alpha property", async () => {
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
+        variable c: Color.Rgb = rgb(255, 0, 0, 0.3);
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.3);
+    });
+
+    it("should set alpha property", async () => {
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
+        variable c: Color.Rgb = rgb(255, 0, 0);
+        c.alpha = 0.9;
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.9);
+    });
+
+    it("should handle alpha = 0 (fully transparent)", async () => {
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
+        variable c: Color.Rgb = rgb(255, 0, 0, 0);
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0);
+    });
+
+    it("should handle alpha = 1 (fully opaque)", async () => {
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
+        variable c: Color.Rgb = rgb(255, 0, 0, 1);
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(1);
+    });
+
+    it("should preserve alpha through HEX conversion", async () => {
+      const result = await executeWithSchema(
+        "rgb-color",
+        "type",
+        `
+        variable c: Color.Rgb = rgb(255, 0, 0, 0.5);
+        variable hex: Color.Hex = c.to.hex();
+        variable back: Color.Rgb = hex.to.rgb();
+        back.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.5);
     });
   });
 });
