@@ -32,8 +32,9 @@ describe("HSL Color Schema", () => {
     it("should have hsl initializer", async () => {
       const schema = (await getBundledSchema("hsl-color")) as ColorSpecification;
 
-      expect(schema.initializers).toHaveLength(1);
+      expect(schema.initializers).toHaveLength(2);
       expect(schema.initializers[0].keyword).toBe("hsl");
+      expect(schema.initializers[1].keyword).toBe("hsla");
     });
 
     it("should have conversion from sRGB", async () => {
@@ -196,6 +197,99 @@ describe("HSL Color Schema", () => {
 
       expect((result as any).value.s.value).toBeCloseTo(0, 9);
       expect((result as any).value.l.value).toBeCloseTo(0.5, 9);
+    });
+  });
+
+  describe("Alpha Channel Support", () => {
+    it("should accept optional 4th parameter for alpha using hsl()", async () => {
+      const result = await executeWithSchema(
+        "hsl-color",
+        "type",
+        `
+        variable c: Color.HSL = hsl(180, 0.5, 0.5, 0.7);
+        c
+      `,
+      );
+
+      expect(result?.constructor.name).toBe("ColorSymbol");
+      expect((result as any).subType).toBe("HSL");
+      expect((result as any).value.h.value).toBe(180);
+      expect((result as any).value.s.value).toBe(0.5);
+      expect((result as any).value.l.value).toBe(0.5);
+      expect((result as any).alpha).toBe(0.7);
+    });
+
+    it("should create color with hsla() initializer", async () => {
+      const result = await executeWithSchema(
+        "hsl-color",
+        "type",
+        `
+        variable c: Color.HSL = hsla(240, 0.8, 0.6, 0.9);
+        c
+      `,
+      );
+
+      expect(result?.constructor.name).toBe("ColorSymbol");
+      expect((result as any).subType).toBe("HSL");
+      expect((result as any).value.h.value).toBe(240);
+      expect((result as any).value.s.value).toBe(0.8);
+      expect((result as any).value.l.value).toBe(0.6);
+      expect((result as any).alpha).toBe(0.9);
+    });
+
+    it("should get alpha property", async () => {
+      const result = await executeWithSchema(
+        "hsl-color",
+        "type",
+        `
+        variable c: Color.HSL = hsl(0, 1, 0.5, 0.5);
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.5);
+    });
+
+    it("should set alpha property", async () => {
+      const result = await executeWithSchema(
+        "hsl-color",
+        "type",
+        `
+        variable c: Color.HSL = hsl(0, 1, 0.5);
+        c.alpha = 0.8;
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.8);
+    });
+
+    it("should preserve alpha through conversion to sRGB", async () => {
+      const result = await executeWithSchema(
+        "hsl-color",
+        "type",
+        `
+        variable c: Color.HSL = hsl(120, 1, 0.5, 0.6);
+        variable srgb: Color.SRGB = c.to.srgb();
+        srgb.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.6);
+    });
+
+    it("should preserve alpha through conversion from sRGB", async () => {
+      const result = await executeWithSchema(
+        "hsl-color",
+        "type",
+        `
+        variable srgb: Color.SRGB = srgb(1, 0, 0, 0.4);
+        variable c: Color.HSL = srgb.to.hsl();
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.4);
     });
   });
 });

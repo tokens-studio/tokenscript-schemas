@@ -300,4 +300,93 @@ describe("sRGB Color Schema", () => {
       expect((result as any).value.r.value).toBeCloseTo(expected, 10);
     });
   });
+
+  describe("Alpha Channel Support", () => {
+    it("should accept optional 4th parameter for alpha", async () => {
+      const result = await executeWithSchema(
+        "srgb-color",
+        "type",
+        `
+        variable c: Color.SRGB = srgb(1, 0, 0, 0.5);
+        c
+      `,
+      );
+
+      expect(result?.constructor.name).toBe("ColorSymbol");
+      expect((result as any).subType).toBe("SRGB");
+      expect((result as any).value.r.value).toBe(1);
+      expect((result as any).value.g.value).toBe(0);
+      expect((result as any).value.b.value).toBe(0);
+      // Alpha is stored directly, not as a Symbol
+      expect((result as any).alpha).toBe(0.5);
+    });
+
+    it("should get alpha property", async () => {
+      const result = await executeWithSchema(
+        "srgb-color",
+        "type",
+        `
+        variable c: Color.SRGB = srgb(1, 0, 0, 0.7);
+        c.alpha
+      `,
+      );
+
+      // When accessing .alpha it returns a NumberSymbol
+      expect((result as any).value).toBe(0.7);
+    });
+
+    it("should set alpha property", async () => {
+      const result = await executeWithSchema(
+        "srgb-color",
+        "type",
+        `
+        variable c: Color.SRGB = srgb(1, 0, 0);
+        c.alpha = 0.3;
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.3);
+    });
+
+    it("should handle alpha = 0 (fully transparent)", async () => {
+      const result = await executeWithSchema(
+        "srgb-color",
+        "type",
+        `
+        variable c: Color.SRGB = srgb(1, 0, 0, 0);
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0);
+    });
+
+    it("should handle alpha = 1 (fully opaque)", async () => {
+      const result = await executeWithSchema(
+        "srgb-color",
+        "type",
+        `
+        variable c: Color.SRGB = srgb(1, 0, 0, 1);
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(1);
+    });
+
+    it("should preserve alpha through conversion from RGB", async () => {
+      const result = await executeWithSchema(
+        "srgb-color",
+        "type",
+        `
+        variable rgb: Color.Rgb = rgb(255, 0, 0, 0.8);
+        variable c: Color.SRGB = rgb.to.srgb();
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.8);
+    });
+  });
 });

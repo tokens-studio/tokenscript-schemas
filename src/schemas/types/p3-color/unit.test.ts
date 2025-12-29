@@ -116,4 +116,51 @@ describe("Display-P3 Color Schema", () => {
       expect(colorJS_p3Green.coords[0]).toBeLessThan(0);
     });
   });
+
+  describe("Alpha Channel Support", () => {
+    it("should accept optional 4th parameter for alpha", async () => {
+      const result = await executeWithSchema(
+        "p3-color",
+        "type",
+        `
+        variable c: Color.P3 = p3(1, 0, 0, 0.7);
+        c
+      `,
+      );
+
+      expect(result?.constructor.name).toBe("ColorSymbol");
+      expect((result as any).subType).toBe("P3");
+      expect((result as any).value.r.value).toBe(1);
+      expect((result as any).value.g.value).toBe(0);
+      expect((result as any).value.b.value).toBe(0);
+      expect((result as any).alpha).toBe(0.7);
+    });
+
+    it("should get alpha property", async () => {
+      const result = await executeWithSchema(
+        "p3-color",
+        "type",
+        `
+        variable c: Color.P3 = p3(1, 0, 0, 0.5);
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.5);
+    });
+
+    it("should set alpha property", async () => {
+      const result = await executeWithSchema(
+        "p3-color",
+        "type",
+        `
+        variable c: Color.P3 = p3(1, 0, 0);
+        c.alpha = 0.8;
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.8);
+    });
+  });
 });

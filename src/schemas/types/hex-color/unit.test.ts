@@ -120,4 +120,22 @@ describe("Hex Color Schema", () => {
       expect((result as any).value).toBe("#ffffff");
     });
   });
+
+  describe("Alpha Channel Support", () => {
+    it("should allow setting alpha on hex color", async () => {
+      const result = await executeWithSchema(
+        "hex-color",
+        "type",
+        `
+        variable hex: Color.Hex = #ff0000;
+        hex.alpha = 0.7;
+        hex.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.7);
+    });
+
+    // Note: Conversion tests are in rgb-color/unit.test.ts since RGB owns the conversions
+  });
 });

@@ -399,4 +399,220 @@ describe("CSS Color Schema", () => {
       expect(typeof css).toBe("string");
     });
   });
+
+  describe("Alpha Channel Support", () => {
+    it("should output RGB with alpha in CSS format", async () => {
+      const result = await executeWithCssColor(
+        ["rgb-color"],
+        `
+        variable c: Color.Rgb = rgb(255, 128, 64, 0.5);
+        c.to.css()
+      `,
+      );
+
+      const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
+      log.info(`\n=== RGB with alpha → CSS ===`);
+      log.info(`Output: ${css}`);
+
+      expect(css).toBe("rgb(255 128 64 / 0.5)");
+    });
+
+    it("should omit alpha = 1.0 from RGB CSS output", async () => {
+      const result = await executeWithCssColor(
+        ["rgb-color"],
+        `
+        variable c: Color.Rgb = rgb(255, 128, 64, 1);
+        c.to.css()
+      `,
+      );
+
+      const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
+      expect(css).toBe("rgb(255 128 64)");
+    });
+
+    it("should omit null alpha from RGB CSS output", async () => {
+      const result = await executeWithCssColor(
+        ["rgb-color"],
+        `
+        variable c: Color.Rgb = rgb(255, 128, 64);
+        c.to.css()
+      `,
+      );
+
+      const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
+      expect(css).toBe("rgb(255 128 64)");
+    });
+
+    it("should output HSL with alpha in CSS format", async () => {
+      const result = await executeWithCssColor(
+        ["hsl-color", "srgb-color"],
+        `
+        variable c: Color.HSL = hsl(180, 0.5, 0.5, 0.8);
+        c.to.css()
+      `,
+      );
+
+      const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
+      log.info(`\n=== HSL with alpha → CSS ===`);
+      log.info(`Output: ${css}`);
+
+      expect(css).toMatch(/^hsl\(180 50% 50% \/ 0\.8\)$/);
+    });
+
+    it("should output HWB with alpha in CSS format", async () => {
+      const result = await executeWithCssColor(
+        ["hwb-color", "hsv-color", "hsl-color", "srgb-color"],
+        `
+        variable c: Color.HWB = hwb(240, 0.2, 0.3, 0.7);
+        c.to.css()
+      `,
+      );
+
+      const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
+      log.info(`\n=== HWB with alpha → CSS ===`);
+      log.info(`Output: ${css}`);
+
+      expect(css).toMatch(/^hwb\(240 20% 30% \/ 0\.7\)$/);
+    });
+
+    it("should output Lab with alpha in CSS format", async () => {
+      const result = await executeWithCssColor(
+        ["lab-color", "xyz-d50-color", "xyz-d65-color", "srgb-linear-color", "srgb-color"],
+        `
+        variable c: Color.Lab;
+        c.l = 75;
+        c.a = 20;
+        c.b = -30;
+        c.alpha = 0.6;
+        c.to.css()
+      `,
+      );
+
+      const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
+      log.info(`\n=== Lab with alpha → CSS ===`);
+      log.info(`Output: ${css}`);
+
+      expect(css).toMatch(/^lab\(75% 20 -30 \/ 0\.6\)$/);
+    });
+
+    it("should output LCH with alpha in CSS format", async () => {
+      const result = await executeWithCssColor(
+        [
+          "lch-color",
+          "lab-color",
+          "xyz-d50-color",
+          "xyz-d65-color",
+          "srgb-linear-color",
+          "srgb-color",
+        ],
+        `
+        variable c: Color.LCH;
+        c.l = 75;
+        c.c = 50;
+        c.h = 180;
+        c.alpha = 0.4;
+        c.to.css()
+      `,
+      );
+
+      const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
+      log.info(`\n=== LCH with alpha → CSS ===`);
+      log.info(`Output: ${css}`);
+
+      expect(css).toMatch(/^lch\(75% 50 180 \/ 0\.4\)$/);
+    });
+
+    it("should output OKLab with alpha in CSS format", async () => {
+      const result = await executeWithCssColor(
+        ["oklab-color", "xyz-d65-color", "srgb-linear-color", "srgb-color"],
+        `
+        variable c: Color.OKLab;
+        c.l = 0.7;
+        c.a = 0.1;
+        c.b = -0.05;
+        c.alpha = 0.3;
+        c.to.css()
+      `,
+      );
+
+      const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
+      log.info(`\n=== OKLab with alpha → CSS ===`);
+      log.info(`Output: ${css}`);
+
+      expect(css).toMatch(/^oklab\(0\.7 0\.1 -0\.05 \/ 0\.3\)$/);
+    });
+
+    it("should output OKLCH with alpha in CSS format", async () => {
+      const result = await executeWithCssColor(
+        ["oklch-color", "oklab-color", "xyz-d65-color", "srgb-linear-color", "srgb-color"],
+        `
+        variable c: Color.OKLCH;
+        c.l = 0.7;
+        c.c = 0.15;
+        c.h = 180;
+        c.alpha = 0.9;
+        c.to.css()
+      `,
+      );
+
+      const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
+      log.info(`\n=== OKLCH with alpha → CSS ===`);
+      log.info(`Output: ${css}`);
+
+      expect(css).toMatch(/^oklch\(0\.7 0\.15 180 \/ 0\.9\)$/);
+    });
+
+    it("should output Display-P3 with alpha in CSS format", async () => {
+      const result = await executeWithCssColor(
+        ["p3-color", "p3-linear-color", "xyz-d65-color", "srgb-linear-color", "srgb-color"],
+        `
+        variable c: Color.P3;
+        c.r = 1;
+        c.g = 0.5;
+        c.b = 0.25;
+        c.alpha = 0.85;
+        c.to.css()
+      `,
+      );
+
+      const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
+      log.info(`\n=== Display-P3 with alpha → CSS ===`);
+      log.info(`Output: ${css}`);
+
+      expect(css).toMatch(/^color\(display-p3 1 0\.5 0\.25 \/ 0\.85\)$/);
+    });
+
+    it("should output sRGB with alpha in CSS format", async () => {
+      const result = await executeWithCssColor(
+        ["srgb-color"],
+        `
+        variable c: Color.SRGB;
+        c.r = 1;
+        c.g = 0.5;
+        c.b = 0.25;
+        c.alpha = 0.2;
+        c.to.css()
+      `,
+      );
+
+      const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
+      log.info(`\n=== sRGB with alpha → CSS ===`);
+      log.info(`Output: ${css}`);
+
+      expect(css).toMatch(/^color\(srgb 1 0\.5 0\.25 \/ 0\.2\)$/);
+    });
+
+    it("should handle alpha = 0 (fully transparent)", async () => {
+      const result = await executeWithCssColor(
+        ["rgb-color"],
+        `
+        variable c: Color.Rgb = rgb(255, 0, 0, 0);
+        c.to.css()
+      `,
+      );
+
+      const css = (result as any)?.value?.value?.value || (result as any)?.toString?.();
+      expect(css).toBe("rgb(255 0 0 / 0)");
+    });
+  });
 });

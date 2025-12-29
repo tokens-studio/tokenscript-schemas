@@ -27,6 +27,14 @@ describe("HWB Color Schema", () => {
       expect(schema.schema?.properties).toHaveProperty("w");
       expect(schema.schema?.properties).toHaveProperty("b");
     });
+
+    it("should have hwb initializer", async () => {
+      const schema = (await getBundledSchema("hwb-color")) as ColorSpecification;
+
+      expect(schema.initializers).toHaveLength(2);
+      expect(schema.initializers[0].keyword).toBe("hwb");
+      expect(schema.initializers[1].keyword).toBe("hwba");
+    });
   });
 
   describe("ColorJS Parity", () => {
@@ -145,6 +153,68 @@ describe("HWB Color Schema", () => {
       // For gray, W + B = 1
       expect((result as any).value.w.value).toBeCloseTo(0.5, 9);
       expect((result as any).value.b.value).toBeCloseTo(0.5, 9);
+    });
+  });
+
+  describe("Alpha Channel Support", () => {
+    it("should accept optional 4th parameter for alpha using hwb()", async () => {
+      const result = await executeWithSchema(
+        "hwb-color",
+        "type",
+        `
+        variable c: Color.HWB = hwb(180, 0.2, 0.3, 0.7);
+        c
+      `,
+      );
+
+      expect(result?.constructor.name).toBe("ColorSymbol");
+      expect((result as any).subType).toBe("HWB");
+      expect((result as any).alpha).toBe(0.7);
+    });
+
+    it("should create color with hwba() initializer", async () => {
+      const result = await executeWithSchema(
+        "hwb-color",
+        "type",
+        `
+        variable c: Color.HWB = hwba(240, 0.1, 0.2, 0.85);
+        c
+      `,
+      );
+
+      expect(result?.constructor.name).toBe("ColorSymbol");
+      expect((result as any).subType).toBe("HWB");
+      expect((result as any).value.h.value).toBe(240);
+      expect((result as any).value.w.value).toBe(0.1);
+      expect((result as any).value.b.value).toBe(0.2);
+      expect((result as any).alpha).toBe(0.85);
+    });
+
+    it("should get alpha property", async () => {
+      const result = await executeWithSchema(
+        "hwb-color",
+        "type",
+        `
+        variable c: Color.HWB = hwb(0, 0, 0, 0.3);
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.3);
+    });
+
+    it("should set alpha property", async () => {
+      const result = await executeWithSchema(
+        "hwb-color",
+        "type",
+        `
+        variable c: Color.HWB = hwb(0, 0, 0);
+        c.alpha = 0.9;
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.9);
     });
   });
 });

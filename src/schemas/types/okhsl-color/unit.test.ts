@@ -511,4 +511,41 @@ describe("OKHSL Color Schema", () => {
       });
     });
   });
+
+  describe("Alpha Channel Support", () => {
+    it("should set and get alpha property", async () => {
+      const result = await executeWithSchema(
+        "okhsl-color",
+        "type",
+        `
+        variable c: Color.OKHSL;
+        c.h = 180;
+        c.s = 0.5;
+        c.l = 0.5;
+        c.alpha = 0.7;
+        c.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.7);
+    });
+
+    it("should preserve alpha through conversions", async () => {
+      const result = await executeWithSchema(
+        "okhsl-color",
+        "type",
+        `
+        variable c: Color.OKHSL;
+        c.h = 180;
+        c.s = 0.5;
+        c.l = 0.5;
+        c.alpha = 0.6;
+        variable oklab: Color.OKLab = c.to.oklab();
+        oklab.alpha
+      `,
+      );
+
+      expect((result as any).value).toBe(0.6);
+    });
+  });
 });

@@ -28,6 +28,15 @@
         "type": "/api/v1/core/tokenscript/0/",
         "script": "./initializer.tokenscript"
       }
+    },
+    {
+      "title": "function",
+      "keyword": "rgba",
+      "description": "Creates an RGB color with alpha",
+      "script": {
+        "type": "/api/v1/core/tokenscript/0/",
+        "script": "./rgba-initializer.tokenscript"
+      }
     }
   ],
   "conversions": [
