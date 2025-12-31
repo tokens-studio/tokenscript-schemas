@@ -89,5 +89,6 @@ export interface BundledRegistry {
   metadata: {
     generatedAt: string;
     totalSchemas: number;
+    generatedBy: string;
   };
 }

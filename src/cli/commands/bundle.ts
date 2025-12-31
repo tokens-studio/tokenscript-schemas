@@ -117,27 +117,27 @@ function findSchemasDir(): string {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
 
-  // From compiled dist/cli/index.js (bundled) to src/schemas
-  const fromDist = join(__dirname, "../../src/schemas");
-
   // From source src/cli/commands/bundle.ts to src/schemas (for tests/dev)
   const fromSource = join(__dirname, "../../schemas");
 
-  // Try to detect which one exists
+  // From compiled dist/cli/commands/bundle.js to src/schemas
+  const fromDist = join(__dirname, "../../../src/schemas");
+
+  // Try to detect which one exists (check source first for dev)
   try {
     const fs = require("node:fs");
-    if (fs.existsSync(fromDist)) {
-      return fromDist;
-    }
     if (fs.existsSync(fromSource)) {
       return fromSource;
     }
+    if (fs.existsSync(fromDist)) {
+      return fromDist;
+    }
   } catch {
-    // If fs checks fail, default to dist structure
+    // If fs checks fail, default to source structure
   }
 
-  // Default to dist structure (for installed package)
-  return fromDist;
+  // Default to source structure (for development)
+  return fromSource;
 }
 
 /**
@@ -146,6 +146,7 @@ function findSchemasDir(): string {
 export async function bundleSchemas(
   schemas: string[],
   schemasDir?: string,
+  cliArgs?: string[],
 ): Promise<{
   output: string;
   metadata: any;
@@ -161,6 +162,7 @@ export async function bundleSchemas(
   const result = await bundleSelectiveSchemas({
     schemas,
     schemasDir: resolvedSchemasDir,
+    cliArgs,
   });
 
   log.info(
@@ -171,6 +173,7 @@ export async function bundleSchemas(
   const output = generateOutput({
     schemas: result.schemas,
     includeHelper: true,
+    generatedBy: result.metadata.generatedBy,
   });
 
   return {
@@ -206,8 +209,23 @@ export async function handleBundleCommand(
       throw new Error("No schemas specified. Provide schemas as arguments or via --config");
     }
 
+    // Build CLI args array for generatedBy metadata
+    const cliArgs: string[] = [];
+    if (schemas.length > 0) {
+      cliArgs.push(...schemas);
+    }
+    if (options.config) {
+      cliArgs.push("--config", options.config);
+    }
+    if (options.output) {
+      cliArgs.push("--output", options.output);
+    }
+    if (options.dryRun) {
+      cliArgs.push("--dry-run");
+    }
+
     // Bundle schemas
-    const { output, metadata, dependencyTree } = await bundleSchemas(configSchemas);
+    const { output, metadata, dependencyTree } = await bundleSchemas(configSchemas, undefined, cliArgs);
 
     // Show dependency tree
     console.log("");

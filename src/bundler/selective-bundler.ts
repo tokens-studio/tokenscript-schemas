@@ -17,6 +17,7 @@ export interface SelectiveBundleOptions {
   schemas: string[]; // Schema slugs to bundle
   schemasDir?: string; // Source directory (default: src/schemas)
   baseUrl?: string; // Registry URL for URIs
+  cliArgs?: string[]; // CLI arguments used
 }
 
 export interface BundledSchemaEntry {
@@ -30,6 +31,7 @@ export interface SelectiveBundleResult {
     requestedSchemas: string[];
     resolvedDependencies: string[];
     generatedAt: string;
+    generatedBy?: string;
   };
   dependencyTree: Map<string, DependencyNode>;
 }
@@ -147,12 +149,19 @@ export async function bundleSelectiveSchemas(
     }
   }
 
+  // Build generatedBy string if CLI args are provided
+  const baseCommand = "npx @tokens-studio/tokenscript-schemas bundle";
+  const generatedBy = options.cliArgs?.length
+    ? `${baseCommand} ${options.cliArgs.join(" ")}`
+    : undefined;
+
   return {
     schemas: bundledSchemas,
     metadata: {
       requestedSchemas: options.schemas,
       resolvedDependencies: allSchemas,
       generatedAt: new Date().toISOString(),
+      generatedBy,
     },
     dependencyTree,
   };

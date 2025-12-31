@@ -87,6 +87,7 @@ async function bundleFunctionCategory(categoryDir: string): Promise<FunctionSpec
 export async function bundleAllSchemas(
   schemasDir: string,
   outputDir: string,
+  options?: { cliArgs?: string[] },
 ): Promise<BundledRegistry> {
   // Bundle types
   console.log("\nBundling type schemas...");
@@ -101,6 +102,11 @@ export async function bundleAllSchemas(
   console.log(`✓ Bundled ${functions.length} function schemas`);
 
   // Create bundled registry
+  const baseCommand = "npx @tokens-studio/tokenscript-schemas bundle";
+  const generatedBy = options?.cliArgs?.length 
+    ? `${baseCommand} ${options.cliArgs.join(" ")}`
+    : baseCommand;
+
   const registry: BundledRegistry = {
     version: "0.0.10",
     types,
@@ -108,6 +114,7 @@ export async function bundleAllSchemas(
     metadata: {
       generatedAt: new Date().toISOString(),
       totalSchemas: types.length + functions.length,
+      generatedBy,
     },
   };
 

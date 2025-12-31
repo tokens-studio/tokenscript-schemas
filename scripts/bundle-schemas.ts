@@ -10,6 +10,9 @@ import { bundleAllSchemas } from "@/bundler/index";
 const schemasDir = resolve(process.cwd(), "src/schemas");
 const outputDir = resolve(process.cwd(), "bundled");
 
+// Get CLI arguments (skip first 2 which are node and script path)
+const cliArgs = process.argv.slice(2);
+
 console.log("=".repeat(60));
 console.log("TokenScript Schema Bundler");
 console.log("=".repeat(60));
@@ -17,7 +20,7 @@ console.log(`Source directory: ${schemasDir}`);
 console.log(`Output directory: ${outputDir}`);
 
 try {
-  const registry = await bundleAllSchemas(schemasDir, outputDir);
+  const registry = await bundleAllSchemas(schemasDir, outputDir, { cliArgs });
 
   console.log(`\n${"=".repeat(60)}`);
   console.log("Bundle Summary:");
