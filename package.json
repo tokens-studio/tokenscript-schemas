@@ -46,6 +46,8 @@
     "format:check": "biome format .",
     "fix": "biome check --write .",
     "ts:typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.tests.json && tsc --noEmit -p tsconfig.scripts.json",
+    "cli": "tsx src/cli/index.ts",
+    "cli:presets": "tsx src/cli/index.ts",
     "download": "tsx scripts/download-schemas.ts",
     "update-versions": "tsx scripts/update-versions.ts",
     "bundle": "tsx scripts/bundle-schemas.ts",

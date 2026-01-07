@@ -10,6 +10,7 @@ import cac from "cac";
 import anylogger from "ulog";
 import { type BundleOptions, handleBundleCommand } from "./commands/bundle.js";
 import { handleListCommand, type ListOptions } from "./commands/list.js";
+import { handlePresetsCommand } from "./commands/presets.js";
 
 const log = anylogger("cli");
 
@@ -43,6 +44,16 @@ cli
       process.exit(1);
     }
   });
+
+// Presets command
+cli.command("presets", "List available bundle presets").action(async () => {
+  try {
+    await handlePresetsCommand();
+  } catch (error) {
+    log.error("Error:", error);
+    process.exit(1);
+  }
+});
 
 cli.help();
 cli.version("0.0.14");
