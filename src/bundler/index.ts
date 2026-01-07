@@ -103,7 +103,7 @@ export async function bundleAllSchemas(
 
   // Create bundled registry
   const baseCommand = "npx @tokens-studio/tokenscript-schemas bundle";
-  const generatedBy = options?.cliArgs?.length 
+  const generatedBy = options?.cliArgs?.length
     ? `${baseCommand} ${options.cliArgs.join(" ")}`
     : baseCommand;
 

@@ -225,7 +225,11 @@ export async function handleBundleCommand(
     }
 
     // Bundle schemas
-    const { output, metadata, dependencyTree } = await bundleSchemas(configSchemas, undefined, cliArgs);
+    const { output, metadata, dependencyTree } = await bundleSchemas(
+      configSchemas,
+      undefined,
+      cliArgs,
+    );
 
     // Show dependency tree
     console.log("");
