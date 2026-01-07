@@ -48,8 +48,8 @@ schema-registry/
 │   │   │       └── unit.test.ts
 │   │   └── functions/       # Function schemas
 │   ├── bundler/
-│   │   ├── bundle-schema.ts # SHARED bundling logic (used by build & tests)
-│   │   ├── index.ts         # Build-time bundler (JSON registry)
+│   │   ├── build-schema.ts  # SHARED build logic (used by build & tests)
+│   │   ├── index.ts         # Build-time builder (JSON registry)
 │   │   ├── presets/         # Bundle presets
 │   │   │   ├── index.ts
 │   │   │   ├── css.ts
@@ -68,10 +68,10 @@ schema-registry/
 ├── tests/
 │   └── helpers/
 │       ├── schema-loader.ts      # Load schemas from source
-│       └── schema-test-utils.ts  # Test utilities (uses bundle-schema.ts)
-├── bundled/                 # Build output (gitignored)
+│       └── schema-test-utils.ts  # Test utilities (uses build-schema.ts)
+├── result/                  # Build output (gitignored)
 ├── scripts/
-│   ├── bundle-schemas.ts    # Registry bundler script
+│   ├── build-schemas.ts     # Registry builder script
 │   └── ...
 └── package.json
 ```
@@ -122,12 +122,12 @@ Schemas follow the typescript-interpreter format:
 - `$self` in `target` refers to the current schema
 - Scripts are written in TokenScript language
 
-### 2. Bundling Process
+### 2. Build Process
 
-**There is ONE shared bundling function** in `@/bundler/bundle-schema.ts`:
+**There is ONE shared build function** in `@/bundler/build-schema.ts`:
 
 ```typescript
-export async function bundleSchemaFromDirectory(
+export async function buildSchemaFromDirectory(
   schemaDir: string
 ): Promise<ColorSpecification>
 ```
@@ -137,11 +137,11 @@ This function:
 2. Finds all `./file.tokenscript` references
 3. Reads the actual file content
 4. Replaces the file path with the inlined content
-5. Returns the bundled schema
+5. Returns the built schema
 
 **Two consumers:**
-- **Build-time** (`@/bundler/index.ts`): Bundles all schemas → `bundled/` directory (for distribution)
-- **Test-time** (`@tests/helpers/schema-loader.ts`): Bundles on-demand at runtime (no pre-build required)
+- **Build-time** (`@/bundler/index.ts`): Builds all schemas → `result/` directory (for distribution)
+- **Test-time** (`@tests/helpers/schema-loader.ts`): Builds on-demand at runtime (no pre-build required)
 
 ### 3. Bundle Presets
 
@@ -227,7 +227,7 @@ export const BUNDLE_PRESETS: Record<string, BundlePreset> = {
 2. **Write schema.json** with file references
 3. **Write TokenScript files** (pure script, no metadata headers)
 4. **Write tests** using test helpers
-5. **Bundle:** `npm run bundle`
+5. **Build:** `npm run build-schemas`
 6. **Test:** `npm test`
 
 ### Writing Tests
@@ -285,10 +285,10 @@ npm run lint:fix
 # Format
 npm run format
 
-# Build bundle (JSON registry for distribution)
-npm run bundle
+# Build schemas (JSON registry for distribution)
+npm run build-schemas
 
-# CLI commands (for JS file output)
+# CLI commands (for JS file output - bundle command creates JS bundles)
 npm run cli -- bundle preset:css -o ./schemas.js
 npm run cli -- bundle type:hex-color function:lighten -o ./schemas.js
 npm run cli -- list
@@ -301,15 +301,15 @@ npm run presets  # List all available presets
 Always use `@/` and `@tests/` aliases instead of relative paths:
 ```typescript
 // ✓ Correct
-import { bundleSchemaFromDirectory } from "@/bundler/bundle-schema";
+import { buildSchemaFromDirectory } from "@/bundler/build-schema";
 import { setupColorManagerWithSchema } from "@tests/helpers/schema-test-utils";
 
 // ✗ Wrong
-import { bundleSchemaFromDirectory } from "../../src/bundler/bundle-schema";
+import { buildSchemaFromDirectory } from "../../src/bundler/build-schema";
 ```
 
-### 2. **One Bundling Function**
-Never duplicate bundling logic. Always use `bundleSchemaFromDirectory()` from `@/bundler/bundle-schema.ts`.
+### 2. **One Build Function**
+Never duplicate build logic. Always use `buildSchemaFromDirectory()` from `@/bundler/build-schema.ts`.
 
 ### 3. **TokenScript Naming Convention**
 ALL variables in `.tokenscript` files MUST use snake_case:
@@ -450,7 +450,7 @@ createInterpreter(code, references, config)
 
 When working with this codebase, remember:
 1. Always use `@/` and `@tests/` path aliases for imports
-2. Use the shared bundling function from `@/bundler/bundle-schema.ts`
+2. Use the shared build function from `@/bundler/build-schema.ts`
 3. Follow TokenScript syntax (snake_case for ALL variables and methods)
 4. Access Symbol values with `.value`
 5. Write comprehensive tests

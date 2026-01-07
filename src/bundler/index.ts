@@ -4,7 +4,7 @@
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { bundleSchemaFromDirectory } from "@/bundler/bundle-schema";
+import { buildSchemaFromDirectory } from "@/bundler/build-schema";
 import type {
   BundledRegistry,
   ColorSpecification,
@@ -19,11 +19,11 @@ import { getSubdirectories } from "@/bundler/utils";
 const DEFAULT_REGISTRY_URL = "https://schema.tokenscript.dev.gcp.tokens.studio";
 
 /**
- * Bundle a single schema from its directory
+ * Build a single schema from its directory
  */
-async function bundleSchema(schemaDir: string, schemaSlug: string): Promise<SchemaSpecification> {
-  // Use shared bundling logic with baseUrl for build-time
-  const bundled = await bundleSchemaFromDirectory(schemaDir, {
+async function buildSchema(schemaDir: string, schemaSlug: string): Promise<SchemaSpecification> {
+  // Use shared build logic with baseUrl for build-time
+  const bundled = await buildSchemaFromDirectory(schemaDir, {
     baseUrl: DEFAULT_REGISTRY_URL,
   });
 
@@ -34,23 +34,23 @@ async function bundleSchema(schemaDir: string, schemaSlug: string): Promise<Sche
 }
 
 /**
- * Bundle all color type schemas from a category directory
+ * Build all color type schemas from a category directory
  */
-async function bundleTypeCategory(categoryDir: string): Promise<ColorSpecification[]> {
+async function buildTypeCategory(categoryDir: string): Promise<ColorSpecification[]> {
   const bundles: ColorSpecification[] = [];
   const schemaSlugs = await getSubdirectories(categoryDir);
 
   for (const slug of schemaSlugs) {
     const schemaDir = join(categoryDir, slug);
-    console.log(`  Bundling ${slug}...`);
+    console.log(`  Building ${slug}...`);
 
     try {
-      const bundle = await bundleSchema(schemaDir, slug);
+      const bundle = await buildSchema(schemaDir, slug);
       if (bundle.type === "color") {
         bundles.push(bundle as ColorSpecification);
       }
     } catch (error) {
-      console.error(`  ✗ Failed to bundle ${slug}:`, error);
+      console.error(`  ✗ Failed to build ${slug}:`, error);
     }
   }
 
@@ -58,23 +58,23 @@ async function bundleTypeCategory(categoryDir: string): Promise<ColorSpecificati
 }
 
 /**
- * Bundle all function schemas from a category directory
+ * Build all function schemas from a category directory
  */
-async function bundleFunctionCategory(categoryDir: string): Promise<FunctionSpecification[]> {
+async function buildFunctionCategory(categoryDir: string): Promise<FunctionSpecification[]> {
   const bundles: FunctionSpecification[] = [];
   const schemaSlugs = await getSubdirectories(categoryDir);
 
   for (const slug of schemaSlugs) {
     const schemaDir = join(categoryDir, slug);
-    console.log(`  Bundling ${slug}...`);
+    console.log(`  Building ${slug}...`);
 
     try {
-      const bundle = await bundleSchema(schemaDir, slug);
+      const bundle = await buildSchema(schemaDir, slug);
       if (bundle.type === "function") {
         bundles.push(bundle as FunctionSpecification);
       }
     } catch (error) {
-      console.error(`  ✗ Failed to bundle ${slug}:`, error);
+      console.error(`  ✗ Failed to build ${slug}:`, error);
     }
   }
 
@@ -82,24 +82,24 @@ async function bundleFunctionCategory(categoryDir: string): Promise<FunctionSpec
 }
 
 /**
- * Bundle all schemas from the schemas directory
+ * Build all schemas from the schemas directory
  */
-export async function bundleAllSchemas(
+export async function buildAllSchemas(
   schemasDir: string,
   outputDir: string,
   options?: { cliArgs?: string[] },
 ): Promise<BundledRegistry> {
-  // Bundle types
-  console.log("\nBundling type schemas...");
+  // Build types
+  console.log("\nBuilding type schemas...");
   const typesDir = join(schemasDir, "types");
-  const types = await bundleTypeCategory(typesDir);
-  console.log(`✓ Bundled ${types.length} type schemas`);
+  const types = await buildTypeCategory(typesDir);
+  console.log(`✓ Built ${types.length} type schemas`);
 
-  // Bundle functions
-  console.log("\nBundling function schemas...");
+  // Build functions
+  console.log("\nBuilding function schemas...");
   const functionsDir = join(schemasDir, "functions");
-  const functions = await bundleFunctionCategory(functionsDir);
-  console.log(`✓ Bundled ${functions.length} function schemas`);
+  const functions = await buildFunctionCategory(functionsDir);
+  console.log(`✓ Built ${functions.length} function schemas`);
 
   // Create bundled registry
   const baseCommand = "npx @tokens-studio/tokenscript-schemas bundle";

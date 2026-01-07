@@ -10,7 +10,7 @@ import type {
   SchemaSpecification,
 } from "@/bundler/types.js";
 import { extractSchemaName, parseSchemaUri } from "@/utils/schema-uri";
-import { bundleSchemaFromDirectory } from "./bundle-schema.js";
+import { buildSchemaFromDirectory } from "./build-schema.js";
 
 export interface SchemaReference {
   slug: string;
@@ -181,7 +181,7 @@ export async function collectRequiredSchemas(
         schemasDir || process.env.SCHEMAS_DIR || join(process.cwd(), "src/schemas");
       const schemaDir = join(resolvedSchemasDir, categoryDir, slug);
 
-      spec = await bundleSchemaFromDirectory(schemaDir, baseUrl ? { baseUrl } : undefined);
+      spec = await buildSchemaFromDirectory(schemaDir, baseUrl ? { baseUrl } : undefined);
     } catch (error) {
       log.warn(`Failed to load schema ${slug} (${effectiveType}):`, error);
       return;
@@ -275,7 +275,7 @@ export async function collectDependencyTree(
     const schemaDir = join(resolvedSchemasDir, categoryDir, schema.slug);
 
     try {
-      const spec = await bundleSchemaFromDirectory(schemaDir, baseUrl ? { baseUrl } : undefined);
+      const spec = await buildSchemaFromDirectory(schemaDir, baseUrl ? { baseUrl } : undefined);
       const requirements = extractRequirements(spec, extractOptions);
 
       // Extract just the slugs from URIs

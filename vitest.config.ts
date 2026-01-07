@@ -14,7 +14,7 @@ export default defineConfig({
         minForks: 1,
       },
     },
-    watchExclude: ["**/node_modules/**", "**/dist/**", "**/bundled/**", "**/.git/**"],
+    watchExclude: ["**/node_modules/**", "**/dist/**", "**/result/**", "**/.git/**"],
     forceRerunTriggers: ["**/src/schemas/**/*.tokenscript", "**/src/schemas/**/*.json"],
   },
   resolve: {

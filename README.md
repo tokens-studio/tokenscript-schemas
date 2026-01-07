@@ -122,17 +122,17 @@ src/schemas/types/srgb-color/
 
 ## Scripts
 
-### Bundle Schemas
+### Build Schemas
 
 ```bash
-npm run bundle
+npm run build-schemas
 ```
 
-Bundles all schemas using the **shared bundling logic** from `@/bundler/bundle-schema.ts`:
+Builds all schemas using the **shared build logic** from `@/bundler/build-schema.ts`:
 - Reads `schema.json` from each schema directory
 - Finds all `./file.tokenscript` references in the schema
 - Reads and inlines the script file content
-- Outputs bundled schemas to `bundled/` directory:
+- Outputs built schemas to `result/` directory:
   - `registry.json` - Complete registry
   - `types.json` - All type schemas
   - `functions.json` - All function schemas
@@ -163,9 +163,9 @@ npm test -- src/schemas/types/rgb-color/unit.test.ts
 - Logs are **disabled by default** to reduce noise (only errors shown)
 - Use `LOG_LEVEL` environment variable to enable logs: `debug`, `info`, `warn`, `error`
 - See [tests/helpers/LOGGING.md](tests/helpers/LOGGING.md) for detailed logging documentation
-- Tests use `bundleSchemaFromDirectory()` from `@/bundler/bundle-schema.ts`
-- No build step required - schemas are bundled on-demand
-- Same bundling logic as build-time for consistency
+- Tests use `buildSchemaFromDirectory()` from `@/bundler/build-schema.ts`
+- No build step required - schemas are built on-demand
+- Same build logic as build-time for consistency
 
 ## Links
 

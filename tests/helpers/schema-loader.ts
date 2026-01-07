@@ -116,10 +116,10 @@ export async function bundleSchemaForRuntime(
   baseUrl?: string,
 ): Promise<SchemaSpecification> {
   // Import the shared bundling function
-  const { bundleSchemaFromDirectory } = await import("@/bundler/bundle-schema.js");
+  const { buildSchemaFromDirectory } = await import("@/bundler/build-schema.js");
 
   const categoryDir = type === "type" ? "types" : "functions";
   const schemaDir = join(SCHEMAS_DIR, categoryDir, slug);
 
-  return await bundleSchemaFromDirectory(schemaDir, baseUrl ? { baseUrl } : undefined);
+  return await buildSchemaFromDirectory(schemaDir, baseUrl ? { baseUrl } : undefined);
 }
