@@ -49,9 +49,21 @@ schema-registry/
 │   │   └── functions/       # Function schemas
 │   ├── bundler/
 │   │   ├── bundle-schema.ts # SHARED bundling logic (used by build & tests)
-│   │   ├── index.ts         # Build-time bundler
+│   │   ├── index.ts         # Build-time bundler (JSON registry)
+│   │   ├── presets/         # Bundle presets
+│   │   │   ├── index.ts
+│   │   │   ├── css.ts
+│   │   │   └── types.ts
 │   │   ├── types.ts
 │   │   └── utils.ts
+│   ├── cli/
+│   │   ├── commands/
+│   │   │   ├── bundle.ts    # CLI bundle (JS file output)
+│   │   │   ├── list.ts
+│   │   │   └── presets.ts
+│   │   ├── index.ts
+│   │   ├── output-generator.ts
+│   │   └── version-info.ts
 │   └── loader/
 ├── tests/
 │   └── helpers/
@@ -59,7 +71,7 @@ schema-registry/
 │       └── schema-test-utils.ts  # Test utilities (uses bundle-schema.ts)
 ├── bundled/                 # Build output (gitignored)
 ├── scripts/
-│   ├── bundle-schemas.ts    # CLI bundler script
+│   ├── bundle-schemas.ts    # Registry bundler script
 │   └── ...
 └── package.json
 ```
@@ -131,7 +143,52 @@ This function:
 - **Build-time** (`@/bundler/index.ts`): Bundles all schemas → `bundled/` directory (for distribution)
 - **Test-time** (`@tests/helpers/schema-loader.ts`): Bundles on-demand at runtime (no pre-build required)
 
-### 3. TokenScript Language
+### 3. Bundle Presets
+
+Presets are predefined collections of schemas for common use cases. They live in `@/bundler/presets/`.
+
+**Available Presets:**
+- **`css`** - Modern CSS color types (CSS Color Level 4+)
+  - Types: `css-color`, `hex-color`, `oklch-color`, `oklab-color`
+  - Functions: `lighten`, `darken`, `mix`, `invert`, `to_gamut`, `contrast_ratio`
+
+**Using Presets:**
+```bash
+# List all presets
+npm run presets
+
+# Bundle with a preset (CLI)
+npm run cli -- bundle preset:css -o ./schemas.js
+
+# Combine preset with specific schemas
+npm run cli -- bundle preset:css type:lab-color function:saturate -o ./schemas.js
+```
+
+**Adding a New Preset:**
+
+1. Create `src/bundler/presets/my-preset.ts`:
+```typescript
+import type { BundlePreset } from "./types";
+
+export const myPreset: BundlePreset = {
+  name: "My Preset",
+  description: "Description of the preset",
+  types: ["hex-color", "rgb-color"],
+  functions: ["lighten", "darken"],
+};
+```
+
+2. Export it in `src/bundler/presets/index.ts`:
+```typescript
+import { myPreset } from "./my-preset";
+
+export const BUNDLE_PRESETS: Record<string, BundlePreset> = {
+  css,
+  "my-preset": myPreset,  // Add here
+};
+```
+
+### 4. TokenScript Language
 
 **Syntax Rules:**
 - **Snake_case naming**: ALL variable names and built-in methods MUST use snake_case
@@ -228,8 +285,14 @@ npm run lint:fix
 # Format
 npm run format
 
-# Build bundle (only for distribution)
+# Build bundle (JSON registry for distribution)
 npm run bundle
+
+# CLI commands (for JS file output)
+npm run cli -- bundle preset:css -o ./schemas.js
+npm run cli -- bundle type:hex-color function:lighten -o ./schemas.js
+npm run cli -- list
+npm run presets  # List all available presets
 ```
 
 ## Critical Rules

@@ -8,6 +8,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import anylogger from "ulog";
+import { expandPresetSchemas } from "@/bundler/presets/index.js";
 import { bundleSelectiveSchemas } from "@/bundler/selective-bundler.js";
 import { type BundleConfig, validateBundleConfig } from "@/cli/config-schema.js";
 import { generateOutput } from "@/cli/output-generator.js";
@@ -208,6 +209,9 @@ export async function handleBundleCommand(
     if (!configSchemas || configSchemas.length === 0) {
       throw new Error("No schemas specified. Provide schemas as arguments or via --config");
     }
+
+    // Expand any presets (preset:name -> list of schemas)
+    configSchemas = expandPresetSchemas(configSchemas);
 
     // Build CLI args array for generatedBy metadata
     const cliArgs: string[] = [];
