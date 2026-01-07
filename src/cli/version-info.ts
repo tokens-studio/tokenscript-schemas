@@ -10,6 +10,12 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Build-time constant injected by tsup
+declare const __IS_BUILT_PACKAGE__: boolean;
+
+// Check if we're running from built package (will be true in dist, undefined when running via tsx)
+const IS_BUILT = typeof __IS_BUILT_PACKAGE__ !== "undefined" && __IS_BUILT_PACKAGE__;
+
 export interface VersionInfo {
   version: string; // Package version or git SHA
   githubUrl: string;
@@ -27,20 +33,6 @@ function getGitSha(): string | null {
     }).trim();
   } catch {
     return null;
-  }
-}
-
-/**
- * Check if we're running from a local git repo
- */
-function isGitRepo(): boolean {
-  try {
-    execSync("git rev-parse --git-dir", {
-      stdio: ["pipe", "pipe", "ignore"],
-    });
-    return true;
-  } catch {
-    return false;
   }
 }
 
@@ -75,14 +67,20 @@ function getPackageVersion(): string {
  */
 export function getVersionInfo(): VersionInfo {
   const githubUrl = "https://github.com/tokens-studio/tokenscript-schemas";
-  const isLocal = isGitRepo();
+  const packageVersion = getPackageVersion();
 
   let version: string;
-  if (isLocal) {
+  let isLocal: boolean;
+
+  if (IS_BUILT) {
+    // Running from built package - use package version
+    version = `@tokens-studio/tokenscript-schemas@v${packageVersion}`;
+    isLocal = false;
+  } else {
+    // Running locally (via tsx) - use git SHA
     const sha = getGitSha();
     version = sha ? `local-${sha}` : "local";
-  } else {
-    version = getPackageVersion();
+    isLocal = true;
   }
 
   return {

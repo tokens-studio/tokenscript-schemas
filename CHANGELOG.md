@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed CLI bundle command to use package version (`@tokens-studio/tokenscript-schemas@v0.1.1`) when running from built package instead of git SHA (`local-{sha}`)
+
 ## [0.1.1] - 2026-01-07
 
 ### Fixed

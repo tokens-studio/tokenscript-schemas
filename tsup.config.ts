@@ -18,5 +18,10 @@ export default defineConfig({
       "@": resolve(__dirname, "./src"),
       "@tests": resolve(__dirname, "./tests"),
     };
+    // Define build-time constant to indicate this is a built package
+    options.define = {
+      ...options.define,
+      __IS_BUILT_PACKAGE__: "true",
+    };
   },
 });
