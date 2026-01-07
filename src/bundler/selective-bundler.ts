@@ -5,7 +5,7 @@
 
 import { access } from "node:fs/promises";
 import { join } from "node:path";
-import { bundleSchemaFromDirectory } from "./bundle-schema.js";
+import { buildSchemaFromDirectory } from "./build-schema.js";
 import {
   collectDependencyTree,
   collectRequiredSchemasForList,
@@ -124,7 +124,7 @@ export async function bundleSelectiveSchemas(
   // Bundle type schemas
   for (const typeSlug of deps.types) {
     const schemaDir = join(schemasDir, "types", typeSlug);
-    const bundled = await bundleSchemaFromDirectory(schemaDir, { baseUrl });
+    const bundled = await buildSchemaFromDirectory(schemaDir, { baseUrl });
 
     if (bundled.type === "color") {
       const uri = `${baseUrl}/api/v1/core/${typeSlug}/0/`;
@@ -138,7 +138,7 @@ export async function bundleSelectiveSchemas(
   // Bundle function schemas
   for (const funcSlug of deps.functions) {
     const schemaDir = join(schemasDir, "functions", funcSlug);
-    const bundled = await bundleSchemaFromDirectory(schemaDir, { baseUrl });
+    const bundled = await buildSchemaFromDirectory(schemaDir, { baseUrl });
 
     if (bundled.type === "function") {
       const uri = `${baseUrl}/api/v1/function/${funcSlug}/0/`;

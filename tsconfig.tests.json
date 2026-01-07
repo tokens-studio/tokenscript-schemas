@@ -6,5 +6,5 @@
     "strictPropertyInitialization": false
   },
   "include": ["tests/**/*", "src/**/*.test.ts"],
-  "exclude": ["node_modules", "dist", "bundled"]
+  "exclude": ["node_modules", "dist", "result"]
 }

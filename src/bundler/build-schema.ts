@@ -22,9 +22,9 @@ export interface BundleOptions {
 
 /**
  * Replace script file references with actual content
- * This is the core bundling logic shared by build and runtime
+ * This is the core build logic shared by build and runtime
  */
-export async function bundleSchemaFromDirectory(
+export async function buildSchemaFromDirectory(
   schemaDir: string,
   options?: BundleOptions,
 ): Promise<SchemaSpecification> {

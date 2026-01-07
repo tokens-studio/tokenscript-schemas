@@ -23,7 +23,7 @@
   "files": [
     "dist",
     "src",
-    "bundled",
+    "result",
     "README.md"
   ],
   "sideEffects": false,
@@ -50,7 +50,7 @@
     "cli:presets": "tsx src/cli/index.ts",
     "download": "tsx scripts/download-schemas.ts",
     "update-versions": "tsx scripts/update-versions.ts",
-    "bundle": "tsx scripts/bundle-schemas.ts",
+    "build-schemas": "tsx scripts/build-schemas.ts",
     "push": "tsx scripts/push-to-registry.ts",
     "demo:parity": "tsx scripts/generate-demo.ts",
     "demo:advanced": "tsx scripts/generate-advanced-demo.ts",

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Renamed npm script from `npm run bundle` to `npm run build-schemas` to avoid confusion with CLI bundle command
+- Renamed output directory from `bundled/` to `result/`
+
 ## [0.1.2] - 2026-01-07
 
 ### Fixed

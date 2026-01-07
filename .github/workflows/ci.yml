@@ -32,8 +32,8 @@ jobs:
     - name: Type check
       run: npm run ts:typecheck
 
-    - name: Bundle schemas
-      run: npm run bundle
+    - name: Build schemas
+      run: npm run build-schemas
 
     - name: Run tests
       run: npm test
@@ -59,15 +59,15 @@ jobs:
     - name: Build library
       run: npm run build
       
-    - name: Bundle schemas
-      run: npm run bundle
+    - name: Build schemas
+      run: npm run build-schemas
       
     - name: Verify build output
       run: |
         test -f dist/index.js || (echo "dist/index.js not found" && exit 1)
         test -f dist/index.d.ts || (echo "dist/index.d.ts not found" && exit 1)
         test -f dist/index.cjs || (echo "dist/index.cjs not found" && exit 1)
-        test -d bundled || (echo "bundled directory not found" && exit 1)
+        test -d result || (echo "result directory not found" && exit 1)
         echo "Build output verified successfully"
       
     - name: Upload build artifacts
@@ -76,7 +76,7 @@ jobs:
         name: build-artifacts
         path: |
           dist/
-          bundled/
+          result/
           !dist/**/*.map
         retention-days: 7
 
