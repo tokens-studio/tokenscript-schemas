@@ -1,4 +1,6 @@
-import { describe, expect, it, vi } from "vitest";
+import { mkdir, rm, writeFile } from "node:fs/promises";
+import { join } from "node:path";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { expandPresetSchemas } from "@/bundler/presets/index.js";
 import { bundleSchemas } from "./bundle.js";
 
@@ -86,6 +88,98 @@ describe("Bundle Command", () => {
       expect(warnSpy).toHaveBeenCalledWith("⚠ Unknown preset: unknown");
 
       warnSpy.mockRestore();
+    });
+  });
+
+  describe("Custom Schema Directory", () => {
+    const customSchemasDir = join(process.cwd(), "test-custom-schemas");
+    const customTypeDir = join(customSchemasDir, "types", "custom-color");
+
+    beforeAll(async () => {
+      // Create custom schema directory structure
+      await mkdir(customTypeDir, { recursive: true });
+
+      // Create a custom schema.json
+      const schemaJson = {
+        name: "CustomColor",
+        type: "color" as const,
+        description: "A custom color type for testing",
+        slug: "custom-color",
+        schema: {
+          type: "object" as const,
+          properties: {
+            x: { type: "number" as const },
+            y: { type: "number" as const },
+          },
+          required: ["x", "y"],
+          additionalProperties: false,
+        },
+        initializers: [
+          {
+            keyword: "customcolor",
+            script: {
+              type: "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+              script: "./custom-initializer.tokenscript",
+            },
+          },
+        ],
+        conversions: [] as any[],
+      };
+
+      await writeFile(
+        join(customTypeDir, "schema.json"),
+        JSON.stringify(schemaJson, null, 2),
+        "utf-8",
+      );
+
+      // Create a custom initializer script
+      const initializerScript = `
+variable x_val: Number = args.get(0);
+variable y_val: Number = args.get(1);
+variable result: Color.CustomColor = (x: x_val, y: y_val);
+result
+      `.trim();
+
+      await writeFile(join(customTypeDir, "custom-initializer.tokenscript"), initializerScript);
+    });
+
+    afterAll(async () => {
+      // Clean up custom schemas directory
+      try {
+        await rm(customSchemasDir, { recursive: true, force: true });
+      } catch {
+        // Ignore if directory doesn't exist
+      }
+    });
+
+    it("should bundle schemas from custom directory", async () => {
+      const result = await bundleSchemas(["type:custom-color"], customSchemasDir);
+
+      expect(result.output).toContain("SCHEMAS");
+      expect(result.output).toContain("custom-color");
+      expect(result.metadata.requestedSchemas).toEqual(["type:custom-color"]);
+      expect(result.metadata.resolvedDependencies).toContain("custom-color");
+    });
+
+    it("should include custom schema in output", async () => {
+      const result = await bundleSchemas(["custom-color"], customSchemasDir);
+
+      // Verify the output contains the custom schema definition
+      expect(result.output).toContain("CustomColor");
+      expect(result.output).toContain("customcolor");
+      expect(result.output).toContain("A custom color type for testing");
+    });
+
+    it("should use custom directory metadata in output", async () => {
+      const cliArgs = ["type:custom-color", "--schemas-dir", customSchemasDir];
+      const result = await bundleSchemas(["type:custom-color"], customSchemasDir, cliArgs);
+
+      expect(result.metadata.generatedBy).toContain("--schemas-dir");
+      expect(result.metadata.generatedBy).toContain(customSchemasDir);
+    });
+
+    it("should fail gracefully when schema not found in custom directory", async () => {
+      await expect(bundleSchemas(["type:nonexistent-schema"], customSchemasDir)).rejects.toThrow();
     });
   });
 });

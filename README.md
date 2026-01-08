@@ -39,11 +39,18 @@ npx @tokens-studio/tokenscript-schemas bundle --config schemas.json
 # Preview what would be bundled (dry-run)
 npx @tokens-studio/tokenscript-schemas bundle oklch-color rgb-color --dry-run
 
+# Bundle from custom schema directory
+npx @tokens-studio/tokenscript-schemas bundle type:my-color -o ./schemas.js --schemas-dir ./my-schemas
+
 # List available schemas
 npx @tokens-studio/tokenscript-schemas list
 npx @tokens-studio/tokenscript-schemas list --types
 npx @tokens-studio/tokenscript-schemas list --functions
 ```
+
+#### Docs
+
+- [Custom Schema Directories Documentation](docs/cli/custom-schemas.md) - Bundle schemas from custom directories
 
 ### Available Presets
 
@@ -119,6 +126,23 @@ src/schemas/types/srgb-color/
 - Scripts are standalone `.tokenscript` files for better readability and syntax highlighting
 - Tests use runtime bundling - no build step required
 - The bundler inlines script content for distribution
+
+## Working with Custom Schemas
+
+You can use the bundler with your own custom schema directories, useful for:
+- Developing experimental schemas without modifying the main repository
+- Working with schemas from external projects
+- Testing new color types before committing them
+
+See **[Custom Schema Directories Documentation](docs/cli/custom-schemas.md)** for detailed examples and usage.
+
+```bash
+# Bundle from custom directory
+npm run cli -- bundle my-color -o ./output.js --schemas-dir ./path/to/custom/schemas
+
+# Build from custom directory
+npm run build-schemas -- --schemas-dir ./path/to/custom/schemas
+```
 
 ## Scripts
 
