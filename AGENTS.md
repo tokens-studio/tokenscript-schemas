@@ -59,6 +59,7 @@ schema-registry/
 │   ├── cli/
 │   │   ├── commands/
 │   │   │   ├── bundle.ts    # CLI bundle (JS file output)
+│   │   │   ├── build-dir.ts # CLI build (individual schema dir → JSON)
 │   │   │   ├── list.ts
 │   │   │   └── presets.ts
 │   │   ├── index.ts
@@ -291,6 +292,11 @@ npm run build-schemas
 # CLI commands (for JS file output - bundle command creates JS bundles)
 npm run cli -- bundle preset:css -o ./schemas.js
 npm run cli -- bundle type:hex-color function:lighten -o ./schemas.js
+
+# Build individual schema directory (outputs JSON to stdout or file)
+npm run cli -- build ./src/schemas/types/css-color
+npm run cli -- build ./src/schemas/types/css-color -o css-color.json
+npm run cli -- build ./src/schemas/types/css-color --pretty -o css-color.json
 
 # Bundle from custom schema directory
 npm run cli -- bundle type:my-custom-color -o ./schemas.js --schemas-dir ./path/to/custom/schemas

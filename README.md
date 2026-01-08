@@ -30,6 +30,11 @@ npx @tokens-studio/tokenscript-schemas bundle oklch-color rgb-color -o ./schemas
 # Bundle with functions
 npx @tokens-studio/tokenscript-schemas bundle rgb-color function:invert -o ./schemas.js
 
+# Build individual schema directory
+npx @tokens-studio/tokenscript-schemas build ./src/schemas/types/css-color
+npx @tokens-studio/tokenscript-schemas build ./src/schemas/types/css-color -o css-color.json
+npx @tokens-studio/tokenscript-schemas build ./src/schemas/types/css-color --pretty -o css-color.json
+
 # Combine presets with specific schemas
 npx @tokens-studio/tokenscript-schemas bundle preset:css type:lab-color -o ./schemas.js
 

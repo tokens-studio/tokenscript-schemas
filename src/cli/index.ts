@@ -8,6 +8,7 @@
 
 import cac from "cac";
 import anylogger from "ulog";
+import { type BuildDirOptions, handleBuildCommand } from "./commands/build-dir.js";
 import { type BundleOptions, handleBundleCommand } from "./commands/bundle.js";
 import { handleListCommand, type ListOptions } from "./commands/list.js";
 import { handlePresetsCommand } from "./commands/presets.js";
@@ -26,6 +27,20 @@ cli
   .action(async (schemas: string[], options: BundleOptions) => {
     try {
       await handleBundleCommand(schemas, options);
+    } catch (error) {
+      log.error("Error:", error);
+      process.exit(1);
+    }
+  });
+
+// Build command
+cli
+  .command("build <directory>", "Build an individual schema directory")
+  .option("-o, --output <path>", "Output file path (defaults to stdout)")
+  .option("-p, --pretty", "Pretty print JSON output")
+  .action(async (directory: string, options: BuildDirOptions) => {
+    try {
+      await handleBuildCommand(directory, options);
     } catch (error) {
       log.error("Error:", error);
       process.exit(1);
