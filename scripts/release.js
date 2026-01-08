@@ -137,16 +137,7 @@ function main() {
   }
   log("");
 
-  log("3/7 Bundling schemas...");
-  if (isDryRun) {
-    log("  [DRY RUN] Would run: npm run bundle");
-  } else {
-    exec("npm run bundle");
-    success("Schemas bundled");
-  }
-  log("");
-
-  log("4/7 Building project...");
+  log("3/6 Building project...");
   if (isDryRun) {
     log("  [DRY RUN] Would run: npm run build");
   } else {
@@ -155,7 +146,7 @@ function main() {
   }
   log("");
 
-  log("5/7 Creating version bump and git tag...");
+  log("4/6 Creating version bump and git tag...");
   if (isDryRun) {
     log(`  [DRY RUN] Would run: npm version ${releaseType} --no-git-tag-version`);
     log(`  [DRY RUN] Would create git commit and tag`);
@@ -165,7 +156,7 @@ function main() {
   }
   log("");
 
-  log("6/7 Publishing to npm...");
+  log("5/6 Publishing to npm...");
   if (isDryRun) {
     log("  [DRY RUN] Would run: npm publish --ignore-scripts");
   } else {
@@ -174,7 +165,7 @@ function main() {
   }
   log("");
 
-  log("7/7 Pushing to remote...");
+  log("6/6 Pushing to remote...");
   if (isDryRun) {
     log("  [DRY RUN] Would run: git push --follow-tags");
   } else {
