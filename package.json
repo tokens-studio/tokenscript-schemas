@@ -1,6 +1,6 @@
 {
   "name": "@tokens-studio/tokenscript-schemas",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "Schema registry for TokenScript with bundled schemas and validation",
   "type": "module",
   "main": "./dist/index.js",
