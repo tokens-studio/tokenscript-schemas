@@ -22,6 +22,7 @@ cli
   .option("-c, --config <path>", "Path to config file")
   .option("-o, --output <path>", "Output file path", { default: "./tokenscript-schemas.js" })
   .option("-d, --dry-run", "Preview what would be bundled without writing")
+  .option("-s, --schemas-dir <path>", "Custom schema directory (overrides default)")
   .action(async (schemas: string[], options: BundleOptions) => {
     try {
       await handleBundleCommand(schemas, options);

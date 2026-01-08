@@ -20,6 +20,7 @@ export interface BundleOptions {
   config?: string;
   output?: string;
   dryRun?: boolean;
+  schemasDir?: string; // Comma-separated list of custom schema directories
 }
 
 /**
@@ -227,11 +228,20 @@ export async function handleBundleCommand(
     if (options.dryRun) {
       cliArgs.push("--dry-run");
     }
+    if (options.schemasDir) {
+      cliArgs.push("--schemas-dir", options.schemasDir);
+    }
+
+    // Use custom schema directory if provided
+    const customSchemasDir = options.schemasDir;
+    if (customSchemasDir) {
+      log.info(`Using custom schema directory: ${customSchemasDir}`);
+    }
 
     // Bundle schemas
     const { output, metadata, dependencyTree } = await bundleSchemas(
       configSchemas,
-      undefined,
+      customSchemasDir,
       cliArgs,
     );
 

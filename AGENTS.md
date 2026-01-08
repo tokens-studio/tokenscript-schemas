@@ -291,6 +291,11 @@ npm run build-schemas
 # CLI commands (for JS file output - bundle command creates JS bundles)
 npm run cli -- bundle preset:css -o ./schemas.js
 npm run cli -- bundle type:hex-color function:lighten -o ./schemas.js
+
+# Bundle from custom schema directory
+npm run cli -- bundle type:my-custom-color -o ./schemas.js --schemas-dir ./path/to/custom/schemas
+
+# List and presets
 npm run cli -- list
 npm run presets  # List all available presets
 ```

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Support for custom schema directories via `--schemas-dir` option
+- Documentation for bundling from custom schema directories
+
 ### Changed
 
 - Renamed npm script from `npm run bundle` to `npm run build-schemas` to avoid confusion with CLI bundle command
