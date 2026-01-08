@@ -4,6 +4,7 @@
 
 /// <reference types="../../../types/ulog" />
 
+import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -119,27 +120,23 @@ function findSchemasDir(): string {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
 
-  // From compiled dist/cli/index.js (bundled) to src/schemas
+  // From compiled dist/cli/commands/bundle.js to src/schemas
   const fromDist = join(__dirname, "../../src/schemas");
 
   // From source src/cli/commands/bundle.ts to src/schemas (for tests/dev)
   const fromSource = join(__dirname, "../../schemas");
 
-  // Try to detect which one exists (check dist first for installed package)
-  try {
-    const fs = require("node:fs");
-    if (fs.existsSync(fromDist)) {
-      return fromDist;
-    }
-    if (fs.existsSync(fromSource)) {
-      return fromSource;
-    }
-  } catch {
-    // If fs checks fail, default to dist structure
+  // Check source first (for development), then dist (for installed package)
+  if (existsSync(fromSource)) {
+    return fromSource;
   }
 
-  // Default to dist structure (for installed package)
-  return fromDist;
+  if (existsSync(fromDist)) {
+    return fromDist;
+  }
+
+  // Default to source structure (for development)
+  return fromSource;
 }
 
 /**
