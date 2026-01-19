@@ -1,0 +1,28 @@
+{
+  "name": "Contrasting From Array",
+  "type": "function",
+  "description": "Takes an array of colors and returns the first one that meets the contrast threshold against the background. If no color meets the threshold, returns the color with the highest contrast. Useful for picking from a priority-ordered list of candidate colors.",
+  "keyword": "contrasting_from_array",
+  "input": {
+    "type": "object",
+    "properties": {
+      "colors": {
+        "type": "list",
+        "description": "Array of candidate colors (in priority order)"
+      },
+      "background": {
+        "type": "color",
+        "description": "Background color to contrast against"
+      },
+      "threshold": {
+        "type": "number",
+        "description": "Minimum contrast ratio (default: 4.5 for WCAG AA)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./contrasting-from-array.tokenscript"
+  },
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/srgb-linear-color/0/"]
+}

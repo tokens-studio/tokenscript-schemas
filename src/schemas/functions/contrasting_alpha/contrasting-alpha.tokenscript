@@ -1,0 +1,122 @@
+// contrasting_alpha: Find minimum alpha for target contrast
+// Reference: WCAG 2.1 Contrast Ratio + Binary Search
+//
+// Uses binary search to find the lowest alpha (opacity) that produces
+// sufficient contrast between a semi-transparent foreground and background.
+//
+// Algorithm:
+// 1. Blend foreground over background at test alpha
+// 2. Calculate WCAG contrast ratio
+// 3. Binary search: if contrast sufficient, try lower alpha
+//
+// Returns: [alpha, contrast, blended_color]
+//
+// Use cases:
+// - Minimum opacity for readable overlays
+// - Accessible semi-transparent UI elements
+// - Finding subtle but accessible color treatments
+
+variable input: List = {input};
+variable fg: Color.SRGB = input.get(0).to.srgb();
+variable bg: Color.SRGB = input.get(1).to.srgb();
+
+// Target contrast (default: 4.5 for WCAG AA normal text)
+variable threshold: Number = 4.5;
+if (input.length() > 2) [
+    threshold = input.get(2);
+];
+
+// Binary search iterations (default: 10 for ~0.001 precision)
+variable iterations: Number = 10;
+if (input.length() > 3) [
+    iterations = input.get(3);
+];
+
+// Convert background to linear for luminance calculation
+variable bg_linear: Color.LinearSRGB = bg.to.linearsrgb();
+variable bg_lum: Number = 0.2126 * bg_linear.r + 0.7152 * bg_linear.g + 0.0722 * bg_linear.b;
+
+// First check: does full opacity meet threshold?
+variable fg_linear: Color.LinearSRGB = fg.to.linearsrgb();
+variable fg_lum: Number = 0.2126 * fg_linear.r + 0.7152 * fg_linear.g + 0.0722 * fg_linear.b;
+
+variable lighter: Number = fg_lum;
+variable darker: Number = bg_lum;
+if (bg_lum > fg_lum) [
+    lighter = bg_lum;
+    darker = fg_lum;
+];
+variable full_contrast: Number = (lighter + 0.05) / (darker + 0.05);
+
+// If full opacity doesn't meet threshold, return alpha=1
+variable final_alpha: Number = 1;
+variable final_contrast: Number = full_contrast;
+
+if (full_contrast >= threshold) [
+    // Binary search for minimum alpha
+    variable low: Number = 0;
+    variable high: Number = 1;
+    variable mid: Number = 0;
+    variable i: Number = 0;
+    
+    variable blend_r: Number = 0;
+    variable blend_g: Number = 0;
+    variable blend_b: Number = 0;
+    variable inv_alpha: Number = 0;
+    
+    variable blend_linear: Color.LinearSRGB;
+    variable blend_lum: Number = 0;
+    variable current_contrast: Number = 0;
+    
+    // Declare blended_srgb outside loop to avoid redeclaration
+    variable blended_srgb: Color.SRGB;
+    
+    while (i < iterations) [
+        mid = (low + high) / 2;
+        inv_alpha = 1 - mid;
+        
+        // Blend at mid alpha (in sRGB space, then convert)
+        blend_r = fg.r * mid + bg.r * inv_alpha;
+        blend_g = fg.g * mid + bg.g * inv_alpha;
+        blend_b = fg.b * mid + bg.b * inv_alpha;
+        
+        // Convert blended color to linear for luminance
+        blended_srgb.r = blend_r;
+        blended_srgb.g = blend_g;
+        blended_srgb.b = blend_b;
+        
+        blend_linear = blended_srgb.to.linearsrgb();
+        blend_lum = 0.2126 * blend_linear.r + 0.7152 * blend_linear.g + 0.0722 * blend_linear.b;
+        
+        // Calculate contrast ratio
+        lighter = blend_lum;
+        darker = bg_lum;
+        if (bg_lum > blend_lum) [
+            lighter = bg_lum;
+            darker = blend_lum;
+        ];
+        current_contrast = (lighter + 0.05) / (darker + 0.05);
+        
+        // Binary search: if sufficient, try lower alpha
+        if (current_contrast >= threshold) [
+            high = mid;
+            final_alpha = mid;
+            final_contrast = current_contrast;
+        ] else [
+            low = mid;
+        ];
+        
+        i = i + 1;
+    ];
+];
+
+// Create final blended color
+variable inv_final: Number = 1 - final_alpha;
+variable result_color: Color.SRGB;
+result_color.r = fg.r * final_alpha + bg.r * inv_final;
+result_color.g = fg.g * final_alpha + bg.g * inv_final;
+result_color.b = fg.b * final_alpha + bg.b * inv_final;
+
+// Return: [alpha, contrast, color]
+variable result: List = final_alpha, final_contrast, result_color;
+return result;

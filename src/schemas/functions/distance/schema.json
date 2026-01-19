@@ -1,0 +1,28 @@
+{
+  "name": "Distance",
+  "type": "function",
+  "description": "Calculates the Euclidean distance between two colors in a perceptual color space. Simpler than Delta E formulas - just the straight-line distance. Lower values mean more similar colors. OKLab provides better perceptual uniformity than Lab.",
+  "keyword": "distance",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color1": {
+        "type": "color",
+        "description": "First color"
+      },
+      "color2": {
+        "type": "color",
+        "description": "Second color"
+      },
+      "space": {
+        "type": "string",
+        "description": "Color space for distance calculation: 'oklab' (default) or 'lab'"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./distance.tokenscript"
+  },
+  "requirements": ["/api/v1/core/oklab-color/0/", "/api/v1/core/lab-color/0/"]
+}

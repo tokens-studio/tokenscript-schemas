@@ -1,0 +1,98 @@
+// contrasting_from_array: Find first color meeting contrast threshold
+// Reference: WCAG 2.1 Contrast Ratio
+//
+// Unlike best_contrast (which always returns the highest contrast),
+// this returns the FIRST color that meets the threshold.
+// If no color meets the threshold, returns the one with highest contrast.
+//
+// This is useful when you have a priority-ordered list of preferred colors
+// and want to use the first acceptable one.
+//
+// Returns: [color, sufficient (0/1), contrast, index]
+//
+// Use cases:
+// - Pick first brand color that's accessible
+// - Fallback cascade for text colors
+// - Theme color selection with preferences
+
+variable input: List = {input};
+variable colors: List = input.get(0);
+variable bg: Color.LinearSRGB = input.get(1).to.linearsrgb();
+
+// Target contrast (default: 4.5 for WCAG AA normal text)
+variable threshold: Number = 4.5;
+if (input.length() > 2) [
+    threshold = input.get(2);
+];
+
+// Calculate background luminance
+variable bg_lum: Number = 0.2126 * bg.r + 0.7152 * bg.g + 0.0722 * bg.b;
+
+// Track best color in case none meet threshold
+variable best_color: Color.SRGB = colors.get(0).to.srgb();
+variable best_contrast: Number = 0;
+variable best_index: Number = 0;
+
+// Result values
+variable result_color: Color.SRGB = best_color;
+variable result_sufficient: Number = 0;
+variable result_contrast: Number = 0;
+variable result_index: Number = 0;
+variable found: Number = 0;
+
+variable i: Number = 0;
+variable candidate: Color.LinearSRGB;
+variable cand_lum: Number = 0;
+variable lighter: Number = 0;
+variable darker: Number = 0;
+variable contrast: Number = 0;
+
+while (i < colors.length()) [
+    // Only process if we haven't found a sufficient color yet
+    if (found == 0) [
+        candidate = colors.get(i).to.linearsrgb();
+        
+        // Calculate candidate luminance
+        cand_lum = 0.2126 * candidate.r + 0.7152 * candidate.g + 0.0722 * candidate.b;
+        
+        // Calculate contrast ratio
+        lighter = bg_lum;
+        darker = cand_lum;
+        if (cand_lum > bg_lum) [
+            lighter = cand_lum;
+            darker = bg_lum;
+        ];
+        
+        contrast = (lighter + 0.05) / (darker + 0.05);
+        
+        // Track best for fallback
+        if (contrast > best_contrast) [
+            best_contrast = contrast;
+            best_color = colors.get(i).to.srgb();
+            best_index = i;
+        ];
+        
+        // Check if this color meets threshold (take first one)
+        if (contrast >= threshold) [
+            result_color = colors.get(i).to.srgb();
+            result_sufficient = 1;
+            result_contrast = contrast;
+            result_index = i;
+            found = 1;
+        ];
+    ];
+    
+    i = i + 1;
+];
+
+// If no color met threshold, use best one
+if (found == 0) [
+    result_color = best_color;
+    result_sufficient = 0;
+    result_contrast = best_contrast;
+    result_index = best_index;
+];
+
+// Return: [color, sufficient, contrast, index]
+variable result: List = result_color, result_sufficient, result_contrast, result_index;
+return result;

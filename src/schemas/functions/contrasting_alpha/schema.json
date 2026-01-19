@@ -1,0 +1,32 @@
+{
+  "name": "Contrasting Alpha",
+  "type": "function",
+  "description": "Finds the minimum alpha value needed for a foreground color to achieve sufficient contrast against a background. Uses binary search to find the lowest opacity that meets the target contrast ratio. Perfect for creating subtle overlays that maintain readability.",
+  "keyword": "contrasting_alpha",
+  "input": {
+    "type": "object",
+    "properties": {
+      "foreground": {
+        "type": "color",
+        "description": "Foreground (text/overlay) color"
+      },
+      "background": {
+        "type": "color",
+        "description": "Background color"
+      },
+      "threshold": {
+        "type": "number",
+        "description": "Target contrast ratio (default: 4.5 for WCAG AA)"
+      },
+      "iterations": {
+        "type": "number",
+        "description": "Binary search iterations for precision (default: 10)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./contrasting-alpha.tokenscript"
+  },
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/srgb-linear-color/0/"]
+}
