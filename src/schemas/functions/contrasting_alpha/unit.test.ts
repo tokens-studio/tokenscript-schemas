@@ -92,7 +92,7 @@ describe("Contrasting Alpha Function", () => {
       expect(contrast).toBeGreaterThanOrEqual(4.4); // Allow small margin
     });
 
-    it("should return the blended color", async () => {
+    it("should return the original foreground color unchanged", async () => {
       const result = await executeWithSchema(
         "contrasting_alpha",
         "function",
@@ -110,9 +110,40 @@ describe("Contrasting Alpha Function", () => {
       const color = list[2];
 
       expect(color?.constructor.name).toBe("ColorSymbol");
-      // The blended color should be a gray (since we're blending black over white)
-      expect(color.value.r.value).toBeGreaterThan(0);
-      expect(color.value.r.value).toBeLessThan(1);
+      // Returns original foreground color unchanged (user applies alpha themselves)
+      expect(color.value.r.value).toBe(0);
+      expect(color.value.g.value).toBe(0);
+      expect(color.value.b.value).toBe(0);
+    });
+
+    it("should preserve input color space (return original foreground)", async () => {
+      // Uses XYZ-D65 internally for gamut-agnostic luminance calculation
+      // Returns original foreground color unchanged
+      const result = await executeWithSchema(
+        "contrasting_alpha",
+        "function",
+        `
+        variable fg: Color.SRGB;
+        fg.r = 0; fg.g = 0.5; fg.b = 0;
+        variable bg: Color.SRGB;
+        bg.r = 1; bg.g = 1; bg.b = 1;
+        contrasting_alpha(fg, bg, 4.5)
+        `,
+      );
+
+      expect(result?.constructor.name).toBe("ListSymbol");
+      const list = (result as any).value;
+      const alpha = list[0].value;
+      const contrast = list[1].value;
+      const color = list[2];
+
+      // Returns original foreground unchanged (same color space as input)
+      expect(color.value.r.value).toBe(0);
+      expect(color.value.g.value).toBe(0.5);
+      expect(color.value.b.value).toBe(0);
+      expect(alpha).toBeGreaterThan(0);
+      expect(alpha).toBeLessThanOrEqual(1);
+      expect(contrast).toBeGreaterThanOrEqual(4.4);
     });
 
     it("should work with custom threshold", async () => {

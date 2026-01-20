@@ -1,18 +1,18 @@
 {
   "name": "Sort By Distance",
   "type": "function",
-  "description": "Sorts an array of colors by their distance/difference from a reference color. Supports multiple sorting criteria: contrast (WCAG ratio), hue (angle difference), lightness (OKLCH L), chroma (OKLCH C), or distance (OKLab Euclidean). Returns colors sorted from closest to furthest.",
+  "description": "Sorts an array of colors by their distance/difference from a reference color. Supports multiple sorting criteria: contrast (WCAG ratio), hue (angle difference), lightness (OKLCH L), chroma (OKLCH C), or distance (OKLab Euclidean). Returns [sorted_colors, indices] where colors are unchanged from input (same color space). Uses XYZ-D65 for contrast calculation (accurate WCAG luminance).",
   "keyword": "sort_by_distance",
   "input": {
     "type": "object",
     "properties": {
       "colors": {
         "type": "list",
-        "description": "Array of colors to sort"
+        "description": "Array of colors to sort - any color space"
       },
       "compare_color": {
         "type": "color",
-        "description": "Reference color to compare against"
+        "description": "Reference color to compare against - any color space"
       },
       "type": {
         "type": "string",
@@ -25,9 +25,9 @@
     "script": "./sort-by-distance.tokenscript"
   },
   "requirements": [
+    "/api/v1/core/srgb-color/0/",
+    "/api/v1/core/xyz-d65-color/0/",
     "/api/v1/core/oklch-color/0/",
-    "/api/v1/core/oklab-color/0/",
-    "/api/v1/core/srgb-linear-color/0/",
-    "/api/v1/core/srgb-color/0/"
+    "/api/v1/core/oklab-color/0/"
   ]
 }

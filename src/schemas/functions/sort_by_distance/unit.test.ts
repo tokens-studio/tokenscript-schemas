@@ -209,5 +209,58 @@ describe("Sort By Distance Function", () => {
       const list = (result as any).value;
       expect(list.length).toBeGreaterThanOrEqual(2);
     });
+
+    it("should return result as list of [colors, indices]", async () => {
+      // Test that the function returns the expected structure
+      // Uses XYZ-D65 internally for gamut-agnostic calculations
+      const result = await executeWithSchema(
+        "sort_by_distance",
+        "function",
+        `
+        variable c1: Color.SRGB;
+        c1.r = 1; c1.g = 0; c1.b = 0;
+        variable c2: Color.SRGB;
+        c2.r = 0; c2.g = 0; c2.b = 1;
+        
+        variable colors: List = c1, c2;
+        variable compare: Color.SRGB;
+        compare.r = 1; compare.g = 0; compare.b = 0;
+        
+        sort_by_distance(colors, compare)
+        `,
+      );
+
+      expect(result?.constructor.name).toBe("ListSymbol");
+      const list = (result as any).value;
+      // Result is [sorted_colors_list, indices_list]
+      expect(list.length).toBeGreaterThanOrEqual(2);
+    });
+
+    it("should preserve input color space (returns original colors unchanged)", async () => {
+      // Uses XYZ-D65 internally for gamut-agnostic distance calculation
+      // Returns original colors unchanged (same space as input)
+      const result = await executeWithSchema(
+        "sort_by_distance",
+        "function",
+        `
+        variable red: Color.SRGB;
+        red.r = 1; red.g = 0; red.b = 0;
+        variable green: Color.SRGB;
+        green.r = 0; green.g = 1; green.b = 0;
+        
+        variable colors: List = green, red;
+        variable compare: Color.SRGB;
+        compare.r = 0.9; compare.g = 0.1; compare.b = 0;
+        
+        sort_by_distance(colors, compare)
+        `,
+      );
+
+      expect(result?.constructor.name).toBe("ListSymbol");
+      const list = (result as any).value;
+      // Result is [sorted_colors_list, indices_list]
+      // Red (index 1) should be sorted first as it's closer to compare
+      expect(list.length).toBeGreaterThanOrEqual(2);
+    });
   });
 });

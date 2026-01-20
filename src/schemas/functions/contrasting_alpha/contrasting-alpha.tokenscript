@@ -5,11 +5,17 @@
 // sufficient contrast between a semi-transparent foreground and background.
 //
 // Algorithm:
-// 1. Blend foreground over background at test alpha
-// 2. Calculate WCAG contrast ratio
+// 1. Blend foreground over background at test alpha (in XYZ-D65)
+// 2. Calculate WCAG contrast ratio using XYZ-D65 Y (relative luminance)
 // 3. Binary search: if contrast sufficient, try lower alpha
 //
-// Returns: [alpha, contrast, blended_color]
+// Input:  Any color space
+// Output: Same color space as input (foreground color returned unchanged)
+//
+// Returns: [alpha, contrast, foreground_color]
+// - alpha: The minimum opacity needed for threshold contrast
+// - contrast: The achieved contrast ratio at that alpha
+// - foreground_color: Original foreground (apply alpha yourself to preserve space)
 //
 // Use cases:
 // - Minimum opacity for readable overlays
@@ -17,8 +23,11 @@
 // - Finding subtle but accessible color treatments
 
 variable input: List = {input};
-variable fg: Color.SRGB = input.get(0).to.srgb();
-variable bg: Color.SRGB = input.get(1).to.srgb();
+
+// Get XYZ-D65 for accurate luminance calculation (gamut-agnostic)
+// Use input.get() directly to preserve original color type
+variable fg_xyz: Color.XYZD65 = input.get(0).to.xyzd65();
+variable bg_xyz: Color.XYZD65 = input.get(1).to.xyzd65();
 
 // Target contrast (default: 4.5 for WCAG AA normal text)
 variable threshold: Number = 4.5;
@@ -32,13 +41,11 @@ if (input.length() > 3) [
     iterations = input.get(3);
 ];
 
-// Convert background to linear for luminance calculation
-variable bg_linear: Color.LinearSRGB = bg.to.linearsrgb();
-variable bg_lum: Number = 0.2126 * bg_linear.r + 0.7152 * bg_linear.g + 0.0722 * bg_linear.b;
+// In XYZ-D65, Y component IS relative luminance
+variable bg_lum: Number = bg_xyz.y;
 
 // First check: does full opacity meet threshold?
-variable fg_linear: Color.LinearSRGB = fg.to.linearsrgb();
-variable fg_lum: Number = 0.2126 * fg_linear.r + 0.7152 * fg_linear.g + 0.0722 * fg_linear.b;
+variable fg_lum: Number = fg_xyz.y;
 
 variable lighter: Number = fg_lum;
 variable darker: Number = bg_lum;
@@ -59,34 +66,21 @@ if (full_contrast >= threshold) [
     variable mid: Number = 0;
     variable i: Number = 0;
     
-    variable blend_r: Number = 0;
-    variable blend_g: Number = 0;
-    variable blend_b: Number = 0;
+    variable blend_x: Number = 0;
+    variable blend_y: Number = 0;
+    variable blend_z: Number = 0;
     variable inv_alpha: Number = 0;
     
-    variable blend_linear: Color.LinearSRGB;
     variable blend_lum: Number = 0;
     variable current_contrast: Number = 0;
-    
-    // Declare blended_srgb outside loop to avoid redeclaration
-    variable blended_srgb: Color.SRGB;
     
     while (i < iterations) [
         mid = (low + high) / 2;
         inv_alpha = 1 - mid;
         
-        // Blend at mid alpha (in sRGB space, then convert)
-        blend_r = fg.r * mid + bg.r * inv_alpha;
-        blend_g = fg.g * mid + bg.g * inv_alpha;
-        blend_b = fg.b * mid + bg.b * inv_alpha;
-        
-        // Convert blended color to linear for luminance
-        blended_srgb.r = blend_r;
-        blended_srgb.g = blend_g;
-        blended_srgb.b = blend_b;
-        
-        blend_linear = blended_srgb.to.linearsrgb();
-        blend_lum = 0.2126 * blend_linear.r + 0.7152 * blend_linear.g + 0.0722 * blend_linear.b;
+        // Blend in XYZ space for accurate luminance
+        blend_y = fg_xyz.y * mid + bg_xyz.y * inv_alpha;
+        blend_lum = blend_y;
         
         // Calculate contrast ratio
         lighter = blend_lum;
@@ -110,13 +104,7 @@ if (full_contrast >= threshold) [
     ];
 ];
 
-// Create final blended color
-variable inv_final: Number = 1 - final_alpha;
-variable result_color: Color.SRGB;
-result_color.r = fg.r * final_alpha + bg.r * inv_final;
-result_color.g = fg.g * final_alpha + bg.g * inv_final;
-result_color.b = fg.b * final_alpha + bg.b * inv_final;
-
-// Return: [alpha, contrast, color]
-variable result: List = final_alpha, final_contrast, result_color;
+// Return: [alpha, contrast, foreground_color]
+// Foreground is returned unchanged - user applies alpha in their working space
+variable result: List = final_alpha, final_contrast, input.get(0);
 return result;

@@ -67,7 +67,9 @@ describe("Match Alpha Function", () => {
       expect(alpha).toBeCloseTo(1, 2);
     });
 
-    it("should find alpha=0.5 for midpoint blend", async () => {
+    it("should find alpha=0.5 for sRGB midpoint blend", async () => {
+      // Blending in sRGB space: white to black with ref = 0.5 gray
+      // alpha = (0.5 - 0) / (1 - 0) = 0.5
       const result = await executeWithSchema(
         "match_alpha",
         "function",
@@ -92,6 +94,9 @@ describe("Match Alpha Function", () => {
     });
 
     it("should find correct alpha for 25% blend", async () => {
+      // Blending red and blue in sRGB space
+      // ref.r = 0.25, fg.r = 1, bg.r = 0 → alpha_r = 0.25
+      // ref.b = 0.75, fg.b = 0, bg.b = 1 → alpha_b = (0.75 - 1) / (0 - 1) = 0.25
       const result = await executeWithSchema(
         "match_alpha",
         "function",
@@ -115,19 +120,19 @@ describe("Match Alpha Function", () => {
       expect(alpha).toBeCloseTo(0.25, 2);
     });
 
-    it("should return in_range=0 for impossible blend (different hues)", async () => {
-      // From graph-engine: fg=[0.96,0,0], bg=[0,0.2,0], ref=[0.48,0,0]
-      // The hues are too different - can't blend red and green to get the reference
+    it("should return in_range=0 for impossible blend (ref outside range)", async () => {
+      // Reference is brighter than foreground with black background
+      // This would require alpha > 1 which is impossible
       const result = await executeWithSchema(
         "match_alpha",
         "function",
         `
         variable fg: Color.SRGB;
-        fg.r = 0.96; fg.g = 0; fg.b = 0;
+        fg.r = 0.3; fg.g = 0.3; fg.b = 0.3;
         variable bg: Color.SRGB;
-        bg.r = 0; bg.g = 0.2; bg.b = 0;
+        bg.r = 0; bg.g = 0; bg.b = 0;
         variable ref: Color.SRGB;
-        ref.r = 0.48; ref.g = 0; ref.b = 0;
+        ref.r = 0.6; ref.g = 0.6; ref.b = 0.6;
         match_alpha(fg, bg, ref)
         `,
       );
@@ -136,7 +141,7 @@ describe("Match Alpha Function", () => {
       const list = (result as any).value;
       const inRange = list[0].value;
 
-      // Cannot produce reference by blending - different hues
+      // Reference is brighter than fg, can't achieve with alpha in [0,1]
       expect(inRange).toBe(0);
     });
 
@@ -165,7 +170,7 @@ describe("Match Alpha Function", () => {
       expect(inRange).toBe(0);
     });
 
-    it("should return the blended color", async () => {
+    it("should return the original foreground color unchanged", async () => {
       const result = await executeWithSchema(
         "match_alpha",
         "function",
@@ -185,9 +190,40 @@ describe("Match Alpha Function", () => {
       const color = list[2];
 
       expect(color?.constructor.name).toBe("ColorSymbol");
-      expect(color.value.r.value).toBeCloseTo(0.5, 2);
-      expect(color.value.g.value).toBeCloseTo(0.5, 2);
-      expect(color.value.b.value).toBeCloseTo(0.5, 2);
+      // Returns original foreground color unchanged (user applies alpha themselves)
+      expect(color.value.r.value).toBe(1);
+      expect(color.value.g.value).toBe(1);
+      expect(color.value.b.value).toBe(1);
+    });
+
+    it("should preserve input color space (return original foreground)", async () => {
+      // Returns original foreground so user can apply alpha in their working space
+      const result = await executeWithSchema(
+        "match_alpha",
+        "function",
+        `
+        variable fg: Color.SRGB;
+        fg.r = 1; fg.g = 0; fg.b = 0;
+        variable bg: Color.SRGB;
+        bg.r = 0; bg.g = 0; bg.b = 0;
+        variable ref: Color.SRGB;
+        ref.r = 0.5; ref.g = 0; ref.b = 0;
+        match_alpha(fg, bg, ref)
+        `,
+      );
+
+      expect(result?.constructor.name).toBe("ListSymbol");
+      const list = (result as any).value;
+      const inRange = list[0].value;
+      const alpha = list[1].value;
+      const color = list[2];
+
+      // Returns original foreground unchanged (same color space as input)
+      expect(color.value.r.value).toBe(1);
+      expect(color.value.g.value).toBe(0);
+      expect(color.value.b.value).toBe(0);
+      expect(inRange).toBe(1);
+      expect(alpha).toBeCloseTo(0.5, 2);
     });
   });
 });

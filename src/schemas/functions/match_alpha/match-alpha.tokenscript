@@ -4,8 +4,16 @@
 // Given: result = foreground × α + background × (1 - α)
 // Solve for α: α = (result - background) / (foreground - background)
 //
-// The alpha is computed per-channel and averaged.
-// Returns a list: [in_range (0 or 1), alpha, blended_color]
+// The alpha is computed per-channel (in sRGB for calculation) and averaged.
+// Returns a list: [in_range (0 or 1), alpha, foreground_color]
+//
+// Input:  Any color space
+// Output: Same color space as input (foreground color returned unchanged)
+//
+// Returns: [in_range, alpha, foreground_color]
+// - in_range: 1 if blend is achievable, 0 if not
+// - alpha: The computed opacity value
+// - foreground_color: Original foreground (apply alpha yourself to preserve space)
 //
 // Use cases:
 // - Reverse-engineering transparency from flattened designs
@@ -13,6 +21,7 @@
 // - Color matching in compositing workflows
 
 variable input: List = {input};
+// Convert to sRGB for alpha calculation, preserve original for return
 variable fg: Color.SRGB = input.get(0).to.srgb();
 variable bg: Color.SRGB = input.get(1).to.srgb();
 variable ref: Color.SRGB = input.get(2).to.srgb();
@@ -28,7 +37,7 @@ variable in_range: Number = 0;
 variable valid_channels: Number = 0;
 variable alpha_sum: Number = 0;
 
-// Calculate alpha for each channel
+// Calculate alpha for each channel (R, G, B)
 // α = (ref - bg) / (fg - bg)
 
 // Red channel
@@ -138,13 +147,7 @@ if (bg_matches_ref == 1) [
     ];
 ];
 
-// Create the blended color with computed alpha
-variable inv_alpha: Number = 1 - alpha;
-variable result_color: Color.SRGB;
-result_color.r = fg.r * alpha + bg.r * inv_alpha;
-result_color.g = fg.g * alpha + bg.g * inv_alpha;
-result_color.b = fg.b * alpha + bg.b * inv_alpha;
-
-// Return as list: [in_range, alpha, color]
-variable result: List = in_range, alpha, result_color;
+// Return as list: [in_range, alpha, foreground_color]
+// Foreground is returned unchanged - user applies alpha in their working space
+variable result: List = in_range, alpha, input.get(0);
 return result;

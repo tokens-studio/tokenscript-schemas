@@ -1,22 +1,22 @@
 {
   "name": "Match Alpha",
   "type": "function",
-  "description": "Finds the alpha value that, when used to blend the foreground over the background, produces the reference color. Useful for reverse-engineering transparency values from flattened designs. Returns the alpha and whether the blend is achievable.",
+  "description": "Finds the alpha value that, when used to blend the foreground over the background, produces the reference color. Useful for reverse-engineering transparency values from flattened designs. Returns [in_range, alpha, foreground_color] where foreground_color is unchanged (same color space as input).",
   "keyword": "match_alpha",
   "input": {
     "type": "object",
     "properties": {
       "foreground": {
         "type": "color",
-        "description": "Foreground (top) color"
+        "description": "Foreground (top) color - any color space"
       },
       "background": {
         "type": "color",
-        "description": "Background (bottom) color"
+        "description": "Background (bottom) color - any color space"
       },
       "reference": {
         "type": "color",
-        "description": "Target result color to match"
+        "description": "Target result color to match - any color space"
       },
       "precision": {
         "type": "number",
@@ -28,5 +28,5 @@
     "type": "/api/v1/core/tokenscript/0/",
     "script": "./match-alpha.tokenscript"
   },
-  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/oklab-color/0/"]
+  "requirements": ["/api/v1/core/srgb-color/0/"]
 }

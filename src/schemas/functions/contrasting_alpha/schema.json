@@ -1,18 +1,18 @@
 {
   "name": "Contrasting Alpha",
   "type": "function",
-  "description": "Finds the minimum alpha value needed for a foreground color to achieve sufficient contrast against a background. Uses binary search to find the lowest opacity that meets the target contrast ratio. Perfect for creating subtle overlays that maintain readability.",
+  "description": "Finds the minimum alpha value needed for a foreground color to achieve sufficient contrast against a background. Uses binary search to find the lowest opacity that meets the target contrast ratio. Returns [alpha, contrast, foreground_color] where foreground_color is unchanged (same color space as input). Uses XYZ-D65 internally for accurate luminance calculation.",
   "keyword": "contrasting_alpha",
   "input": {
     "type": "object",
     "properties": {
       "foreground": {
         "type": "color",
-        "description": "Foreground (text/overlay) color"
+        "description": "Foreground (text/overlay) color - any color space"
       },
       "background": {
         "type": "color",
-        "description": "Background color"
+        "description": "Background color - any color space"
       },
       "threshold": {
         "type": "number",
@@ -28,5 +28,5 @@
     "type": "/api/v1/core/tokenscript/0/",
     "script": "./contrasting-alpha.tokenscript"
   },
-  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/srgb-linear-color/0/"]
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/xyz-d65-color/0/"]
 }

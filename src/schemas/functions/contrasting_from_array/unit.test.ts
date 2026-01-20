@@ -47,6 +47,7 @@ describe("Contrasting From Array Function", () => {
 
       expect(sufficient).toBe(1);
       expect(index).toBe(0); // First color (black) should be selected
+      // Color is in sRGB (black = 0, 0, 0)
       expect(color.value.r.value).toBeCloseTo(0, 2);
     });
 
@@ -209,7 +210,7 @@ describe("Contrasting From Array Function", () => {
       expect(index).toBe(0);
     });
 
-    it("should return color in sRGB", async () => {
+    it("should return original color unchanged (same color space as input)", async () => {
       const result = await executeWithSchema(
         "contrasting_from_array",
         "function",
@@ -231,7 +232,39 @@ describe("Contrasting From Array Function", () => {
       const color = list[0];
 
       expect(color?.constructor.name).toBe("ColorSymbol");
-      // Should return dark_red or black depending on which meets threshold first
+      // Returns original color from array unchanged
+      expect(color.value.r).toBeDefined();
+      expect(color.value.g).toBeDefined();
+      expect(color.value.b).toBeDefined();
+    });
+
+    it("should preserve input color space (uses XYZ-D65 internally for luminance)", async () => {
+      // Uses XYZ-D65 internally for gamut-agnostic luminance calculation
+      // Returns original colors unchanged
+      const result = await executeWithSchema(
+        "contrasting_from_array",
+        "function",
+        `
+        variable green: Color.SRGB;
+        green.r = 0; green.g = 0.5; green.b = 0;
+        variable dark: Color.SRGB;
+        dark.r = 0; dark.g = 0.1; dark.b = 0;
+        variable white: Color.SRGB;
+        white.r = 1; white.g = 1; white.b = 1;
+        
+        variable colors: List = green, dark;
+        contrasting_from_array(colors, white, 4.5)
+        `,
+      );
+
+      expect(result?.constructor.name).toBe("ListSymbol");
+      const list = (result as any).value;
+      const color = list[0];
+      const contrast = list[2].value;
+
+      // Returns original color unchanged (same space as input)
+      expect(color.value.r).toBeDefined();
+      expect(contrast).toBeGreaterThan(1);
     });
   });
 });
