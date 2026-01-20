@@ -13,6 +13,7 @@ variable result: Color.OKLCH;
 result.l = color.l;
 result.c = target_c;
 result.h = color.h;
+result.alpha = color.alpha;
 
 return result;
 

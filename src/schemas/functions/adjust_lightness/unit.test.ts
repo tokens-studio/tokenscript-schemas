@@ -84,5 +84,19 @@ describe("adjust_lightness function", () => {
       const r = (result as any).value?.r?.value ?? (result as any).value?.r;
       expect(r).toBeCloseTo(1, 1);
     });
+
+    it("should preserve alpha channel", async () => {
+      const result = await executeWithSchema(
+        "adjust_lightness",
+        "function",
+        `
+        variable color: Color.OKLCH = oklch(0.5, 0.15, 30, 0.7);
+        adjust_lightness(color, 0.1)
+        `,
+      );
+
+      expect(result?.constructor.name).toBe("ColorSymbol");
+      expect((result as any).alpha).toBe(0.7);
+    });
   });
 });

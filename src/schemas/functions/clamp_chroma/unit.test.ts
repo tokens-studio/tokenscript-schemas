@@ -56,5 +56,19 @@ describe("clamp_chroma function", () => {
       expect(Math.abs(r - g)).toBeLessThan(0.1);
       expect(Math.abs(g - b)).toBeLessThan(0.1);
     });
+
+    it("should preserve alpha channel", async () => {
+      const result = await executeWithSchema(
+        "clamp_chroma",
+        "function",
+        `
+        variable color: Color.OKLCH = oklch(0.5, 0.15, 30, 0.7);
+        clamp_chroma(color, 0.05, 0.2)
+        `,
+      );
+
+      expect(result?.constructor.name).toBe("ColorSymbol");
+      expect((result as any).alpha).toBe(0.7);
+    });
   });
 });
