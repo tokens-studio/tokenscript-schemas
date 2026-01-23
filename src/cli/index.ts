@@ -6,8 +6,13 @@
 
 /// <reference types="../../types/ulog" />
 
+import { createRequire } from "node:module";
 import cac from "cac";
 import anylogger from "ulog";
+
+const require = createRequire(import.meta.url);
+const { version } = require("../../package.json");
+
 import { type BuildDirOptions, handleBuildCommand } from "./commands/build-dir.js";
 import { type BundleOptions, handleBundleCommand } from "./commands/bundle.js";
 import { handleListCommand, type ListOptions } from "./commands/list.js";
@@ -72,6 +77,6 @@ cli.command("presets", "List available bundle presets").action(async () => {
 });
 
 cli.help();
-cli.version("0.0.14");
+cli.version(version);
 
 cli.parse();
