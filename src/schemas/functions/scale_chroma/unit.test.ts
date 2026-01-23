@@ -75,5 +75,19 @@ describe("scale_chroma function", () => {
       expect(Math.abs(r - g)).toBeLessThan(0.05);
       expect(Math.abs(g - b)).toBeLessThan(0.05);
     });
+
+    it("should preserve alpha channel", async () => {
+      const result = await executeWithSchema(
+        "scale_chroma",
+        "function",
+        `
+        variable color: Color.OKLCH = oklch(0.5, 0.15, 30, 0.7);
+        scale_chroma(color, 1.5)
+        `,
+      );
+
+      expect(result?.constructor.name).toBe("ColorSymbol");
+      expect((result as any).alpha).toBe(0.7);
+    });
   });
 });

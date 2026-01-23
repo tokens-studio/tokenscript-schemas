@@ -72,5 +72,19 @@ describe("clamp_lightness function", () => {
       expect(r).toBeGreaterThan(0.3);
       expect(r).toBeLessThan(0.7);
     });
+
+    it("should preserve alpha channel", async () => {
+      const result = await executeWithSchema(
+        "clamp_lightness",
+        "function",
+        `
+        variable color: Color.OKLCH = oklch(0.5, 0.15, 30, 0.7);
+        clamp_lightness(color, 0.3, 0.7)
+        `,
+      );
+
+      expect(result?.constructor.name).toBe("ColorSymbol");
+      expect((result as any).alpha).toBe(0.7);
+    });
   });
 });
