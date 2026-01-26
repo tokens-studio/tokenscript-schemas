@@ -389,4 +389,182 @@ describe("sRGB Color Schema", () => {
       expect((result as any).value).toBe(0.8);
     });
   });
+
+  describe("Hex Conversions", () => {
+    it("should have conversion from Hex", async () => {
+      const schema = (await getBundledSchema("srgb-color")) as ColorSpecification;
+
+      const hexToSrgb = schema.conversions.find((c: { source: string }) =>
+        c.source.includes("hex-color"),
+      );
+      expect(hexToSrgb).toBeDefined();
+      expect(hexToSrgb?.lossless).toBe(true);
+    });
+
+    it("should have conversion to Hex", async () => {
+      const schema = (await getBundledSchema("srgb-color")) as ColorSpecification;
+
+      const srgbToHex = schema.conversions.find(
+        (c: { source: string; target: string }) =>
+          c.source === "$self" && c.target.includes("hex-color"),
+      );
+      expect(srgbToHex).toBeDefined();
+      expect(srgbToHex?.lossless).toBe(true);
+    });
+  });
+
+  describe("Conversion from HEX to sRGB", () => {
+    it("should convert 6-digit HEX to sRGB", async () => {
+      const result = await executeWithSchema(
+        "srgb-color",
+        "type",
+        `
+        variable c: Color.Hex = #ff5733;
+        c.to.srgb()
+      `,
+      );
+
+      expect(result?.constructor.name).toBe("ColorSymbol");
+      expect((result as any).subType).toBe("SRGB");
+      expect((result as any).value.r.value).toBeCloseTo(1, 10);
+      expect((result as any).value.g.value).toBeCloseTo(87 / 255, 10);
+      expect((result as any).value.b.value).toBeCloseTo(51 / 255, 10);
+    });
+
+    it("should convert 3-digit HEX to sRGB", async () => {
+      const result = await executeWithSchema(
+        "srgb-color",
+        "type",
+        `
+        variable c: Color.Hex = #f00;
+        c.to.srgb()
+      `,
+      );
+
+      expect((result as any).value.r.value).toBeCloseTo(1, 10);
+      expect((result as any).value.g.value).toBeCloseTo(0, 10);
+      expect((result as any).value.b.value).toBeCloseTo(0, 10);
+    });
+
+    it("should convert black HEX to sRGB", async () => {
+      const result = await executeWithSchema(
+        "srgb-color",
+        "type",
+        `
+        variable c: Color.Hex = #000000;
+        c.to.srgb()
+      `,
+      );
+
+      expect((result as any).value.r.value).toBe(0);
+      expect((result as any).value.g.value).toBe(0);
+      expect((result as any).value.b.value).toBe(0);
+    });
+
+    it("should convert white HEX to sRGB", async () => {
+      const result = await executeWithSchema(
+        "srgb-color",
+        "type",
+        `
+        variable c: Color.Hex = #ffffff;
+        c.to.srgb()
+      `,
+      );
+
+      expect((result as any).value.r.value).toBe(1);
+      expect((result as any).value.g.value).toBe(1);
+      expect((result as any).value.b.value).toBe(1);
+    });
+  });
+
+  describe("Conversion from sRGB to HEX", () => {
+    it("should convert sRGB to HEX", async () => {
+      const result = await executeWithSchema(
+        "srgb-color",
+        "type",
+        `
+        variable c: Color.SRGB = srgb(1, 0.5, 0.25);
+        c.to.hex()
+      `,
+      );
+
+      expect(result?.constructor.name).toBe("ColorSymbol");
+      expect((result as any).subType).toBe("Hex");
+      expect(result?.toString()).toBe("#ff8040");
+    });
+
+    it("should convert red sRGB to HEX", async () => {
+      const result = await executeWithSchema(
+        "srgb-color",
+        "type",
+        `
+        variable c: Color.SRGB = srgb(1, 0, 0);
+        c.to.hex()
+      `,
+      );
+
+      expect(result?.toString()).toBe("#ff0000");
+    });
+
+    it("should convert black sRGB to HEX", async () => {
+      const result = await executeWithSchema(
+        "srgb-color",
+        "type",
+        `
+        variable c: Color.SRGB = srgb(0, 0, 0);
+        c.to.hex()
+      `,
+      );
+
+      expect(result?.toString()).toBe("#000000");
+    });
+
+    it("should convert white sRGB to HEX", async () => {
+      const result = await executeWithSchema(
+        "srgb-color",
+        "type",
+        `
+        variable c: Color.SRGB = srgb(1, 1, 1);
+        c.to.hex()
+      `,
+      );
+
+      expect(result?.toString()).toBe("#ffffff");
+    });
+  });
+
+  describe("Round-trip Hex/sRGB Conversions", () => {
+    it("should maintain color values through HEX -> sRGB -> HEX", async () => {
+      const result = await executeWithSchema(
+        "srgb-color",
+        "type",
+        `
+        variable original: Color.Hex = #3498db;
+        variable srgb: Color.SRGB = original.to.srgb();
+        variable back: Color.Hex = srgb.to.hex();
+        back
+      `,
+      );
+
+      expect(result?.toString()).toBe("#3498db");
+    });
+
+    it("should maintain color values through sRGB -> HEX -> sRGB", async () => {
+      const result = await executeWithSchema(
+        "srgb-color",
+        "type",
+        `
+        variable original: Color.SRGB = srgb(0.5, 0.25, 0.75);
+        variable hex: Color.Hex = original.to.hex();
+        variable back: Color.SRGB = hex.to.srgb();
+        back
+      `,
+      );
+
+      // Note: slight precision loss due to 0-255 quantization
+      expect((result as any).value.r.value).toBeCloseTo(0.5, 2);
+      expect((result as any).value.g.value).toBeCloseTo(0.25, 2);
+      expect((result as any).value.b.value).toBeCloseTo(0.75, 2);
+    });
+  });
 });

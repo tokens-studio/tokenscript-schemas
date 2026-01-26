@@ -63,6 +63,26 @@
         "type": "/api/v1/core/tokenscript/0/",
         "script": "./from-linear.tokenscript"
       }
+    },
+    {
+      "source": "/api/v1/core/hex-color/0/",
+      "target": "$self",
+      "description": "Converts Hex to sRGB by parsing and normalizing to 0-1",
+      "lossless": true,
+      "script": {
+        "type": "/api/v1/core/tokenscript/0/",
+        "script": "./from-hex.tokenscript"
+      }
+    },
+    {
+      "source": "$self",
+      "target": "/api/v1/core/hex-color/0/",
+      "description": "Converts sRGB to Hex by scaling to 0-255 and formatting",
+      "lossless": true,
+      "script": {
+        "type": "/api/v1/core/tokenscript/0/",
+        "script": "./to-hex.tokenscript"
+      }
     }
   ]
 }

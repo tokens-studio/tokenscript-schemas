@@ -1,0 +1,26 @@
+// sRGB to Hex Conversion
+// Converts sRGB (0-1 normalized) color to hexadecimal string format
+//
+// Examples:
+//   sRGB(1, 0, 0)     → #ff0000
+//   sRGB(0, 1, 0.5)   → #00ff80
+//
+// Input: Color.SRGB with r, g, b in 0-1 range
+// Output: String (hex format #rrggbb)
+
+variable rgba: List = {input}.r * 255, {input}.g * 255, {input}.b * 255;
+variable hex: String = "#";
+variable i: Number = 0;
+variable value: Number = 0;
+
+while(i < 3) [
+  value = round(rgba.get(i));
+  if(value < 16) [
+    hex = hex.concat("0").concat(value.to_string(16));
+  ] else [
+    hex = hex.concat(value.to_string(16));
+  ];
+  i = i + 1;
+];
+
+return hex;
