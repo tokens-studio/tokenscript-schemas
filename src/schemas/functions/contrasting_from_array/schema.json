@@ -1,0 +1,28 @@
+{
+  "name": "Contrasting From Array",
+  "type": "function",
+  "description": "Takes an array of colors and returns the first one that meets the contrast threshold against the background. If no color meets the threshold, returns the color with the highest contrast. Returns [color, sufficient, contrast, index] where color is unchanged from the input array (same color space). Uses XYZ-D65 internally for accurate luminance calculation.",
+  "keyword": "contrasting_from_array",
+  "input": {
+    "type": "object",
+    "properties": {
+      "colors": {
+        "type": "list",
+        "description": "Array of candidate colors (in priority order) - any color space"
+      },
+      "background": {
+        "type": "color",
+        "description": "Background color to contrast against - any color space"
+      },
+      "threshold": {
+        "type": "number",
+        "description": "Minimum contrast ratio (default: 4.5 for WCAG AA)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./contrasting-from-array.tokenscript"
+  },
+  "requirements": ["/api/v1/core/srgb-color/0/", "/api/v1/core/xyz-d65-color/0/"]
+}

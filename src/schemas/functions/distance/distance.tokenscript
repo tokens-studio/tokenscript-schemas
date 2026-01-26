@@ -1,0 +1,51 @@
+// distance: Calculate Euclidean distance between two colors
+// Reference: Simple straight-line distance in a perceptual color space
+//
+// Unlike Delta E formulas (which include corrections for perceptual
+// non-uniformities), this is pure Euclidean distance: sqrt(ΔL² + Δa² + Δb²)
+//
+// Supports two color spaces:
+// - OKLab (default): Better perceptual uniformity, recommended
+// - Lab (CIE L*a*b*): Traditional perceptual space
+//
+// Interpretation (approximate for OKLab):
+//   0.0        - Identical colors
+//   < 0.02     - Not perceptible (JND)
+//   0.02-0.05  - Slight difference
+//   0.05-0.1   - Noticeable difference
+//   > 0.1      - Obvious difference
+
+variable input: List = {input};
+
+// Get color space (default to oklab)
+variable space: String = "oklab";
+if (input.length() > 2) [
+    space = input.get(2);
+];
+
+variable delta_l: Number = 0;
+variable delta_a: Number = 0;
+variable delta_b: Number = 0;
+
+if (space == "lab") [
+    // Use CIE Lab color space
+    variable color1_lab: Color.Lab = input.get(0).to.lab();
+    variable color2_lab: Color.Lab = input.get(1).to.lab();
+    
+    delta_l = color1_lab.l - color2_lab.l;
+    delta_a = color1_lab.a - color2_lab.a;
+    delta_b = color1_lab.b - color2_lab.b;
+] else [
+    // Default: Use OKLab color space
+    variable color1_oklab: Color.OKLab = input.get(0).to.oklab();
+    variable color2_oklab: Color.OKLab = input.get(1).to.oklab();
+    
+    delta_l = color1_oklab.l - color2_oklab.l;
+    delta_a = color1_oklab.a - color2_oklab.a;
+    delta_b = color1_oklab.b - color2_oklab.b;
+];
+
+// Calculate Euclidean distance
+variable dist: Number = sqrt(delta_l * delta_l + delta_a * delta_a + delta_b * delta_b);
+
+return dist;

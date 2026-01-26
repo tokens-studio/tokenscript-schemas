@@ -1,0 +1,110 @@
+// contrasting_alpha: Find minimum alpha for target contrast
+// Reference: WCAG 2.1 Contrast Ratio + Binary Search
+//
+// Uses binary search to find the lowest alpha (opacity) that produces
+// sufficient contrast between a semi-transparent foreground and background.
+//
+// Algorithm:
+// 1. Blend foreground over background at test alpha (in XYZ-D65)
+// 2. Calculate WCAG contrast ratio using XYZ-D65 Y (relative luminance)
+// 3. Binary search: if contrast sufficient, try lower alpha
+//
+// Input:  Any color space
+// Output: Same color space as input (foreground color returned unchanged)
+//
+// Returns: [alpha, contrast, foreground_color]
+// - alpha: The minimum opacity needed for threshold contrast
+// - contrast: The achieved contrast ratio at that alpha
+// - foreground_color: Original foreground (apply alpha yourself to preserve space)
+//
+// Use cases:
+// - Minimum opacity for readable overlays
+// - Accessible semi-transparent UI elements
+// - Finding subtle but accessible color treatments
+
+variable input: List = {input};
+
+// Get XYZ-D65 for accurate luminance calculation (gamut-agnostic)
+// Use input.get() directly to preserve original color type
+variable fg_xyz: Color.XYZD65 = input.get(0).to.xyzd65();
+variable bg_xyz: Color.XYZD65 = input.get(1).to.xyzd65();
+
+// Target contrast (default: 4.5 for WCAG AA normal text)
+variable threshold: Number = 4.5;
+if (input.length() > 2) [
+    threshold = input.get(2);
+];
+
+// Binary search iterations (default: 10 for ~0.001 precision)
+variable iterations: Number = 10;
+if (input.length() > 3) [
+    iterations = input.get(3);
+];
+
+// In XYZ-D65, Y component IS relative luminance
+variable bg_lum: Number = bg_xyz.y;
+
+// First check: does full opacity meet threshold?
+variable fg_lum: Number = fg_xyz.y;
+
+variable lighter: Number = fg_lum;
+variable darker: Number = bg_lum;
+if (bg_lum > fg_lum) [
+    lighter = bg_lum;
+    darker = fg_lum;
+];
+variable full_contrast: Number = (lighter + 0.05) / (darker + 0.05);
+
+// If full opacity doesn't meet threshold, return alpha=1
+variable final_alpha: Number = 1;
+variable final_contrast: Number = full_contrast;
+
+if (full_contrast >= threshold) [
+    // Binary search for minimum alpha
+    variable low: Number = 0;
+    variable high: Number = 1;
+    variable mid: Number = 0;
+    variable i: Number = 0;
+    
+    variable blend_x: Number = 0;
+    variable blend_y: Number = 0;
+    variable blend_z: Number = 0;
+    variable inv_alpha: Number = 0;
+    
+    variable blend_lum: Number = 0;
+    variable current_contrast: Number = 0;
+    
+    while (i < iterations) [
+        mid = (low + high) / 2;
+        inv_alpha = 1 - mid;
+        
+        // Blend in XYZ space for accurate luminance
+        blend_y = fg_xyz.y * mid + bg_xyz.y * inv_alpha;
+        blend_lum = blend_y;
+        
+        // Calculate contrast ratio
+        lighter = blend_lum;
+        darker = bg_lum;
+        if (bg_lum > blend_lum) [
+            lighter = bg_lum;
+            darker = blend_lum;
+        ];
+        current_contrast = (lighter + 0.05) / (darker + 0.05);
+        
+        // Binary search: if sufficient, try lower alpha
+        if (current_contrast >= threshold) [
+            high = mid;
+            final_alpha = mid;
+            final_contrast = current_contrast;
+        ] else [
+            low = mid;
+        ];
+        
+        i = i + 1;
+    ];
+];
+
+// Return: [alpha, contrast, foreground_color]
+// Foreground is returned unchanged - user applies alpha in their working space
+variable result: List = final_alpha, final_contrast, input.get(0);
+return result;

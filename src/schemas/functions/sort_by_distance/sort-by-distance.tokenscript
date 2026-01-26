@@ -1,0 +1,156 @@
+// sort_by_distance: Sort colors by distance from a reference
+// Reference: Various color metrics
+//
+// Sorts colors by one of several criteria:
+// - "contrast": WCAG 2.1 contrast ratio (sorted by ratio, highest first)
+// - "hue": Hue angle difference in OKLCH (closest hue first)
+// - "lightness": Lightness difference in OKLCH (closest first)
+// - "chroma": Chroma difference in OKLCH (closest first)
+// - "distance": Euclidean distance in OKLab (closest first)
+//
+// Uses selection sort with bitmask for tracking used indices.
+//
+// Input:  Any color space
+// Output: Same color space as input (original colors from array returned)
+//
+// Returns: [sorted_colors, indices]
+// Note: Limited to ~20 colors due to floating point precision in bitmask
+
+variable input: List = {input};
+variable colors: List = input.get(0);
+
+// Sort type (default: distance)
+variable sort_type: String = "distance";
+if (input.length() > 2) [
+    sort_type = input.get(2);
+];
+
+// Get reference color in needed spaces (convert directly, preserving original)
+variable compare_oklch: Color.OKLCH = input.get(1).to.oklch();
+variable compare_oklab: Color.OKLab = input.get(1).to.oklab();
+// For contrast: use XYZ-D65 Y (relative luminance) for accurate WCAG calculation
+variable compare_xyz: Color.XYZD65 = input.get(1).to.xyzd65();
+variable compare_lum: Number = compare_xyz.y;
+
+variable n: Number = colors.length();
+
+// Variables for distance calculation (convert to needed space for calc only)
+variable calc_xyz: Color.XYZD65;
+variable calc_dist: Number = 0;
+variable c_lum: Number = 0;
+variable lighter: Number = 0;
+variable darker: Number = 0;
+variable contrast: Number = 0;
+variable c_oklch: Color.OKLCH;
+variable hue_diff: Number = 0;
+variable c_oklab: Color.OKLab;
+variable dl: Number = 0;
+variable da: Number = 0;
+variable db: Number = 0;
+
+// Bitmask to track used indices (bit i = 1 means index i is used)
+variable used_mask: Number = 0;
+
+// Result lists
+variable sorted_colors: List;
+variable sorted_indices: List;
+
+// Selection sort variables
+variable outer: Number = 0;
+variable inner: Number = 0;
+variable min_idx: Number = 0;
+variable min_dist: Number = 0;
+variable first_found: Number = 0;
+variable bit_value: Number = 0;
+variable power_of_2: Number = 0;
+variable temp_mask: Number = 0;
+
+// Selection sort: find minimum n times
+while (outer < n) [
+    min_idx = 0;
+    min_dist = 999999;
+    first_found = 0;
+    inner = 0;
+    
+    while (inner < n) [
+        // Check if index inner is used (check bit inner in used_mask)
+        // bit_value = floor((used_mask / 2^inner)) % 2
+        power_of_2 = pow(2, inner);
+        temp_mask = floor(used_mask / power_of_2);
+        bit_value = temp_mask - floor(temp_mask / 2) * 2;
+        
+        if (bit_value == 0) [
+            // This index is not used - calculate its distance
+            // Convert to needed space for calculation only
+            calc_dist = 0;
+            
+            if (sort_type == "contrast") [
+                // Use XYZ-D65 Y for accurate WCAG luminance
+                calc_xyz = colors.get(inner).to.xyzd65();
+                c_lum = calc_xyz.y;
+                lighter = compare_lum;
+                darker = c_lum;
+                if (c_lum > compare_lum) [
+                    lighter = c_lum;
+                    darker = compare_lum;
+                ];
+                contrast = (lighter + 0.05) / (darker + 0.05);
+                calc_dist = 0 - contrast;
+            ] else [
+                if (sort_type == "hue") [
+                    c_oklch = colors.get(inner).to.oklch();
+                    hue_diff = c_oklch.h - compare_oklch.h;
+                    if (hue_diff < 0) [ hue_diff = 0 - hue_diff; ];
+                    if (hue_diff > 180) [ hue_diff = 360 - hue_diff; ];
+                    calc_dist = hue_diff;
+                ] else [
+                    if (sort_type == "lightness") [
+                        c_oklch = colors.get(inner).to.oklch();
+                        calc_dist = c_oklch.l - compare_oklch.l;
+                        if (calc_dist < 0) [ calc_dist = 0 - calc_dist; ];
+                    ] else [
+                        if (sort_type == "chroma") [
+                            c_oklch = colors.get(inner).to.oklch();
+                            calc_dist = c_oklch.c - compare_oklch.c;
+                            if (calc_dist < 0) [ calc_dist = 0 - calc_dist; ];
+                        ] else [
+                            c_oklab = colors.get(inner).to.oklab();
+                            dl = c_oklab.l - compare_oklab.l;
+                            da = c_oklab.a - compare_oklab.a;
+                            db = c_oklab.b - compare_oklab.b;
+                            calc_dist = sqrt(dl * dl + da * da + db * db);
+                        ];
+                    ];
+                ];
+            ];
+            
+            // Update minimum if this is first or smaller
+            if (first_found == 0) [
+                min_idx = inner;
+                min_dist = calc_dist;
+                first_found = 1;
+            ] else [
+                if (calc_dist < min_dist) [
+                    min_idx = inner;
+                    min_dist = calc_dist;
+                ];
+            ];
+        ];
+        
+        inner = inner + 1;
+    ];
+    
+    // Add minimum to results (keep original color space)
+    sorted_colors = sorted_colors, colors.get(min_idx);
+    sorted_indices = sorted_indices, min_idx;
+    
+    // Mark min_idx as used (set bit min_idx in used_mask)
+    power_of_2 = pow(2, min_idx);
+    used_mask = used_mask + power_of_2;
+    
+    outer = outer + 1;
+];
+
+// Return: [sorted_colors, indices]
+variable result: List = sorted_colors, sorted_indices;
+return result;
