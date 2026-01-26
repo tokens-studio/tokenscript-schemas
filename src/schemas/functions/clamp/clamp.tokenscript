@@ -1,0 +1,8 @@
+// clamp: Constrain value between min and max bounds
+variable input: List = {input};
+variable value: Number = input.get(0);
+variable min_val: Number = input.get(1);
+variable max_val: Number = input.get(2);
+
+// clamp = min(max, max(min, value))
+return min(max_val, max(min_val, value));
