@@ -97,7 +97,6 @@ describe("Bundle Command", () => {
 
       // Verify key functions are included
       expect(result).toContain("function:adjust_chroma");
-      expect(result).toContain("function:clamp");
       expect(result).toContain("function:darken");
       expect(result).toContain("function:lighten");
       expect(result).toContain("function:mix");

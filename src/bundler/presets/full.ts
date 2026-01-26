@@ -40,7 +40,6 @@ export const full: BundlePreset = {
     "auto_text_color",
     "best_contrast",
     "chroma",
-    "clamp",
     "clamp_chroma",
     "clamp_lightness",
     "clamp_to_gamut",
