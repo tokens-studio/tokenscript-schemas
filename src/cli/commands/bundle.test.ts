@@ -72,6 +72,44 @@ describe("Bundle Command", () => {
       expect(result.length).toBeGreaterThan(5);
     });
 
+    it("should expand preset:full to schema list with all types and functions", () => {
+      const result = expandPresetSchemas(["preset:full"]);
+
+      // Verify all 18 color types are included
+      expect(result).toContain("type:hex-color");
+      expect(result).toContain("type:rgb-color");
+      expect(result).toContain("type:hsl-color");
+      expect(result).toContain("type:hsv-color");
+      expect(result).toContain("type:hwb-color");
+      expect(result).toContain("type:oklch-color");
+      expect(result).toContain("type:oklab-color");
+      expect(result).toContain("type:okhsl-color");
+      expect(result).toContain("type:okhsv-color");
+      expect(result).toContain("type:lab-color");
+      expect(result).toContain("type:lch-color");
+      expect(result).toContain("type:p3-color");
+      expect(result).toContain("type:p3-linear-color");
+      expect(result).toContain("type:srgb-color");
+      expect(result).toContain("type:srgb-linear-color");
+      expect(result).toContain("type:xyz-d50-color");
+      expect(result).toContain("type:xyz-d65-color");
+      expect(result).toContain("type:css-color");
+
+      // Verify key functions are included
+      expect(result).toContain("function:adjust_chroma");
+      expect(result).toContain("function:darken");
+      expect(result).toContain("function:lighten");
+      expect(result).toContain("function:mix");
+      expect(result).toContain("function:invert");
+      expect(result).toContain("function:saturate");
+      expect(result).toContain("function:desaturate");
+      expect(result).toContain("function:to_gamut");
+      expect(result).toContain("function:contrast_ratio");
+
+      // Verify total count: 18 types + 64 functions = 82
+      expect(result.length).toBe(82);
+    });
+
     it("should combine presets with specific schemas", () => {
       const result = expandPresetSchemas(["preset:css", "type:lab-color"]);
 
