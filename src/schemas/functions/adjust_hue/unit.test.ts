@@ -64,5 +64,19 @@ describe("adjust_hue function", () => {
       const r = (result as any).value?.r?.value ?? (result as any).value?.r;
       expect(r).toBeGreaterThan(0.7);
     });
+
+    it("should preserve alpha channel", async () => {
+      const result = await executeWithSchema(
+        "adjust_hue",
+        "function",
+        `
+        variable color: Color.OKLCH = oklch(0.5, 0.15, 30, 0.7);
+        adjust_hue(color, 90)
+        `,
+      );
+
+      expect(result?.constructor.name).toBe("ColorSymbol");
+      expect((result as any).alpha).toBe(0.7);
+    });
   });
 });
