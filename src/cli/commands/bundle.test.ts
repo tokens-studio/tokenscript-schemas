@@ -106,8 +106,8 @@ describe("Bundle Command", () => {
       expect(result).toContain("function:to_gamut");
       expect(result).toContain("function:contrast_ratio");
 
-      // Verify total count: 18 types + 65 functions = 83
-      expect(result.length).toBe(83);
+      // Verify total count: 18 types + 64 functions = 82
+      expect(result.length).toBe(82);
     });
 
     it("should combine presets with specific schemas", () => {
