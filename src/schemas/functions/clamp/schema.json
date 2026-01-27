@@ -1,0 +1,57 @@
+{
+  "name": "clamp",
+  "type": "function",
+  "description": "Constrains a number between minimum and maximum bounds. Returns the value if it's within bounds, otherwise returns the nearest bound (min if below, max if above). Uses TokenScript's built-in min and max functions for efficient clamping.",
+  "keyword": "clamp",
+  "requirements": [],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "input": {
+        "type": "array",
+        "items": [
+          {
+            "description": "Value to clamp",
+            "type": "number"
+          },
+          {
+            "description": "Minimum bound",
+            "type": "number"
+          },
+          {
+            "description": "Maximum bound",
+            "type": "number"
+          }
+        ],
+        "minItems": 3,
+        "maxItems": 3
+      }
+    },
+    "required": ["input"]
+  },
+  "returns": {
+    "type": "number",
+    "description": "Clamped value between min and max bounds"
+  },
+  "script": {
+    "type": "https://schema.tokenscript.dev.gcp.tokens.studio/api/v1/core/tokenscript/0/",
+    "script": "./clamp.tokenscript"
+  },
+  "examples": [
+    {
+      "description": "Value within bounds returns unchanged",
+      "input": [5, 0, 10],
+      "output": 5
+    },
+    {
+      "description": "Value below min returns min",
+      "input": [-5, 0, 10],
+      "output": 0
+    },
+    {
+      "description": "Value above max returns max",
+      "input": [15, 0, 10],
+      "output": 10
+    }
+  ]
+}
