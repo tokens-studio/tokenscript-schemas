@@ -1,0 +1,35 @@
+// ts_mix_hsl: Blend two colors in HSL space
+// Interpolates s, l linearly; h via shortest hue path
+// Default amount: 0.5
+
+variable input: List = {input};
+variable color1: Color.HSL = input.get(0).to.hsl();
+variable color2: Color.HSL = input.get(1).to.hsl();
+
+variable amount: Number = 0.5;
+if (input.length() > 2) [
+    amount = input.get(2);
+];
+
+// Interpolate saturation and lightness linearly
+variable new_s: Number = color1.s + (color2.s - color1.s) * amount;
+variable new_l: Number = color1.l + (color2.l - color1.l) * amount;
+
+// Interpolate hue using shortest path
+variable h1: Number = color1.h;
+variable h2: Number = color2.h;
+variable h_diff: Number = h2 - h1;
+
+if (h_diff > 180) [ h_diff = h_diff - 360; ];
+if (h_diff < -180) [ h_diff = h_diff + 360; ];
+
+variable new_h: Number = h1 + h_diff * amount;
+if (new_h < 0) [ new_h = new_h + 360; ];
+if (new_h >= 360) [ new_h = new_h - 360; ];
+
+variable result: Color.HSL;
+result.h = new_h;
+result.s = new_s;
+result.l = new_l;
+
+return result;

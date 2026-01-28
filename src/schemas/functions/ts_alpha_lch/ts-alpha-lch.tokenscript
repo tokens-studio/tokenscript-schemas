@@ -1,0 +1,17 @@
+// ts_alpha_lch: Set alpha on a color in CIE LCH space
+// Converts to LCH, sets alpha, clamps 0-1
+
+variable input: List = {input};
+variable color: Color.LCH = input.get(0).to.lch();
+variable target_alpha: Number = input.get(1);
+
+if (target_alpha < 0) [ target_alpha = 0; ];
+if (target_alpha > 1) [ target_alpha = 1; ];
+
+variable result: Color.LCH;
+result.l = color.l;
+result.c = color.c;
+result.h = color.h;
+result.alpha = target_alpha;
+
+return result;
