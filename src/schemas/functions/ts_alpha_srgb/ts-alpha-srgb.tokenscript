@@ -1,0 +1,17 @@
+// ts_alpha_srgb: Set alpha on a color in sRGB space
+// Converts to sRGB, sets alpha, clamps 0-1
+
+variable input: List = {input};
+variable color: Color.SRGB = input.get(0).to.srgb();
+variable target_alpha: Number = input.get(1);
+
+if (target_alpha < 0) [ target_alpha = 0; ];
+if (target_alpha > 1) [ target_alpha = 1; ];
+
+variable result: Color.SRGB;
+result.r = color.r;
+result.g = color.g;
+result.b = color.b;
+result.alpha = target_alpha;
+
+return result;

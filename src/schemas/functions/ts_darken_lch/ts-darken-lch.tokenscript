@@ -1,0 +1,24 @@
+// ts_darken_lch: Decrease lightness in CIE LCH space
+// Algorithm: L' = L * (1 - amount)
+// L range: 0-100
+// Default amount: 0.25
+
+variable input: List = {input};
+variable color: Color.LCH = input.get(0).to.lch();
+
+variable amount: Number = 0.25;
+if (input.length() > 1) [
+    amount = input.get(1);
+];
+
+variable current_l: Number = color.l;
+variable new_l: Number = current_l * (1 - amount);
+
+if (new_l < 0) [ new_l = 0; ];
+
+variable result: Color.LCH;
+result.l = new_l;
+result.c = color.c;
+result.h = color.h;
+
+return result;

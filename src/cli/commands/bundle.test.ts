@@ -117,6 +117,37 @@ describe("Bundle Command", () => {
       expect(result).toContain("type:lab-color");
     });
 
+    it("should expand preset:ts to schema list with legacy color-space functions", () => {
+      const result = expandPresetSchemas(["preset:ts"]);
+
+      // Verify required color types
+      expect(result).toContain("type:hsl-color");
+      expect(result).toContain("type:lch-color");
+      expect(result).toContain("type:p3-color");
+      expect(result).toContain("type:srgb-color");
+
+      // Verify all 16 ts_ functions
+      expect(result).toContain("function:ts_alpha_hsl");
+      expect(result).toContain("function:ts_alpha_lch");
+      expect(result).toContain("function:ts_alpha_p3");
+      expect(result).toContain("function:ts_alpha_srgb");
+      expect(result).toContain("function:ts_darken_hsl");
+      expect(result).toContain("function:ts_darken_lch");
+      expect(result).toContain("function:ts_darken_p3");
+      expect(result).toContain("function:ts_darken_srgb");
+      expect(result).toContain("function:ts_lighten_hsl");
+      expect(result).toContain("function:ts_lighten_lch");
+      expect(result).toContain("function:ts_lighten_p3");
+      expect(result).toContain("function:ts_lighten_srgb");
+      expect(result).toContain("function:ts_mix_hsl");
+      expect(result).toContain("function:ts_mix_lch");
+      expect(result).toContain("function:ts_mix_p3");
+      expect(result).toContain("function:ts_mix_srgb");
+
+      // Verify total count: 4 types + 16 functions = 20
+      expect(result.length).toBe(20);
+    });
+
     it("should handle unknown preset gracefully", () => {
       const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 

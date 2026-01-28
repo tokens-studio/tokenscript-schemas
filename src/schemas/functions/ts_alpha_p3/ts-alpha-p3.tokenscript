@@ -1,0 +1,17 @@
+// ts_alpha_p3: Set alpha on a color in Display P3 space
+// Converts to P3, sets alpha, clamps 0-1
+
+variable input: List = {input};
+variable color: Color.P3 = input.get(0).to.p3();
+variable target_alpha: Number = input.get(1);
+
+if (target_alpha < 0) [ target_alpha = 0; ];
+if (target_alpha > 1) [ target_alpha = 1; ];
+
+variable result: Color.P3;
+result.r = color.r;
+result.g = color.g;
+result.b = color.b;
+result.alpha = target_alpha;
+
+return result;

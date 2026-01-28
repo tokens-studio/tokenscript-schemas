@@ -1,0 +1,24 @@
+{
+  "name": "Alpha HSL",
+  "type": "function",
+  "description": "Converts a color to HSL space and sets its alpha channel. Alpha is clamped to 0-1.",
+  "keyword": "ts_alpha_hsl",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "The color to modify"
+      },
+      "alpha": {
+        "type": "number",
+        "description": "Target alpha/opacity (0-1)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./ts-alpha-hsl.tokenscript"
+  },
+  "requirements": ["/api/v1/core/hsl-color/0/", "/api/v1/core/srgb-color/0/"]
+}

@@ -1,0 +1,26 @@
+// ts_darken_srgb: Decrease lightness in sRGB space
+// Algorithm: ch' = ch * (1 - amount) for each channel
+// Default amount: 0.25
+
+variable input: List = {input};
+variable color: Color.SRGB = input.get(0).to.srgb();
+
+variable amount: Number = 0.25;
+if (input.length() > 1) [
+    amount = input.get(1);
+];
+
+variable new_r: Number = color.r * (1 - amount);
+variable new_g: Number = color.g * (1 - amount);
+variable new_b: Number = color.b * (1 - amount);
+
+if (new_r < 0) [ new_r = 0; ];
+if (new_g < 0) [ new_g = 0; ];
+if (new_b < 0) [ new_b = 0; ];
+
+variable result: Color.SRGB;
+result.r = new_r;
+result.g = new_g;
+result.b = new_b;
+
+return result;
