@@ -5,15 +5,20 @@ import { bundleSelectiveSchemas } from "./selective-bundler.js";
 const SCHEMAS_DIR = join(process.cwd(), "src/schemas");
 
 describe("Selective Bundler", () => {
-  it("should bundle a single type schema", async () => {
+  it("should bundle a single type schema with its dependencies", async () => {
     const result = await bundleSelectiveSchemas({
       schemas: ["hex-color"],
       schemasDir: SCHEMAS_DIR,
     });
 
-    expect(result.schemas).toHaveLength(1);
-    expect(result.schemas[0].uri).toContain("hex-color");
-    expect(result.schemas[0].schema.type).toBe("color");
+    // hex-color has srgb-color dependency (for .to.hex() conversion)
+    expect(result.schemas.length).toBeGreaterThanOrEqual(1);
+
+    const uris = result.schemas.map((s) => s.uri);
+    expect(uris.some((uri) => uri.includes("hex-color"))).toBe(true);
+
+    const hexSchema = result.schemas.find((s) => s.uri.includes("hex-color"));
+    expect(hexSchema?.schema.type).toBe("color");
     expect(result.metadata.requestedSchemas).toEqual(["hex-color"]);
   });
 
@@ -57,7 +62,10 @@ describe("Selective Bundler", () => {
       schemasDir: SCHEMAS_DIR,
     });
 
-    const hexSchema = result.schemas[0].schema;
+    const hexSchemaEntry = result.schemas.find((s) => s.uri.includes("hex-color"));
+    expect(hexSchemaEntry).toBeDefined();
+
+    const hexSchema = hexSchemaEntry!.schema;
 
     if (hexSchema.type === "color") {
       // Check that initializer script is inlined (not a file reference)
@@ -76,7 +84,9 @@ describe("Selective Bundler", () => {
       baseUrl: customBaseUrl,
     });
 
-    expect(result.schemas[0].uri).toContain(customBaseUrl);
+    const hexSchemaEntry = result.schemas.find((s) => s.uri.includes("hex-color"));
+    expect(hexSchemaEntry).toBeDefined();
+    expect(hexSchemaEntry!.uri).toContain(customBaseUrl);
   });
 
   it("should include metadata", async () => {
