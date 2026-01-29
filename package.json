@@ -3,7 +3,8 @@
   "version": "0.3.6",
   "description": "Schema registry for TokenScript with bundled schemas and validation",
   "type": "module",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
     "tokenscript-schemas": "./dist/cli/index.js"
