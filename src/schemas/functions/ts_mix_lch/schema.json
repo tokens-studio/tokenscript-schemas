@@ -1,0 +1,28 @@
+{
+  "name": "Mix LCH",
+  "type": "function",
+  "description": "Mixes two colors in CIE LCH space with shortest hue path interpolation. Amount 0-1 where 0.5 = equal blend. Default amount: 0.5.",
+  "keyword": "ts_mix_lch",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color1": {
+        "type": "color",
+        "description": "First color"
+      },
+      "color2": {
+        "type": "color",
+        "description": "Second color"
+      },
+      "amount": {
+        "type": "number",
+        "description": "Mix amount (0-1). 0 = first color, 1 = second color. Default is 0.5"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./ts-mix-lch.tokenscript"
+  },
+  "requirements": ["/api/v1/core/lch-color/0/", "/api/v1/core/srgb-color/0/"]
+}

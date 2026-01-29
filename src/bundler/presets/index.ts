@@ -4,6 +4,7 @@
 
 import { css } from "./css";
 import { full } from "./full";
+import { ts } from "./ts";
 import type { BundlePreset } from "./types";
 
 export type { BundlePreset };
@@ -14,6 +15,7 @@ export type { BundlePreset };
 export const BUNDLE_PRESETS: Record<string, BundlePreset> = {
   css,
   full,
+  ts,
 };
 
 /**

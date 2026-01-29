@@ -1,0 +1,22 @@
+// ts_lighten_hsl: Increase lightness in HSL space
+// Algorithm: l' = l + (1 - l) * amount
+// Default amount: 0.25
+
+variable input: List = {input};
+variable color: Color.HSL = input.get(0).to.hsl();
+
+variable amount: Number = 0.25;
+if (input.length() > 1) [
+    amount = input.get(1);
+];
+
+variable new_l: Number = color.l + (1 - color.l) * amount;
+
+if (new_l > 1) [ new_l = 1; ];
+
+variable result: Color.HSL;
+result.h = color.h;
+result.s = color.s;
+result.l = new_l;
+
+return result;

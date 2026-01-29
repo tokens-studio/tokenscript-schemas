@@ -1,0 +1,35 @@
+// ts_mix_lch: Blend two colors in CIE LCH space
+// Interpolates L, C linearly; H via shortest hue path
+// Default amount: 0.5
+
+variable input: List = {input};
+variable color1: Color.LCH = input.get(0).to.lch();
+variable color2: Color.LCH = input.get(1).to.lch();
+
+variable amount: Number = 0.5;
+if (input.length() > 2) [
+    amount = input.get(2);
+];
+
+// Interpolate lightness and chroma linearly
+variable new_l: Number = color1.l + (color2.l - color1.l) * amount;
+variable new_c: Number = color1.c + (color2.c - color1.c) * amount;
+
+// Interpolate hue using shortest path
+variable h1: Number = color1.h;
+variable h2: Number = color2.h;
+variable h_diff: Number = h2 - h1;
+
+if (h_diff > 180) [ h_diff = h_diff - 360; ];
+if (h_diff < -180) [ h_diff = h_diff + 360; ];
+
+variable new_h: Number = h1 + h_diff * amount;
+if (new_h < 0) [ new_h = new_h + 360; ];
+if (new_h >= 360) [ new_h = new_h - 360; ];
+
+variable result: Color.LCH;
+result.l = new_l;
+result.c = new_c;
+result.h = new_h;
+
+return result;

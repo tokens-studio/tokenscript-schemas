@@ -1,0 +1,24 @@
+{
+  "name": "Alpha LCH",
+  "type": "function",
+  "description": "Converts a color to CIE LCH space and sets its alpha channel. Alpha is clamped to 0-1.",
+  "keyword": "ts_alpha_lch",
+  "input": {
+    "type": "object",
+    "properties": {
+      "color": {
+        "type": "color",
+        "description": "The color to modify"
+      },
+      "alpha": {
+        "type": "number",
+        "description": "Target alpha/opacity (0-1)"
+      }
+    }
+  },
+  "script": {
+    "type": "/api/v1/core/tokenscript/0/",
+    "script": "./ts-alpha-lch.tokenscript"
+  },
+  "requirements": ["/api/v1/core/lch-color/0/", "/api/v1/core/srgb-color/0/"]
+}

@@ -1,0 +1,26 @@
+// ts_lighten_p3: Increase lightness in Display P3 space
+// Algorithm: ch' = ch + (1 - ch) * amount for each channel
+// Default amount: 0.25
+
+variable input: List = {input};
+variable color: Color.P3 = input.get(0).to.p3();
+
+variable amount: Number = 0.25;
+if (input.length() > 1) [
+    amount = input.get(1);
+];
+
+variable new_r: Number = color.r + (1 - color.r) * amount;
+variable new_g: Number = color.g + (1 - color.g) * amount;
+variable new_b: Number = color.b + (1 - color.b) * amount;
+
+if (new_r > 1) [ new_r = 1; ];
+if (new_g > 1) [ new_g = 1; ];
+if (new_b > 1) [ new_b = 1; ];
+
+variable result: Color.P3;
+result.r = new_r;
+result.g = new_g;
+result.b = new_b;
+
+return result;

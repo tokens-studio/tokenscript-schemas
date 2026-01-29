@@ -1,0 +1,23 @@
+// ts_mix_p3: Blend two colors in Display P3 space
+// Interpolates r, g, b linearly
+// Default amount: 0.5
+
+variable input: List = {input};
+variable color1: Color.P3 = input.get(0).to.p3();
+variable color2: Color.P3 = input.get(1).to.p3();
+
+variable amount: Number = 0.5;
+if (input.length() > 2) [
+    amount = input.get(2);
+];
+
+variable new_r: Number = color1.r + (color2.r - color1.r) * amount;
+variable new_g: Number = color1.g + (color2.g - color1.g) * amount;
+variable new_b: Number = color1.b + (color2.b - color1.b) * amount;
+
+variable result: Color.P3;
+result.r = new_r;
+result.g = new_g;
+result.b = new_b;
+
+return result;
