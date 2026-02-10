@@ -7,4 +7,5 @@ export interface BundlePreset {
   description: string;
   types: string[];
   functions: string[];
+  constants?: string[];
 }

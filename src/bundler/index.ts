@@ -8,6 +8,7 @@ import { buildSchemaFromDirectory } from "@/bundler/build-schema";
 import type {
   BundledRegistry,
   ColorSpecification,
+  ConstantsSpecification,
   FunctionSpecification,
   SchemaSpecification,
 } from "@/bundler/types.js";
@@ -82,6 +83,36 @@ async function buildFunctionCategory(categoryDir: string): Promise<FunctionSpeci
 }
 
 /**
+ * Build all constants schemas from a category directory
+ */
+async function buildConstantsCategory(categoryDir: string): Promise<ConstantsSpecification[]> {
+  const bundles: ConstantsSpecification[] = [];
+  let schemaSlugs: string[];
+  try {
+    schemaSlugs = await getSubdirectories(categoryDir);
+  } catch {
+    // constants directory may not exist yet
+    return bundles;
+  }
+
+  for (const slug of schemaSlugs) {
+    const schemaDir = join(categoryDir, slug);
+    console.log(`  Building ${slug}...`);
+
+    try {
+      const bundle = await buildSchema(schemaDir, slug);
+      if (bundle.type === "constants") {
+        bundles.push(bundle as ConstantsSpecification);
+      }
+    } catch (error) {
+      console.error(`  ✗ Failed to build ${slug}:`, error);
+    }
+  }
+
+  return bundles;
+}
+
+/**
  * Build all schemas from the schemas directory
  */
 export async function buildAllSchemas(
@@ -101,6 +132,12 @@ export async function buildAllSchemas(
   const functions = await buildFunctionCategory(functionsDir);
   console.log(`✓ Built ${functions.length} function schemas`);
 
+  // Build constants
+  console.log("\nBuilding constants schemas...");
+  const constantsDir = join(schemasDir, "constants");
+  const constants = await buildConstantsCategory(constantsDir);
+  console.log(`✓ Built ${constants.length} constants schemas`);
+
   // Create bundled registry
   const baseCommand = "npx @tokens-studio/tokenscript-schemas bundle";
   const generatedBy = options?.cliArgs?.length
@@ -111,9 +148,10 @@ export async function buildAllSchemas(
     version: "0.0.10",
     types,
     functions,
+    constants,
     metadata: {
       generatedAt: new Date().toISOString(),
-      totalSchemas: types.length + functions.length,
+      totalSchemas: types.length + functions.length + constants.length,
       generatedBy,
     },
   };
@@ -151,6 +189,23 @@ export async function buildAllSchemas(
     await writeFile(funcPath, JSON.stringify(func, null, 2));
   }
   console.log(`✓ Written ${functions.length} individual function schemas`);
+
+  if (constants.length > 0) {
+    const constantsPath = join(outputDir, "constants.json");
+    await writeFile(
+      constantsPath,
+      JSON.stringify({ version: registry.version, constants }, null, 2),
+    );
+    console.log(`✓ Written constants bundle to ${constantsPath}`);
+
+    const constantsOutputDir = join(outputDir, "constants");
+    await mkdir(constantsOutputDir, { recursive: true });
+    for (const constant of constants) {
+      const constPath = join(constantsOutputDir, `${constant.slug}.json`);
+      await writeFile(constPath, JSON.stringify(constant, null, 2));
+    }
+    console.log(`✓ Written ${constants.length} individual constants schemas`);
+  }
 
   return registry;
 }

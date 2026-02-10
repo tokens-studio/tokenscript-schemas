@@ -3,6 +3,7 @@
  */
 
 import { css } from "./css";
+import { cssColors } from "./css-colors";
 import { full } from "./full";
 import { ts } from "./ts";
 import type { BundlePreset } from "./types";
@@ -14,6 +15,7 @@ export type { BundlePreset };
  */
 export const BUNDLE_PRESETS: Record<string, BundlePreset> = {
   css,
+  cssColors,
   full,
   ts,
 };
@@ -37,6 +39,12 @@ export function expandPresetSchemas(schemas: string[]): string[] {
         // Add all functions from preset
         for (const func of preset.functions) {
           expanded.push(func === "*" ? "*" : `function:${func}`);
+        }
+        // Add all constants from preset
+        if (preset.constants) {
+          for (const constant of preset.constants) {
+            expanded.push(`constants:${constant}`);
+          }
         }
       } else {
         console.warn(`⚠ Unknown preset: ${presetName}`);

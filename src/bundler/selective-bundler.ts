@@ -11,7 +11,7 @@ import {
   collectRequiredSchemasForList,
   type DependencyNode,
 } from "./schema-dependency-resolver.js";
-import type { ColorSpecification, FunctionSpecification } from "./types.js";
+import type { ColorSpecification, ConstantsSpecification, FunctionSpecification } from "./types.js";
 
 export interface SelectiveBundleOptions {
   schemas: string[]; // Schema slugs to bundle
@@ -22,7 +22,7 @@ export interface SelectiveBundleOptions {
 
 export interface BundledSchemaEntry {
   uri: string;
-  schema: ColorSpecification | FunctionSpecification;
+  schema: ColorSpecification | FunctionSpecification | ConstantsSpecification;
 }
 
 export interface SelectiveBundleResult {
@@ -37,14 +37,15 @@ export interface SelectiveBundleResult {
 }
 
 /**
- * Detect whether a schema is a type or function by checking which directory exists
+ * Detect whether a schema is a type, function, or constants by checking which directory exists
  */
 async function detectSchemaType(
   slug: string,
   schemasDir: string,
-): Promise<"type" | "function" | null> {
+): Promise<"type" | "function" | "constants" | null> {
   const typeDir = join(schemasDir, "types", slug);
   const functionDir = join(schemasDir, "functions", slug);
+  const constantsDir = join(schemasDir, "constants", slug);
 
   try {
     await access(typeDir);
@@ -57,7 +58,14 @@ async function detectSchemaType(
     await access(functionDir);
     return "function";
   } catch {
-    // Not found in either
+    // Not a function, try constants
+  }
+
+  try {
+    await access(constantsDir);
+    return "constants";
+  } catch {
+    // Not found in any
   }
 
   return null;
@@ -77,9 +85,11 @@ export async function bundleSelectiveSchemas(
     options.schemas.map(async (slug) => {
       if (slug.includes(":")) {
         const [type, name] = slug.split(":");
+        const schemaType =
+          type === "function" ? "function" : type === "constants" ? "constants" : "type";
         return {
           slug: name,
-          type: (type === "function" ? "function" : "type") as "type" | "function",
+          type: schemaType as "type" | "function" | "constants",
         };
       }
 
@@ -87,8 +97,8 @@ export async function bundleSelectiveSchemas(
       const detectedType = await detectSchemaType(slug, schemasDir);
       if (detectedType === null) {
         throw new Error(
-          `Schema '${slug}' not found in types or functions directories. ` +
-            `Use 'function:${slug}' or 'type:${slug}' prefix to be explicit.`,
+          `Schema '${slug}' not found in types, functions, or constants directories. ` +
+            `Use 'function:${slug}', 'type:${slug}', or 'constants:${slug}' prefix to be explicit.`,
         );
       }
 
@@ -96,9 +106,16 @@ export async function bundleSelectiveSchemas(
     }),
   );
 
+  // Separate constants from type/function schemas (constants have no dependencies)
+  const constantsSchemas = parsedSchemas.filter((s) => s.type === "constants");
+  const nonConstantsSchemas = parsedSchemas.filter((s) => s.type !== "constants") as {
+    slug: string;
+    type: "type" | "function";
+  }[];
+
   // Collect all required schemas (including dependencies)
   // For CLI bundling, we include color type dependencies so conversions work
-  const deps = await collectRequiredSchemasForList(parsedSchemas, {
+  const deps = await collectRequiredSchemasForList(nonConstantsSchemas, {
     baseUrl,
     schemasDir,
     includeColorTypeDependencies: true,
@@ -116,7 +133,9 @@ export async function bundleSelectiveSchemas(
   });
 
   // Track all schema slugs for metadata
-  const allSchemas = [...new Set([...deps.types, ...deps.functions])];
+  const allSchemas = [
+    ...new Set([...deps.types, ...deps.functions, ...constantsSchemas.map((s) => s.slug)]),
+  ];
 
   // Bundle all schemas
   const bundledSchemas: BundledSchemaEntry[] = [];
@@ -145,6 +164,20 @@ export async function bundleSelectiveSchemas(
       bundledSchemas.push({
         uri,
         schema: bundled as FunctionSpecification,
+      });
+    }
+  }
+
+  // Bundle constants schemas
+  for (const { slug } of constantsSchemas) {
+    const schemaDir = join(schemasDir, "constants", slug);
+    const bundled = await buildSchemaFromDirectory(schemaDir, { baseUrl });
+
+    if (bundled.type === "constants") {
+      const uri = `${baseUrl}/api/v1/constants/${slug}/0/`;
+      bundledSchemas.push({
+        uri,
+        schema: bundled as ConstantsSpecification,
       });
     }
   }

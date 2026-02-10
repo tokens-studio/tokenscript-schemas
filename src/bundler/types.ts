@@ -80,12 +80,25 @@ export interface FunctionSpecification {
   slug?: string; // Added for bundling purposes
 }
 
-export type SchemaSpecification = ColorSpecification | FunctionSpecification;
+export interface ConstantsSpecification {
+  name: string;
+  type: "constants";
+  description?: string;
+  inline: boolean;
+  values: Record<string, string | number | boolean>;
+  slug?: string; // Added for bundling purposes
+}
+
+export type SchemaSpecification =
+  | ColorSpecification
+  | FunctionSpecification
+  | ConstantsSpecification;
 
 export interface BundledRegistry {
   version: string;
   types: ColorSpecification[];
   functions: FunctionSpecification[];
+  constants: ConstantsSpecification[];
   metadata: {
     generatedAt: string;
     totalSchemas: number;
