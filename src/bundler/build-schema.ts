@@ -7,6 +7,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import type {
   ColorSpecification,
+  ConstantsSpecification,
   FunctionSpecification,
   SchemaSpecification,
 } from "@/bundler/types.js";
@@ -33,7 +34,10 @@ export async function buildSchemaFromDirectory(
   const schemaContent = await readFile(schemaJsonPath, "utf-8");
   const schema = JSON.parse(schemaContent) as SchemaSpecification;
 
-  if (schema.type === "function") {
+  if (schema.type === "constants") {
+    // Constants schemas are pure data, no script references to inline
+    return schema as ConstantsSpecification;
+  } else if (schema.type === "function") {
     return await inlineFunctionScriptReferences(
       schemaDir,
       schema as FunctionSpecification,
